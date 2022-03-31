@@ -1,14 +1,20 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground} from 'react-native';
-import {styles} from '../assets/styles/styles';
-import Container from '../components/Container';
-import Input from '../components/Input';
-import CButton from '../components/Button';
-import stylePrimary from '../assets/styles/stylePrimary';
-import {input, button} from '../assets/styles/styleComponent';
-import image from '../assets/images/backgroud-image.png';
+import {
+   Text,
+   View,
+   StyleSheet,
+   ImageBackground,
+   TouchableOpacity,
+} from 'react-native';
+import {styles} from '../../assets/styles/styles';
+import Container from '../../components/Container';
+import Input from '../../components/Input';
+import CButton from '../../components/Button';
+import stylePrimary from '../../assets/styles/stylePrimary';
+import {input, button} from '../../assets/styles/styleComponent';
+import image from '../../assets/images/backgroud-image.png';
 
-const Login = () => {
+const Login = ({navigation}) => {
    return (
       <View style={styles.background}>
          <ImageBackground
@@ -20,7 +26,10 @@ const Login = () => {
                <View style={addStyles.layoutForm}>
                   <Input classInput={addStyles.input} placeholder="Username" />
                   <Input classInput={addStyles.input} placeholder="Password" />
-                  <Text style={addStyles.text}>Forgot Password?</Text>
+                  <TouchableOpacity
+                     omPress={() => navigation.navigate('ForgotPassword')}>
+                     <Text style={addStyles.text}>Forgot Password?</Text>
+                  </TouchableOpacity>
                   <CButton
                      classButton={addStyles.buttonLogin}
                      textButton={addStyles.textLogin}>
@@ -28,7 +37,10 @@ const Login = () => {
                   </CButton>
                   <View style={addStyles.layoutLinkSignup}>
                      <Text style={addStyles.text}>Don’t have account?</Text>
-                     <Text style={[addStyles.textLink]}>Sign up now</Text>
+                     <TouchableOpacity
+                        onPress={() => navigation.navigate('Signup')}>
+                        <Text style={addStyles.textLink}>Sign up now</Text>
+                     </TouchableOpacity>
                   </View>
                </View>
             </Container>
