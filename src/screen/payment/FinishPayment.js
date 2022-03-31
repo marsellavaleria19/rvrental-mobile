@@ -1,25 +1,25 @@
 import * as React from 'react';
 import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
-import {styles} from '../assets/styles/styles';
-import Container from '../components/Container';
-import Input from '../components/Input';
-import CButton from '../components/Button';
-import stylePrimary from '../assets/styles/stylePrimary';
+import {styles} from '../../assets/styles/styles';
+import Container from '../../components/Container';
+import Input from '../../components/Input';
+import CButton from '../../components/Button';
+import stylePrimary from '../../assets/styles/stylePrimary';
 import {
    input,
    button,
    rateLayout,
    rateText,
-} from '../assets/styles/styleComponent';
+} from '../../assets/styles/styleComponent';
 import {FontAwesome} from '@expo/vector-icons';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
-import MainBarTitle from '../components/mainBarTitle';
-import ListBar from '../components/ListBar';
+import MainBarTitle from '../../components/mainBarTitle';
+import ListBar from '../../components/ListBar';
 import imageBackground from '../assets/images/background-reservation.png';
 import {Ionicons} from '@expo/vector-icons';
 import {FontAwesome5} from '@expo/vector-icons';
 
-const Reservation = () => {
+const FinishPayment = () => {
    return (
       <View>
          <Container>
@@ -180,4 +180,4 @@ const addStyles = StyleSheet.create({
 
 export {addStyles};
 
-export default Reservation;
+export default FinishPayment;

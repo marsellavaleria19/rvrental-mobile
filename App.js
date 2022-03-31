@@ -1,12 +1,18 @@
 import React from 'react';
 
 import {View} from 'react-native';
-import Login from './src/screen/Login';
-import Signup from './src/screen/Signup';
-import ForgotPassowrd from './src/screen/ForgotPassword';
+import Login from './src/screen/auth/Login';
+import Signup from './src/screen/auth/Signup';
+import ForgotPassowrd from './src/screen/auth/ForgotPassword';
+import {NavigationContainer} from '@react-navigation/native';
+import AuthNav from './src/components/NavigatorAuth';
 
 const App = () => {
-   return <ForgotPassowrd />;
+   return (
+      <NavigationContainer>
+         <AuthNav />
+      </NavigationContainer>
+   );
 };
 
 export default App;

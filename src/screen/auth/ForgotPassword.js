@@ -1,14 +1,21 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground} from 'react-native';
-import {styles} from '../assets/styles/styles';
-import Container from '../components/Container';
-import Input from '../components/Input';
-import CButton from '../components/Button';
-import stylePrimary from '../assets/styles/stylePrimary';
-import {input, button} from '../assets/styles/styleComponent';
-import image from '../assets/images/background-forgot-password.png';
+import {
+   Text,
+   View,
+   StyleSheet,
+   ImageBackground,
+   TouchableOpacity,
+} from 'react-native';
+import {styles} from '../../assets/styles/styles';
+import Container from '../../components/Container';
+import Input from '../../components/Input';
+import CButton from '../../components/Button';
+import stylePrimary from '../../assets/styles/stylePrimary';
+import {input, button} from '../../assets/styles/styleComponent';
+import image from '../../assets/images/background-forgot-password.png';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const ForgotPassowrd = () => {
+const ForgotPassowrd = ({navigation}) => {
    return (
       <View style={styles.background}>
          <ImageBackground
@@ -16,23 +23,34 @@ const ForgotPassowrd = () => {
             resizeMode="cover"
             style={styles.image}>
             <Container>
+               <TouchableOpacity
+                  onPress={() => navigation.navigate('Login')}
+                  style={addStyles.layoutBack}>
+                  <Icon name="chevron-left" style={addStyles.iconBack} />
+                  <Text style={addStyles.textBack}>Back</Text>
+               </TouchableOpacity>
                <Text style={addStyles.textTitle}>
                   THAT’S OKAY, WE GOT YOUR BACK
                </Text>
                <View style={addStyles.layoutLinkForgotPassword}>
                   <Text style={addStyles.text}>
-                     Enter your email to get reset password code. If you don’t
-                     receive any code.{' '}
-                     <Text style={addStyles.textLink}>Resend Code</Text>
+                     Enter your email to get reset password code.
                   </Text>
-                  {/* <Text style={addStyles.textLink}>Resend Code</Text> */}
                </View>
                <View>
-                  <Input classInput={addStyles.input} placeholder="Email" />
+                  <Input
+                     classInput={addStyles.input}
+                     placeholder="Enter your email address"
+                  />
                   <CButton
                      classButton={addStyles.buttonForgotPassword}
                      textButton={addStyles.textForgotPassword}>
                      Send Code
+                  </CButton>
+                  <CButton
+                     classButton={addStyles.buttonResendCode}
+                     textButton={addStyles.textResendCode}>
+                     Resend Code
                   </CButton>
                </View>
             </Container>
@@ -87,6 +105,32 @@ const addStyles = StyleSheet.create({
       color: stylePrimary.mainColor,
       fontWeight: '900',
       fontSize: 18,
+   },
+   buttonResendCode: {
+      backgroundColor: 'white',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 10,
+      ...button,
+   },
+   textResendCode: {
+      color: stylePrimary.mainColor,
+      fontWeight: '900',
+      fontSize: 18,
+   },
+   layoutBack: {
+      flexDirection: 'row',
+      alignItems: 'center',
+   },
+   iconBack: {
+      color: '#FFFFFF',
+      fontSize: 22,
+      marginRight: 30,
+   },
+   textBack: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: '700',
    },
 });
 

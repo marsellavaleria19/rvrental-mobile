@@ -1,14 +1,20 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground} from 'react-native';
-import {styles} from '../assets/styles/styles';
-import Container from '../components/Container';
-import Input from '../components/Input';
-import CButton from '../components/Button';
-import stylePrimary from '../assets/styles/stylePrimary';
-import {input, button} from '../assets/styles/styleComponent';
-import image from '../assets/images/backgroud-image.png';
+import {
+   Text,
+   View,
+   StyleSheet,
+   ImageBackground,
+   TouchableOpacity,
+} from 'react-native';
+import {styles} from '../../assets/styles/styles';
+import Container from '../../components/Container';
+import Input from '../../components/Input';
+import CButton from '../../components/Button';
+import stylePrimary from '../../assets/styles/stylePrimary';
+import {input, button} from '../../assets/styles/styleComponent';
+import image from '../../assets/images/background-signup.png';
 
-const Signup = () => {
+const Signup = ({navigation}) => {
    return (
       <View style={styles.background}>
          <ImageBackground
@@ -16,19 +22,25 @@ const Signup = () => {
             resizeMode="cover"
             style={styles.image}>
             <Container>
-               <Text style={addStyles.textTitle}>LET’S EXPLORE THE WORLD</Text>
+               <Text style={addStyles.textTitle}>LET’S HAVE SOME RIDE</Text>
                <View style={addStyles.layoutForm}>
-                  <Input classInput={addStyles.input} placeholder="Username" />
+                  <Input classInput={addStyles.input} placeholder="Email" />
+                  <Input
+                     classInput={addStyles.input}
+                     placeholder="Mobile phone"
+                  />
                   <Input classInput={addStyles.input} placeholder="Password" />
-                  <Text style={addStyles.text}>Forgot Password?</Text>
                   <CButton
-                     classButton={addStyles.buttonLogin}
-                     textButton={addStyles.textLogin}>
+                     classButton={addStyles.buttonSignup}
+                     textButton={addStyles.textSignup}>
                      Signup
                   </CButton>
-                  <View style={addStyles.layoutLinkSignup}>
-                     <Text style={addStyles.text}>Don’t have account?</Text>
-                     <Text style={[addStyles.textLink]}>Login now</Text>
+                  <View style={addStyles.layoutLinkLogin}>
+                     <Text style={addStyles.text}>Already have account?</Text>
+                     <TouchableOpacity
+                        onPress={() => navigation.navigate('Login')}>
+                        <Text style={addStyles.textLink}>Login now</Text>
+                     </TouchableOpacity>
                   </View>
                </View>
             </Container>
@@ -53,11 +65,10 @@ const addStyles = StyleSheet.create({
       fontSize: stylePrimary.baseFontSize,
       ...input,
    },
-   layoutLinkSignup: {
+   layoutLinkLogin: {
       marginTop: 40,
-      textAlign: 'center',
-      flexDirection: 'row',
       justifyContent: 'center',
+      flexDirection: 'row',
    },
    text: {
       color: stylePrimary.baseFontColor,
@@ -76,13 +87,14 @@ const addStyles = StyleSheet.create({
    layoutForm: {
       marginTop: 50,
    },
-   buttonLogin: {
+   buttonSignup: {
       backgroundColor: stylePrimary.secondaryColor,
       justifyContent: 'center',
       alignItems: 'center',
+      marginTop: 50,
       ...button,
    },
-   textLogin: {
+   textSignup: {
       color: stylePrimary.mainColor,
       fontWeight: '900',
       fontSize: 18,
