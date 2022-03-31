@@ -13,7 +13,7 @@ import ListDetail from '../components/ListDetail';
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
 
-const Home = () => {
+const DetailCategory = () => {
    return (
       <Container>
          <ListDetail
@@ -83,4 +83,4 @@ const addStyles = StyleSheet.create({
 
 export {addStyles};
 
-export default Home;
+export default DetailCategory;

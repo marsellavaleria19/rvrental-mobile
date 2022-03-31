@@ -6,8 +6,9 @@ import Signup from '../screen/auth/Signup';
 import ForgotPassowrd from '../screen/auth/ForgotPassword';
 
 const NavAuthStack = createNativeStackNavigator();
+// const NavHomeStack = createNativeStackNavigator();
 
-const AtuhNav = () => {
+const AuthNavigator = () => {
    return (
       <NavAuthStack.Navigator>
          <NavAuthStack.Screen
@@ -35,4 +36,4 @@ const AtuhNav = () => {
    );
 };
 
-export default AtuhNav;
+export default AuthNavigator;
