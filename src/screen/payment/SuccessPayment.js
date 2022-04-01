@@ -10,7 +10,7 @@ import Rate from '../../components/Rate';
 import {ScrollView} from 'native-base';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-const SuccessPayment = ({navigate}) => {
+const SuccessPayment = ({navigation}) => {
    return (
       <SafeAreaView>
          <ScrollView>
@@ -49,6 +49,7 @@ const SuccessPayment = ({navigate}) => {
                <View style={addStyles.layoutButton}>
                   <CButton
                      classButton={addStyles.buttonPayment}
+                     press={() => navigation.navigate('History')}
                      textButton={addStyles.fontButtonPayment}>
                      Total : 245.000
                   </CButton>
