@@ -6,6 +6,8 @@ import {
    ImageBackground,
    Image,
    TouchableOpacity,
+   SafeAreaView,
+   ScrollView,
 } from 'react-native';
 import {styles} from '../assets/styles/styles';
 import Container from '../components/Container';
@@ -19,116 +21,153 @@ import BSelect from '../components/BSelect';
 import Rate from '../components/Rate';
 import LinearGradient from 'react-native-linear-gradient';
 import IconLeft from 'react-native-vector-icons/FontAwesome';
+import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
+import {useState} from 'react';
+import IconDate from 'react-native-vector-icons/Fontisto';
+import IconChat from 'react-native-vector-icons/Ionicons';
+import moment from 'moment';
 
 const Reservation = ({navigation}) => {
+   const [date, setDate] = useState(new Date());
+   const [mode, setMode] = useState('date');
+   const [show, setShow] = useState(false);
+
+   const onChange = (event, selectedDate) => {
+      setDate(selectedDate);
+   };
+
+   const showDatePicker = () => {
+      DateTimePickerAndroid.open({
+         value: date,
+         onChange,
+         mode: 'date',
+         is24Hour: true,
+      });
+   };
+
    return (
-      <View>
-         <View>
-            <ImageBackground
-               source={imageBackground}
-               resizeMode="cover"
-               style={addStyles.imageBackground}>
-               <Container>
-                  <View style={addStyles.layoutBar}>
-                     <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                        style={addStyles.layoutBack}>
-                        <IconLeft
-                           name="chevron-left"
-                           style={addStyles.iconBack}
-                        />
-                     </TouchableOpacity>
-                     <IconMaterial
-                        name="favorite-outline"
-                        style={addStyles.iconHeart}
-                     />
-                  </View>
-               </Container>
-            </ImageBackground>
-         </View>
-         <Container>
-            <View style={addStyles.marginLayout}>
-               <View style={addStyles.layoutDescriptionRate}>
-                  <View>
-                     <Text style={addStyles.title}>Vespa Matic</Text>
-                     <Text style={addStyles.price}>Rp. 120.000/day</Text>
-                  </View>
-                  <View>
-                     <View
-                        style={[addStyles.flexRow, addStyles.layoutIconRate]}>
-                        <Rate rate={4.5} />
+      <SafeAreaView style={styles.background}>
+         <ScrollView>
+            <View>
+               <ImageBackground
+                  source={imageBackground}
+                  resizeMode="cover"
+                  style={addStyles.imageBackground}>
+                  <Container>
+                     <View style={addStyles.layoutBar}>
+                        <TouchableOpacity
+                           onPress={() => navigation.goBack()}
+                           style={addStyles.layoutBack}>
+                           <IconLeft
+                              name="chevron-left"
+                              style={addStyles.iconBack}
+                           />
+                        </TouchableOpacity>
+                        <View style={addStyles.flexRow}>
+                           <Rate rate={4.5} />
+                           <IconMaterial
+                              name="favorite-outline"
+                              style={addStyles.iconHeart}
+                           />
+                        </View>
+                     </View>
+                  </Container>
+               </ImageBackground>
+            </View>
+            <Container>
+               <View style={addStyles.marginLayout}>
+                  <View style={addStyles.layoutDescriptionRate}>
+                     <View>
+                        <Text style={addStyles.title}>Vespa Matic</Text>
+                        <Text style={addStyles.price}>Rp. 120.000/day</Text>
+                     </View>
+                     <View>
+                        <View
+                           style={[
+                              addStyles.flexRow,
+                              addStyles.layoutIconRate,
+                           ]}>
+                           <IconChat
+                              name="chatbubble-outline"
+                              style={addStyles.iconChat}
+                           />
+                        </View>
                      </View>
                   </View>
-               </View>
-               <View>
-                  <Text style={addStyles.description}>Max for 2 person</Text>
-                  <Text style={addStyles.description}>No prepayment</Text>
-                  <Text style={styles.statusAvailable}>Available</Text>
-                  <View style={addStyles.layoutLocation}>
-                     <LinearGradient
-                        colors={['#FFC7A733', '#FFD57933']}
-                        style={[addStyles.layoutIconLocation]}>
-                        <IconMaterial
-                           name="location-on"
-                           style={addStyles.iconLocation}
-                        />
-                     </LinearGradient>
-                     <Text style={addStyles.fontLocation}>
-                        Jalan Maliboboro, No. 21, Yogyakarta
-                     </Text>
-                  </View>
-                  <View style={addStyles.layoutDistance}>
-                     <LinearGradient
-                        colors={['#FFC7A733', '#FFD57933']}
-                        style={[addStyles.layoutIconLocation]}>
-                        <IconRun
-                           name="running"
-                           style={addStyles.iconLocation}
-                        />
-                     </LinearGradient>
-                     <Text style={addStyles.fontLocation}>
-                        3.2 miles from your location
-                     </Text>
-                  </View>
-                  <View style={addStyles.layoutQtyBikes}>
-                     <Text style={addStyles.fontLabel}>Select bikes</Text>
-                     <View style={addStyles.layoutQty}>
-                        <CButton
-                           classButton={addStyles.button}
-                           textButton={addStyles.text}>
-                           -
-                        </CButton>
-                        <Input classInput={addStyles.inputQty} />
-                        <CButton
-                           classButton={addStyles.button}
-                           textButton={addStyles.text}>
-                           +
-                        </CButton>
+                  <View style={addStyles.layoutDescription}>
+                     <Text style={addStyles.description}>Max for 2 person</Text>
+                     <Text style={addStyles.description}>No prepayment</Text>
+                     <Text style={styles.statusAvailable}>Available</Text>
+                     <View style={addStyles.layoutLocation}>
+                        <LinearGradient
+                           colors={['#FFC7A733', '#FFD57933']}
+                           style={[addStyles.layoutIconLocation]}>
+                           <IconMaterial
+                              name="location-on"
+                              style={addStyles.iconLocation}
+                           />
+                        </LinearGradient>
+                        <Text style={addStyles.fontLocation}>
+                           Jalan Maliboboro, No. 21, Yogyakarta
+                        </Text>
+                     </View>
+                     <View style={addStyles.layoutDistance}>
+                        <LinearGradient
+                           colors={['#FFC7A733', '#FFD57933']}
+                           style={[addStyles.layoutIconLocation]}>
+                           <IconRun
+                              name="running"
+                              style={addStyles.iconLocation}
+                           />
+                        </LinearGradient>
+                        <Text style={addStyles.fontLocation}>
+                           3.2 miles from your location
+                        </Text>
+                     </View>
+                     <View style={addStyles.layoutQtyBikes}>
+                        <Text style={addStyles.fontLabel}>Select bikes</Text>
+                        <View style={addStyles.layoutQty}>
+                           <CButton
+                              classButton={addStyles.button}
+                              textButton={addStyles.text}>
+                              -
+                           </CButton>
+                           <Input classInput={addStyles.inputQty} value={0} />
+                           <CButton
+                              classButton={addStyles.button}
+                              textButton={addStyles.text}>
+                              +
+                           </CButton>
+                        </View>
                      </View>
                   </View>
+                  <View style={addStyles.layoutForm}>
+                     <View style={{position: 'relative'}}>
+                        <Input
+                           classInput={addStyles.inputDate}
+                           placeholder="Date"
+                           value={moment(date.toLocaleString()).format(
+                              'YYYY-MM-DD',
+                           )}
+                        />
+                        <TouchableOpacity onPress={showDatePicker}>
+                           <IconDate name="date" style={addStyles.iconDate} />
+                        </TouchableOpacity>
+                     </View>
+                     <BSelect placeholder="Day" />
+                     {/* <Input classInput={addStyles.inputDay} placeholder="Day" /> */}
+                  </View>
                </View>
-               <View style={addStyles.layoutForm}>
-                  <TouchableOpacity onPress={}>
-                     <Input classInput={addStyles.inputDate} placeholder="Date" />
-                  </TouchableOpacity>
-                  <BSelect placeholder="Day" />
-                  {/* <Input classInput={addStyles.inputDay} placeholder="Day" /> */}
+               <View style={addStyles.layoutButton}>
+                  <CButton
+                     classButton={addStyles.buttonReservation}
+                     textButton={addStyles.fontButtonReservation}>
+                     Reservation
+                  </CButton>
                </View>
-            </View>
-            <View style={addStyles.layoutButton}>
-               <CButton
-                  classButton={addStyles.buttonChat}
-                  textButton={addStyles.fontButtonChat}>
-                  Chat Admin
-               </CButton>
-               <CButton
-                  classButton={addStyles.buttonReservation}
-                  textButton={addStyles.fontButtonReservation}>
-                  Reservation
-               </CButton>
-            </View>
-         </Container>
-      </View>
+            </Container>
+         </ScrollView>
+      </SafeAreaView>
    );
 };
 
@@ -141,18 +180,30 @@ const addStyles = StyleSheet.create({
       justifyContent: 'space-between',
       marginTop: 40,
    },
+   iconDate: {
+      color: 'FFFFFF',
+      fontSize: 22,
+      position: 'absolute',
+      bottom: 15,
+      right: 20,
+   },
    iconBack: {
       color: '#FFFFFF',
       fontSize: 22,
-      marginRight: 30,
+      marginLeft: 20,
    },
    iconHeart: {
       color: 'white',
       fontWeight: '700',
       fontSize: 30,
-      marginRight: 10,
+      marginLeft: 10,
    },
-
+   iconChat: {
+      fontWeight: '700',
+      fontSize: 30,
+      marginLeft: 10,
+      color: '#FFCD61',
+   },
    layoutDescriptionRate: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -163,6 +214,7 @@ const addStyles = StyleSheet.create({
    },
    flexRow: {
       flexDirection: 'row',
+      alignItems: 'center',
    },
    title: {
       fontSize: 24,
@@ -174,6 +226,9 @@ const addStyles = StyleSheet.create({
    },
    marginLayout: {
       marginTop: 12,
+   },
+   layoutDescription: {
+      marginTop: 14,
    },
    description: {
       fontSize: 16,
@@ -203,6 +258,7 @@ const addStyles = StyleSheet.create({
       marginTop: 32,
       flexDirection: 'row',
       alignItems: 'center',
+      justifyContent: 'space-between',
    },
    layoutQty: {
       flexDirection: 'row',
@@ -240,7 +296,7 @@ const addStyles = StyleSheet.create({
       backgroundColor: 'rgba(57, 57, 57, 0.3)',
       // opacity: 0.1,
       borderRadius: 10,
-      width: 160,
+      width: 200,
       height: 50,
       paddingLeft: 10,
       marginRight: 10,
@@ -254,7 +310,7 @@ const addStyles = StyleSheet.create({
       paddingLeft: 10,
    },
    layoutButton: {
-      marginTop: 28,
+      marginTop: 26,
    },
    buttonChat: {
       backgroundColor: stylePrimary.mainColor,
@@ -271,6 +327,7 @@ const addStyles = StyleSheet.create({
    buttonReservation: {
       backgroundColor: stylePrimary.secondaryColor,
       marginTop: 10,
+      marginBottom: 10,
       justifyContent: 'center',
       alignItems: 'center',
       height: 66,

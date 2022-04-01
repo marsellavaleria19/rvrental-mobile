@@ -4,12 +4,12 @@ import {Box, FormControl, Input, WarningOutlineIcon} from 'native-base';
 const BInput = ({classInput, placeholder, errorMessage, children}) => {
    return (
       <Box>
-         <FormControl isInvalid>
+         <FormControl>
             <Input placeholder={placeholder} />
-            <FormControl.ErrorMessage
+            {/* <FormControl.ErrorMessage
                leftIcon={<WarningOutlineIcon size="xs" />}>
                {errorMessage}
-            </FormControl.ErrorMessage>
+            </FormControl.ErrorMessage> */}
          </FormControl>
       </Box>
    );
