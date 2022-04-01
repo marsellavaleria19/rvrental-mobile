@@ -76,6 +76,19 @@ const styles = StyleSheet.create({
       color: stylePrimary.baseFontColor,
       marginLeft: 3,
    },
+   buttonPayment: {
+      backgroundColor: stylePrimary.secondaryColor,
+      marginTop: 30,
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 70,
+      borderRadius: 10,
+   },
+   fontButtonPayment: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: stylePrimary.mainColor,
+   },
 });
 
 export {styles};

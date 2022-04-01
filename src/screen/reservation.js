@@ -161,6 +161,7 @@ const Reservation = ({navigation}) => {
                <View style={addStyles.layoutButton}>
                   <CButton
                      classButton={addStyles.buttonReservation}
+                     press={() => navigation.navigate('Payment')}
                      textButton={addStyles.fontButtonReservation}>
                      Reservation
                   </CButton>

@@ -1,23 +1,13 @@
 import * as React from 'react';
 import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
-import {styles} from '../assets/styles/styles';
-import Container from '../components/Container';
-import Input from '../components/Input';
-import CButton from '../components/Button';
-import stylePrimary from '../assets/styles/stylePrimary';
-import {
-   input,
-   button,
-   rateLayout,
-   rateText,
-} from '../assets/styles/styleComponent';
-import {FontAwesome} from '@expo/vector-icons';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
-import MainBarTitle from '../components/mainBarTitle';
-import ListBar from '../components/ListBar';
-import imageBackground from '../assets/images/background-reservation.png';
-import {Ionicons} from '@expo/vector-icons';
-import {FontAwesome5} from '@expo/vector-icons';
+import {styles} from '../../assets/styles/styles';
+import Container from '../../components/Container';
+import CButton from '../../components/Button';
+import stylePrimary from '../../assets/styles/stylePrimary';
+import {button, rateLayout, rateText} from '../../assets/styles/styleComponent';
+import imageBackground from '../../assets/images/background-reservation.png';
+import Rate from '../../components/Rate';
+import IconInfo from 'react-native-vector-icons/Ionicons';
 
 const PaymentDetail = () => {
    return (
@@ -29,12 +19,7 @@ const PaymentDetail = () => {
                   style={addStyles.imageBackground}
                />
                <View style={addStyles.rateLayout}>
-                  <Text style={rateText}>
-                     4.5
-                     <span>
-                        <FontAwesome name="star" style={styles.rateIcon} />
-                     </span>
-                  </Text>
+                  <Rate rate={3.5} />
                </View>
             </View>
             <View style={addStyles.layoutDescription}>
@@ -50,15 +35,15 @@ const PaymentDetail = () => {
             <View style={addStyles.line} />
             <View style={addStyles.layoutPrice}>
                <Text style={addStyles.price}>Rp. 245.000</Text>
-               <Ionicons
-                  name="md-information-circle-sharp"
+               <IconInfo
+                  name="information-circle-sharp"
                   style={addStyles.iconInfo}
                />
             </View>
             <View style={addStyles.layoutButton}>
                <CButton
-                  classButton={addStyles.buttonPayment}
-                  textButton={addStyles.fontButtonPayment}>
+                  classButton={styles.buttonPayment}
+                  textButton={styles.fontButtonPayment}>
                   Get Payment Code
                </CButton>
             </View>
@@ -76,6 +61,7 @@ const addStyles = StyleSheet.create({
    positionRate: {
       position: 'relative',
       height: 300,
+      marginTop: 40,
    },
    rateLayout: {
       position: 'absolute',
@@ -92,7 +78,9 @@ const addStyles = StyleSheet.create({
       marginBottom: 20,
    },
    line: {
-      borderBottom: '1px solid #DFDEDE',
+      width: '100%',
+      height: 2,
+      backgroundColor: '#DFDEDE',
    },
    layoutPrice: {
       marginTop: 30,
@@ -102,7 +90,8 @@ const addStyles = StyleSheet.create({
    },
    price: {
       fontSize: 30,
-      fontWeight: 700,
+      fontWeight: '700',
+      color: stylePrimary.mainColor,
    },
    iconInfo: {
       fontSize: 36,
@@ -110,18 +99,6 @@ const addStyles = StyleSheet.create({
    },
    layoutButton: {
       marginTop: 30,
-   },
-   buttonPayment: {
-      backgroundColor: stylePrimary.secondaryColor,
-      marginTop: 30,
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: 70,
-      borderRadius: 10,
-   },
-   fontButtonPayment: {
-      fontSize: 20,
-      fontWeight: 700,
    },
 });
 
