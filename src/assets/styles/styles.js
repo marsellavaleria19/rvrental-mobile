@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
    },
    titleDetail: {
       fontSize: 14,
-      fontWeight: 700,
+      fontWeight: '700',
    },
    descriptionDetail: {
       fontSize: 14,
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
    },
    priceDetail: {
       fontSize: 16,
-      fontWeight: 700,
+      fontWeight: '700',
    },
    layoutImageRating: {
       position: 'relative',
@@ -55,19 +55,21 @@ const styles = StyleSheet.create({
    },
    rateLayout: {
       // position:'absolute',
-      background: 'linear-gradient(91.97deg, #F8A170 14.73%, #FFCD61 97.52%)',
+      // background: 'linear-gradient(91.97deg, #F8A170 14.73%, #FFCD61 97.52%)',
       height: 24,
       width: 50,
       right: 0,
       boxShadow: '0px 10px 40px rgba(248, 161, 112, 0.2)',
       borderRadius: 40,
       alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'center',
    },
    rateText: {
       fontSize: 12,
       color: stylePrimary.baseFontColor,
-      marginTop: 3,
-      fontWeight: 800,
+      fontWeight: '800',
+      marginRight: 4,
    },
    rateIcon: {
       fontSize: 12,

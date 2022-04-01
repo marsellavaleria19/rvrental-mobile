@@ -7,6 +7,7 @@ import ForgotPassowrd from './src/screen/auth/ForgotPassword';
 import {NavigationContainer} from '@react-navigation/native';
 import AuthNav from './src/components/AuthNavigator';
 import NavMainStack from './src/components/MainStack';
+import Reservation from './src/screen/Reservation';
 
 const App = () => {
    return (

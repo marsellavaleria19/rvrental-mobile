@@ -5,10 +5,10 @@ import stylePrimary from '../assets/styles/stylePrimary';
 import MainBarTitle from './MainBarTitle';
 // import {image} from '../assets/images/backgroud-image.png'
 
-const ListBar = ({title, children}) => {
+const ListBar = ({title, children, navigate}) => {
    return (
       <View>
-         <MainBarTitle title={title} />
+         <MainBarTitle title={title} navigate={navigate} />
          <View style={addStyles.layoutList}>{children}</View>
       </View>
    );

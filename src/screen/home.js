@@ -13,7 +13,7 @@ import ListBar from '../components/ListBar';
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
 
-const Home = () => {
+const Home = ({navigation}) => {
    return (
       <View>
          <View>
@@ -32,7 +32,9 @@ const Home = () => {
                </Container>
             </ImageBackground>
          </View>
-         <ListBar title="Car">
+         <ListBar
+            title="Car"
+            navigate={() => navigation.navigate('DetailCategory')}>
             <Image
                source={require('../assets/images/list-car1.png')}
                style={addStyles.imageList}
