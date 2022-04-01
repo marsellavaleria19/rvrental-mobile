@@ -3,6 +3,8 @@ import Payment from './src/screen/payment/Payment';
 import {NativeBaseProvider, extendTheme} from 'native-base';
 import {input, button} from './src/assets/styles/styleComponent';
 import stylePrimary from './src/assets/styles/stylePrimary';
+import {NavigationContainer} from '@react-navigation/native';
+import NavMainStack from './src/components/MainStack';
 
 const App = () => {
    const theme = extendTheme({
@@ -15,21 +17,13 @@ const App = () => {
                px: 5,
             },
          },
-         Button: {
-            baseStyle: {
-               backgroundColor: stylePrimary.secondaryColor,
-               fontSize: 24,
-               ...button,
-            },
-         },
       },
    });
    return (
       <NativeBaseProvider theme={theme}>
-         {/* <NavigationContainer>
+         <NavigationContainer>
             <NavMainStack />
-         </NavigationContainer> */}
-         <Payment />
+         </NavigationContainer>
       </NativeBaseProvider>
    );
 };
