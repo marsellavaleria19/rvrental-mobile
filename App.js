@@ -1,22 +1,25 @@
 import React from 'react';
 import Payment from './src/screen/payment/Payment';
-import {View} from 'react-native';
-import Login from './src/screen/auth/Login';
-import Signup from './src/screen/auth/Signup';
-import ForgotPassowrd from './src/screen/auth/ForgotPassword';
-import {NavigationContainer} from '@react-navigation/native';
-import AuthNav from './src/components/AuthNavigator';
-import NavMainStack from './src/components/MainStack';
-import Reservation from './src/screen/Reservation';
 import {NativeBaseProvider, extendTheme} from 'native-base';
+import {input, button} from './src/assets/styles/styleComponent';
+import stylePrimary from './src/assets/styles/stylePrimary';
 
 const App = () => {
    const theme = extendTheme({
       components: {
          Input: {
             baseStyle: {
-               rounded: 'md',
-               backgroundColor: '#DFDEDE',
+               backgroundColor: 'rgba(128, 128, 128, 0.2)',
+               fontSize: 16,
+               ...input,
+               px: 5,
+            },
+         },
+         Button: {
+            baseStyle: {
+               backgroundColor: stylePrimary.secondaryColor,
+               fontSize: 24,
+               ...button,
             },
          },
       },
