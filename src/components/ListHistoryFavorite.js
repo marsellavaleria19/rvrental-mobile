@@ -6,7 +6,15 @@ import LinearGradient from 'react-native-linear-gradient';
 // import { FontAwesome } from '@expo/vector-icons';
 // import {image} from '../assets/images/backgroud-image.png'
 
-const ListHistory = ({title, path, status, payment, reservationDate}) => {
+const ListHistoryFavorite = ({
+   title,
+   path,
+   status,
+   payment,
+   reservationDate,
+   isHistory,
+   location,
+}) => {
    return (
       <View>
          <View style={styles.layoutList}>
@@ -17,11 +25,15 @@ const ListHistory = ({title, path, status, payment, reservationDate}) => {
                <Text style={styles.titleDetail}>{title}</Text>
                <Text style={styles.descriptionDetail}>{reservationDate}</Text>
                <Text style={styles.priceDetail}>{payment}</Text>
-               <Text style={styles.statusAvailable}>{status}</Text>
+               {isHistory == true ? (
+                  <Text style={styles.statusAvailable}>{status}</Text>
+               ) : (
+                  <Text style={styles.statusAvailable}>{location}</Text>
+               )}
             </View>
          </View>
       </View>
    );
 };
 
-export default ListHistory;
+export default ListHistoryFavorite;
