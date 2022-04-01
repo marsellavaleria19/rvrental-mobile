@@ -4,7 +4,7 @@ import {styles} from '../assets/styles/styles';
 import Container from '../components/Container';
 import IconChevron from 'react-native-vector-icons/FontAwesome';
 import stylePrimary from '../assets/styles/stylePrimary';
-import ListHistory from '../components/ListHistory';
+import ListHistory from '../components/ListHistoryFavorite';
 import image from '../assets/images/background-reservation.png';
 import {ScrollView} from 'native-base';
 
@@ -40,6 +40,7 @@ const History = () => {
                   reservationDate="Jan 18 to 21 2021"
                   payment={245000}
                   status="Has been returned"
+                  isHistory={true}
                />
                <ListHistory
                   path={image}
@@ -47,6 +48,7 @@ const History = () => {
                   reservationDate="Jan 18 to 21 2021"
                   payment={245000}
                   status="Has been returned"
+                  isHistory={true}
                />
                <ListHistory
                   path={image}
@@ -54,6 +56,7 @@ const History = () => {
                   reservationDate="Jan 18 to 21 2021"
                   payment={245000}
                   status="Has been returned"
+                  isHistory={true}
                />
                <ListHistory
                   path={image}
@@ -61,6 +64,7 @@ const History = () => {
                   reservationDate="Jan 18 to 21 2021"
                   payment={245000}
                   status="Has been returned"
+                  isHistory={true}
                />
                <ListHistory
                   path={image}
@@ -68,6 +72,7 @@ const History = () => {
                   reservationDate="Jan 18 to 21 2021"
                   payment={245000}
                   status="Has been returned"
+                  isHistory={true}
                />
                <ListHistory
                   path={image}
@@ -75,6 +80,7 @@ const History = () => {
                   reservationDate="Jan 18 to 21 2021"
                   payment={245000}
                   status="Has been returned"
+                  isHistory={true}
                />
             </ScrollView>
          </Container>
