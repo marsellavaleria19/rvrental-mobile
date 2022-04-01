@@ -1,43 +1,29 @@
 import * as React from 'react';
 import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
-import {styles} from '../assets/styles/styles';
-import Container from '../components/Container';
-import Input from '../components/Input';
-import CButton from '../components/Button';
-import stylePrimary from '../assets/styles/stylePrimary';
-import {
-   input,
-   button,
-   rateLayout,
-   rateText,
-} from '../assets/styles/styleComponent';
-import {FontAwesome} from '@expo/vector-icons';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
-import MainBarTitle from '../components/mainBarTitle';
-import ListBar from '../components/ListBar';
-import imageBackground from '../assets/images/background-reservation.png';
-import {Ionicons} from '@expo/vector-icons';
-import {FontAwesome5} from '@expo/vector-icons';
+import {styles} from '../../assets/styles/styles';
+import Container from '../../components/Container';
+import CButton from '../../components/Button';
+import stylePrimary from '../../assets/styles/stylePrimary';
+import {rateLayout, rateText} from '../../assets/styles/styleComponent';
+import imageBackground from '../../assets/images/background-reservation.png';
+import Rate from '../../components/Rate';
+import {ScrollView} from 'native-base';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-const SuccessPayment = () => {
+const SuccessPayment = ({navigate}) => {
    return (
-      <View>
-         <Container>
-            <View style={addStyles.positionRate}>
-               <Image
-                  source={imageBackground}
-                  style={addStyles.imageBackground}
-               />
-               <View style={addStyles.rateLayout}>
-                  <Text style={rateText}>
-                     4.5
-                     <span>
-                        <FontAwesome name="star" style={styles.rateIcon} />
-                     </span>
-                  </Text>
-               </View>
-            </View>
+      <SafeAreaView>
+         <ScrollView>
             <Container>
+               <View style={addStyles.positionRate}>
+                  <Image
+                     source={imageBackground}
+                     style={addStyles.imageBackground}
+                  />
+                  <View style={addStyles.rateLayout}>
+                     <Rate rate={4.5} />
+                  </View>
+               </View>
                <View style={addStyles.layoutDescription}>
                   <Text style={addStyles.fontDescription}>2 Vespa</Text>
                   <Text style={addStyles.fontDescription}>
@@ -54,12 +40,10 @@ const SuccessPayment = () => {
                   <Text style={addStyles.fontUser}>
                      Jessica Jane (jjane@mail.com)
                   </Text>
-                  <Text style={addStyles.fontUser}>
-                     0890876789{' '}
-                     <span style={{color: 'green', fontWeight: 700}}>
-                        (active)
-                     </span>
-                  </Text>
+                  <View style={addStyles.layoutPhoneStatus}>
+                     <Text style={addStyles.fontUser}>0890876789 </Text>
+                     <Text style={addStyles.fontActive}>(active)</Text>
+                  </View>
                   <Text style={addStyles.fontUser}>Jakarta, Indonesia</Text>
                </View>
                <View style={addStyles.layoutButton}>
@@ -70,8 +54,8 @@ const SuccessPayment = () => {
                   </CButton>
                </View>
             </Container>
-         </Container>
-      </View>
+         </ScrollView>
+      </SafeAreaView>
    );
 };
 
@@ -84,6 +68,7 @@ const addStyles = StyleSheet.create({
    positionRate: {
       position: 'relative',
       height: 300,
+      marginTop: 40,
    },
    rateLayout: {
       position: 'absolute',
@@ -100,10 +85,17 @@ const addStyles = StyleSheet.create({
       marginBottom: 10,
    },
    line: {
-      borderBottom: '1px solid #DFDEDE',
+      width: '100%',
+      height: 2,
+      backgroundColor: '#DFDEDE',
+      marginTop: 16,
    },
    layoutFontUser: {
       marginTop: 29,
+   },
+   layoutPhoneStatus: {
+      flexDirection: 'row',
+      alignItems: 'center',
    },
    fontUser: {
       fontSize: 16,
@@ -112,6 +104,8 @@ const addStyles = StyleSheet.create({
    },
    fontActive: {
       color: 'green',
+      fontSize: 16,
+      fontWeight: stylePrimary.bold,
    },
    layoutButton: {
       marginTop: 30,
@@ -126,7 +120,8 @@ const addStyles = StyleSheet.create({
    },
    fontButtonPayment: {
       fontSize: 24,
-      fontWeight: 700,
+      fontWeight: stylePrimary.bold,
+      color: stylePrimary.mainColor,
    },
 });
 

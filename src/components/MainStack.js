@@ -5,6 +5,8 @@ import Reservation from '../screen/Reservation';
 import Payment from '../screen/payment/Payment';
 import BottomTabNav from './BottomNavigation';
 import PaymentDetail from '../screen/payment/PaymentDetail';
+import FinishPayment from '../screen/payment/FinishPayment';
+import SuccessPayment from '../screen/payment/SuccessPayment';
 const NavMainStack = createNativeStackNavigator();
 
 const MainStackNav = () => {
@@ -23,10 +25,24 @@ const MainStackNav = () => {
          <NavMainStack.Screen name="Payment" component={Payment} />
          <NavMainStack.Screen
             options={{
-               title: 'Payment Detail',
+               title: 'Payment',
             }}
             name="PaymentDetail"
             component={PaymentDetail}
+         />
+         <NavMainStack.Screen
+            options={{
+               title: 'Payment',
+            }}
+            name="FinishPayment"
+            component={FinishPayment}
+         />
+         <NavMainStack.Screen
+            options={{
+               title: 'See history',
+            }}
+            name="SuccessPayment"
+            component={SuccessPayment}
          />
          {/* <NavMainStack.Screen name="Reservation" component={Reservation} />
          <NavMainStack.Screen name="PaymentDetail" component={PaymentDetail} />
