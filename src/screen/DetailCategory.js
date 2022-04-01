@@ -1,19 +1,13 @@
 import * as React from 'react';
 import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
-import {styles} from '../assets/styles/styles';
 import Container from '../components/Container';
-import Input from '../components/Input';
-import CButton from '../components/Button';
-import stylePrimary from '../assets/styles/stylePrimary';
 import {input, button} from '../assets/styles/styleComponent';
-import {FontAwesome} from '@expo/vector-icons';
-import MainBarTitle from '../components/mainBarTitle';
 import ListDetail from '../components/ListDetail';
 // import {image} from '../assets/images/backgroud-image.png'
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
 
-const DetailCategory = () => {
+const DetailCategory = ({navigation}) => {
    return (
       <Container>
          <ListDetail
@@ -24,6 +18,7 @@ const DetailCategory = () => {
             status="Avaliable"
             price="Rp. 140.000"
             rate="4.5"
+            navigate={() => navigation.navigate('Reservation')}
          />
          <ListDetail
             path={require('../assets/images/list-car1.png')}
@@ -51,7 +46,7 @@ const addStyles = StyleSheet.create({
    input: {
       marginTop: 18,
       fontSize: 14,
-      fontWeight: 700,
+      fontWeight: '700',
       backgroundColor: 'rgba(60,60,60, 0.5)',
       ...input,
    },
@@ -61,7 +56,7 @@ const addStyles = StyleSheet.create({
    icon: {
       position: 'absolute',
       color: 'white',
-      fontWeight: 700,
+      fontWeight: '700',
       fontSize: 20,
       right: 20,
       marginTop: 20,

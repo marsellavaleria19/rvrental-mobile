@@ -1,14 +1,16 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {styles} from '../assets/styles/styles';
 import stylePrimary from '../assets/styles/stylePrimary';
 // import {image} from '../assets/images/backgroud-image.png'
 
-const MainBarTitle = ({title, link, children}) => {
+const MainBarTitle = ({title, link, children, navigate}) => {
    return (
       <View style={addStyles.mainBarTitle}>
          <Text style={addStyles.titleCategory}>{title}</Text>
-         <Text style={addStyles.link}>View More</Text>
+         <TouchableOpacity onPress={navigate}>
+            <Text style={addStyles.link}>View More</Text>
+         </TouchableOpacity>
       </View>
    );
 };
