@@ -5,6 +5,7 @@ import {input, button} from './src/assets/styles/styleComponent';
 import stylePrimary from './src/assets/styles/stylePrimary';
 import {NavigationContainer} from '@react-navigation/native';
 import NavMainStack from './src/components/MainStack';
+import History from './src/screen/History';
 
 const App = () => {
    const theme = extendTheme({
