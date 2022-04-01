@@ -1,11 +1,11 @@
 import React from 'react';
 import {Box, FormControl, Input, WarningOutlineIcon} from 'native-base';
 
-const BInput = ({classInput, placeholder, errorMessage, children}) => {
+const NBInput = ({classInput, placeholder, errorMessage, children}) => {
    return (
       <Box>
          <FormControl>
-            <Input placeholder={placeholder} />
+            <Input placeholder={placeholder} mt="4" />
             {/* <FormControl.ErrorMessage
                leftIcon={<WarningOutlineIcon size="xs" />}>
                {errorMessage}
@@ -15,4 +15,4 @@ const BInput = ({classInput, placeholder, errorMessage, children}) => {
    );
 };
 
-export default BInput;
+export default NBInput;
