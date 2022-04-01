@@ -1,5 +1,12 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
+import {
+   Text,
+   View,
+   StyleSheet,
+   ImageBackground,
+   Image,
+   TouchableOpacity,
+} from 'react-native';
 import {styles} from '../assets/styles/styles';
 import Container from '../components/Container';
 import Input from '../components/Input';
@@ -27,7 +34,10 @@ const Home = ({navigation}) => {
                         classInput={addStyles.input}
                         placeholder="Search vehicle"
                      />
-                     <IconSearch name="search" style={addStyles.icon} />
+                     <TouchableOpacity
+                        onPress={() => navigation.navigate('Filter')}>
+                        <IconSearch name="search" style={addStyles.icon} />
+                     </TouchableOpacity>
                   </View>
                </Container>
             </ImageBackground>
@@ -86,7 +96,6 @@ const addStyles = StyleSheet.create({
       fontWeight: '700',
       fontSize: 20,
       right: 20,
-      marginTop: 20,
    },
    layoutSearch: {
       position: 'relative',

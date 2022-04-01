@@ -7,6 +7,7 @@ import BottomTabNav from './BottomNavigation';
 import PaymentDetail from '../screen/payment/PaymentDetail';
 import FinishPayment from '../screen/payment/FinishPayment';
 import SuccessPayment from '../screen/payment/SuccessPayment';
+
 const NavMainStack = createNativeStackNavigator();
 
 const MainStackNav = () => {
