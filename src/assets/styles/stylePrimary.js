@@ -13,5 +13,9 @@ const stylePrimary = {
 
    baseButtonHeight: 51,
    baseButtonWidth: '100%',
+
+   // Font Weight
+   bold: '700',
+   bolder: '900',
 };
 export default stylePrimary;

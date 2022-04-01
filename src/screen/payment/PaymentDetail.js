@@ -9,7 +9,7 @@ import imageBackground from '../../assets/images/background-reservation.png';
 import Rate from '../../components/Rate';
 import IconInfo from 'react-native-vector-icons/Ionicons';
 
-const PaymentDetail = () => {
+const PaymentDetail = ({navigation}) => {
    return (
       <View>
          <Container>
@@ -43,7 +43,8 @@ const PaymentDetail = () => {
             <View style={addStyles.layoutButton}>
                <CButton
                   classButton={styles.buttonPayment}
-                  textButton={styles.fontButtonPayment}>
+                  textButton={styles.fontButtonPayment}
+                  press={() => navigation.navigate('FinishPayment')}>
                   Get Payment Code
                </CButton>
             </View>
