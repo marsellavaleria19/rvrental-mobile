@@ -12,11 +12,14 @@ import {stylePrimary} from '../assets/styles/stylePrimary';
 
 const CButton = ({classButton, press, textButton, children}) => {
    return (
-      <TouchableOpacity onPress={press}>
-         <View style={classButton}>
-            <Text style={textButton}>{children}</Text>
-         </View>
-      </TouchableOpacity>
+      <View style={classButton}>
+         <Text style={textButton}>{children}</Text>
+      </View>
+      // <TouchableOpacity onPress={press}>
+      //    <View style={classButton}>
+      //       <Text style={textButton}>{children}</Text>
+      //    </View>
+      // </TouchableOpacity>
    );
 };
 

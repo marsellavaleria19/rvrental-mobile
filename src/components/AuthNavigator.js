@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../screen/auth/Login';
 import Signup from '../screen/auth/Signup';
 import ForgotPassowrd from '../screen/auth/ForgotPassword';
+import VerifyUser from '../screen/auth/VerifyUser';
 
 const NavAuthStack = createNativeStackNavigator();
 // const NavHomeStack = createNativeStackNavigator();
@@ -31,6 +32,13 @@ const AuthNavigator = () => {
                headerShown: false,
             }}
             component={ForgotPassowrd}
+         />
+         <NavAuthStack.Screen
+            name="VerifyUser"
+            options={{
+               headerShown: false,
+            }}
+            component={VerifyUser}
          />
       </NavAuthStack.Navigator>
    );

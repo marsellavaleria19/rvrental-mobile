@@ -1,13 +1,13 @@
 import React from 'react';
-import Payment from './src/screen/payment/Payment';
 import {NativeBaseProvider, extendTheme} from 'native-base';
-import {input, button} from './src/assets/styles/styleComponent';
-import stylePrimary from './src/assets/styles/stylePrimary';
+import {input, button} from '../assets/styles/styleComponent';
+import stylePrimary from '../assets/styles/stylePrimary';
 import {NavigationContainer} from '@react-navigation/native';
-import NavMainStack from './src/components/MainStack';
-import History from './src/screen/History';
+import NavMainStack from '../components/MainStack';
+import AuthNavigator from '../components/AuthNavigator';
+import VerifyUser from './auth/VerifyUser';
 
-const App = () => {
+const Main = () => {
    const theme = extendTheme({
       components: {
          Input: {
@@ -68,10 +68,10 @@ const App = () => {
    return (
       <NativeBaseProvider theme={theme}>
          <NavigationContainer>
-            <NavMainStack />
+            <AuthNavigator />
          </NavigationContainer>
       </NativeBaseProvider>
    );
 };
 
-export default App;
+export default Main;

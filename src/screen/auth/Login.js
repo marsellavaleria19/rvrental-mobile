@@ -13,8 +13,12 @@ import CButton from '../../components/Button';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import {input, button} from '../../assets/styles/styleComponent';
 import image from '../../assets/images/backgroud-image.png';
+import {useSelector} from 'react-redux';
+import {NBAlert} from '../../components/NBAlert';
 
 const Login = ({navigation}) => {
+   const {auth} = useSelector(state => state);
+
    return (
       <View style={styles.background}>
          <ImageBackground
@@ -24,10 +28,17 @@ const Login = ({navigation}) => {
             <Container>
                <Text style={addStyles.textTitle}>LET’S EXPLORE THE WORLD</Text>
                <View style={addStyles.layoutForm}>
+                  {auth.isVerify && (
+                     <NBAlert status="success" message={auth.message} />
+                  )}
                   <Input classInput={addStyles.input} placeholder="Username" />
-                  <Input classInput={addStyles.input} placeholder="Password" />
+                  <Input
+                     classInput={addStyles.input}
+                     placeholder="Password"
+                     secureTextEntry={true}
+                  />
                   <TouchableOpacity
-                     omPress={() => navigation.navigate('ForgotPassword')}>
+                     onPress={() => navigation.navigate('ForgotPassword')}>
                      <Text style={addStyles.text}>Forgot Password?</Text>
                   </TouchableOpacity>
                   <CButton

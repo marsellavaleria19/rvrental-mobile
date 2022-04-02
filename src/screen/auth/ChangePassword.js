@@ -12,32 +12,33 @@ import Input from '../../components/Input';
 import CButton from '../../components/Button';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import {input, button} from '../../assets/styles/styleComponent';
-import image from '../../assets/images/background-signup.png';
+import image from '../../assets/images/background-forgot-password.png';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {useDispatch, useSelector} from 'react-redux';
 import {useState, useEffect} from 'react';
-import {useDispatch} from 'react-redux';
-import {registrationProcess} from '../../redux/actions/auth';
+import {confirmForgotPasswordProcess} from '../../redux/actions/auth';
 
-const Signup = ({navigation}) => {
+const ChangePassowrd = ({navigation}) => {
    const [email, setEmail] = useState('');
-   const [username, setUsername] = useState('');
-   const [name, setName] = useState('');
-   const [mobileNumber, setMobileNumber] = useState('');
    const [password, setPassword] = useState('');
+   const [confirmPassword, setConfirmPassword] = useState('');
+   const [code, setCode] = useState('');
    const dispatch = useDispatch();
    const [success, setSuccess] = useState(false);
 
    useEffect(() => {
       if (success) {
-         navigation.navigate('VerifyUser');
+         navigation.navigate('Login');
       }
-   }, [navigation, success]);
+   }, [success]);
 
-   const signupHandle = () => {
+   const changePasswordHandle = () => {
       dispatch(
-         registrationProcess(name, username, email, password, mobileNumber),
+         confirmForgotPasswordProcess(email, code, password, confirmPassword),
       );
       setSuccess(true);
    };
+
    return (
       <View style={styles.background}>
          <ImageBackground
@@ -45,58 +46,50 @@ const Signup = ({navigation}) => {
             resizeMode="cover"
             style={styles.image}>
             <Container>
-               <Text style={addStyles.textTitle}>LET’S HAVE SOME RIDE</Text>
-               <View style={addStyles.layoutForm}>
+               <TouchableOpacity
+                  onPress={() => navigation.navigate('Login')}
+                  style={addStyles.layoutBack}>
+                  <Icon name="chevron-left" style={addStyles.iconBack} />
+                  <Text style={addStyles.textBack}>Back</Text>
+               </TouchableOpacity>
+               <Text style={addStyles.textTitle}>
+                  THAT’S OKAY, WE GOT YOUR BACK
+               </Text>
+               <View>
                   <Input
                      classInput={addStyles.input}
-                     placeholder="Name"
-                     secure={false}
-                     value={name}
-                     change={setName}
-                  />
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Email"
-                     secure={false}
                      value={email}
                      change={setEmail}
+                     placeholder="Email"
                   />
                   <Input
                      classInput={addStyles.input}
-                     placeholder="Username"
-                     secure={false}
-                     value={username}
-                     change={setUsername}
-                  />
-
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Mobile phone"
-                     secure={false}
-                     value={mobileNumber}
-                     change={setMobileNumber}
-                  />
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Password"
+                     value={code}
+                     change={setCode}
                      secure={true}
+                     placeholder="Code"
+                  />
+                  <Input
+                     classInput={addStyles.input}
                      value={password}
                      change={setPassword}
+                     secure={true}
+                     placeholder="Password"
                   />
-                  <TouchableOpacity onPress={signupHandle}>
+                  <Input
+                     classInput={addStyles.input}
+                     value={confirmPassword}
+                     change={setConfirmPassword}
+                     secure={true}
+                     placeholder="Confirm Password"
+                  />
+                  <TouchableOpacity onPress={changePasswordHandle}>
                      <CButton
-                        classButton={addStyles.buttonSignup}
-                        textButton={addStyles.textSignup}>
-                        Signup
+                        classButton={addStyles.buttonForgotPassword}
+                        textButton={addStyles.textForgotPassword}>
+                        Change Passowrd
                      </CButton>
                   </TouchableOpacity>
-                  <View style={addStyles.layoutLinkLogin}>
-                     <Text style={addStyles.text}>Already have account?</Text>
-                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Login')}>
-                        <Text style={addStyles.textLink}>Login now</Text>
-                     </TouchableOpacity>
-                  </View>
                </View>
             </Container>
          </ImageBackground>
@@ -115,14 +108,13 @@ const addStyles = StyleSheet.create({
       marginBottom: 100,
    },
    input: {
-      marginTop: 18,
       backgroundColor: 'rgba(180, 180, 180, 0.5)',
       fontSize: stylePrimary.baseFontSize,
       ...input,
    },
-   layoutLinkLogin: {
-      marginTop: 40,
-      justifyContent: 'center',
+   layoutLinkForgotPassword: {
+      marginTop: 100,
+      textAlign: 'center',
       flexDirection: 'row',
    },
    text: {
@@ -130,32 +122,56 @@ const addStyles = StyleSheet.create({
       fontSize: 14,
       marginTop: 10,
       marginBottom: 30,
+      textAlign: 'center',
    },
    textLink: {
       fontWeight: '700',
       color: stylePrimary.baseFontColor,
       fontSize: 14,
-      marginTop: 10,
-      marginBottom: 30,
-      marginLeft: 5,
    },
    layoutForm: {
-      marginTop: 50,
+      marginTop: 10,
    },
-   buttonSignup: {
+   buttonForgotPassword: {
       backgroundColor: stylePrimary.secondaryColor,
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 50,
+      marginTop: 31,
       ...button,
    },
-   textSignup: {
+   textForgotPassword: {
       color: stylePrimary.mainColor,
       fontWeight: '900',
       fontSize: 18,
+   },
+   buttonResendCode: {
+      backgroundColor: 'white',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 10,
+      ...button,
+   },
+   textResendCode: {
+      color: stylePrimary.mainColor,
+      fontWeight: '900',
+      fontSize: 18,
+   },
+   layoutBack: {
+      flexDirection: 'row',
+      alignItems: 'center',
+   },
+   iconBack: {
+      color: '#FFFFFF',
+      fontSize: 22,
+      marginRight: 30,
+   },
+   textBack: {
+      color: 'white',
+      fontSize: 18,
+      fontWeight: '700',
    },
 });
 
 export {addStyles};
 
-export default Signup;
+export default ChangePassowrd;
