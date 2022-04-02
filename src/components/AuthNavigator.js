@@ -5,7 +5,7 @@ import Login from '../screen/auth/Login';
 import Signup from '../screen/auth/Signup';
 import ForgotPassowrd from '../screen/auth/ForgotPassword';
 import VerifyUser from '../screen/auth/VerifyUser';
-
+import ChangePassowrd from '../screen/auth/ChangePassword';
 const NavAuthStack = createNativeStackNavigator();
 // const NavHomeStack = createNativeStackNavigator();
 
@@ -39,6 +39,13 @@ const AuthNavigator = () => {
                headerShown: false,
             }}
             component={VerifyUser}
+         />
+         <NavAuthStack.Screen
+            name="ChangePassword"
+            options={{
+               headerShown: false,
+            }}
+            component={ChangePassowrd}
          />
       </NavAuthStack.Navigator>
    );

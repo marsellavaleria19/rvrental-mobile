@@ -17,8 +17,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'react-redux';
 import {useState, useEffect} from 'react';
 import {confirmForgotPasswordProcess} from '../../redux/actions/auth';
+import {NBAlert} from '../../components/NBAlert';
 
 const ChangePassowrd = ({navigation}) => {
+   const {auth} = useSelector(state => state);
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,10 +29,11 @@ const ChangePassowrd = ({navigation}) => {
    const [success, setSuccess] = useState(false);
 
    useEffect(() => {
-      if (success) {
+      if (auth.message !== null && success) {
          navigation.navigate('Login');
       }
-   }, [success]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [auth.message]);
 
    const changePasswordHandle = () => {
       dispatch(
@@ -56,33 +59,47 @@ const ChangePassowrd = ({navigation}) => {
                   THAT’S OKAY, WE GOT YOUR BACK
                </Text>
                <View>
-                  <Input
-                     classInput={addStyles.input}
-                     value={email}
-                     change={setEmail}
-                     placeholder="Email"
-                  />
-                  <Input
-                     classInput={addStyles.input}
-                     value={code}
-                     change={setCode}
-                     secure={true}
-                     placeholder="Code"
-                  />
-                  <Input
-                     classInput={addStyles.input}
-                     value={password}
-                     change={setPassword}
-                     secure={true}
-                     placeholder="Password"
-                  />
-                  <Input
-                     classInput={addStyles.input}
-                     value={confirmPassword}
-                     change={setConfirmPassword}
-                     secure={true}
-                     placeholder="Confirm Password"
-                  />
+                  {auth.isError && (
+                     <NBAlert status="error" message={auth.errMessage} />
+                  )}
+                  {auth.isSubmitEmail && (
+                     <NBAlert status="success" message={auth.message} />
+                  )}
+                  <View style={addStyles.layoutInput}>
+                     <Input
+                        classInput={addStyles.input}
+                        value={email}
+                        change={setEmail}
+                        placeholder="Email"
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <Input
+                        classInput={addStyles.input}
+                        value={code}
+                        change={setCode}
+                        placeholder="Code"
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <Input
+                        classInput={addStyles.input}
+                        value={password}
+                        change={setPassword}
+                        secure={true}
+                        placeholder="Password"
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <Input
+                        classInput={addStyles.input}
+                        value={confirmPassword}
+                        change={setConfirmPassword}
+                        secure={true}
+                        placeholder="Confirm Password"
+                     />
+                  </View>
+
                   <TouchableOpacity onPress={changePasswordHandle}>
                      <CButton
                         classButton={addStyles.buttonForgotPassword}
@@ -107,8 +124,11 @@ const addStyles = StyleSheet.create({
       marginTop: 50,
       marginBottom: 100,
    },
+   layoutInput: {
+      marginBottom: 18,
+   },
    input: {
-      backgroundColor: 'rgba(180, 180, 180, 0.5)',
+      backgroundColor: 'rgba(180, 180, 180, 0.6)',
       fontSize: stylePrimary.baseFontSize,
       ...input,
    },

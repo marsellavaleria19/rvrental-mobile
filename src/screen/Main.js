@@ -5,7 +5,7 @@ import stylePrimary from '../assets/styles/stylePrimary';
 import {NavigationContainer} from '@react-navigation/native';
 import NavMainStack from '../components/MainStack';
 import AuthNavigator from '../components/AuthNavigator';
-import VerifyUser from './auth/VerifyUser';
+import ChangePassword from './auth/ChangePassword';
 
 const Main = () => {
    const theme = extendTheme({

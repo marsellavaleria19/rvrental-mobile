@@ -128,6 +128,9 @@ const auth = (state = dataLogin, action) => {
          state.isVerify = false;
          return {...state};
       }
+      case 'CLEAR_AUTH': {
+         return dataLogin;
+      }
       default: {
          return {...state};
       }
