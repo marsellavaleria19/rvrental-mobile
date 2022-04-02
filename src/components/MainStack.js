@@ -7,6 +7,7 @@ import BottomTabNav from './BottomNavigation';
 import PaymentDetail from '../screen/payment/PaymentDetail';
 import FinishPayment from '../screen/payment/FinishPayment';
 import SuccessPayment from '../screen/payment/SuccessPayment';
+import UpdateProfile from '../screen/profile/UpdateProfile';
 
 const NavMainStack = createNativeStackNavigator();
 
@@ -44,6 +45,13 @@ const MainStackNav = () => {
             }}
             name="SuccessPayment"
             component={SuccessPayment}
+         />
+         <NavMainStack.Screen
+            options={{
+               title: 'Update Profile',
+            }}
+            name="UpdateProfile"
+            component={UpdateProfile}
          />
          {/* <NavMainStack.Screen name="Reservation" component={Reservation} />
          <NavMainStack.Screen name="PaymentDetail" component={PaymentDetail} />

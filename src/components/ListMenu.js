@@ -1,14 +1,16 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import IconChevron from 'react-native-vector-icons/FontAwesome';
 import stylePrimary from '../assets/styles/stylePrimary';
 
-const ListMenu = ({title, children}) => {
+const ListMenu = ({title, press, children}) => {
    return (
-      <View style={addStyles.listMenu}>
-         <Text style={addStyles.text}>{title}</Text>
-         <IconChevron name="chevron-right" style={addStyles.iconChevron} />
-      </View>
+      <TouchableOpacity onPress={press}>
+         <View style={addStyles.listMenu}>
+            <Text style={addStyles.text}>{title}</Text>
+            <IconChevron name="chevron-right" style={addStyles.iconChevron} />
+         </View>
+      </TouchableOpacity>
    );
 };
 

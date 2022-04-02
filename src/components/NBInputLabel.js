@@ -7,17 +7,21 @@ import {
    WarningOutlineIcon,
 } from 'native-base';
 
-const NBInput = ({
+const NBInputLabel = ({
    classInput,
    placeholder,
    classVariant,
+   label,
    errorMessage,
    children,
 }) => {
    return (
       <Box>
          <FormControl>
-            <Input placeholder={placeholder} mt="4" variant={classVariant} />
+            <FormControl.Label variant={classVariant}>
+               {label}
+            </FormControl.Label>
+            <Input placeholder={placeholder} variant={classVariant} />
             {/* <FormControl.ErrorMessage
                leftIcon={<WarningOutlineIcon size="xs" />}>
                {errorMessage}
@@ -27,4 +31,4 @@ const NBInput = ({
    );
 };
 
-export default NBInput;
+export default NBInputLabel;

@@ -5,7 +5,7 @@ import Container from '../../components/Container';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import CButton from '../../components/Button';
 
-const ProfileMenuList = () => {
+const ProfileMenuList = ({navigation}) => {
    return (
       <View style={addStyles.layoutProfileMenu}>
          <ScrollView>
@@ -13,7 +13,10 @@ const ProfileMenuList = () => {
                <ListMenu title="Your Favorite" />
                <ListMenu title="FAQ" />
                <ListMenu title="Help" />
-               <ListMenu title="Update Profile" />
+               <ListMenu
+                  title="Update Profile"
+                  press={() => navigation.navigate('UpdateProfile')}
+               />
                <View style={addStyles.layoutButton}>
                   <CButton
                      classButton={addStyles.buttonProfile}
