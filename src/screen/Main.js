@@ -6,69 +6,17 @@ import {NavigationContainer} from '@react-navigation/native';
 import NavMainStack from '../components/MainStack';
 import AuthNavigator from '../components/AuthNavigator';
 import ChangePassword from './auth/ChangePassword';
+import {theme} from '../assets/styles/themeNativeBase';
+import {useSelector} from 'react-redux';
+import MainStackNav from '../components/MainStack';
 
 const Main = () => {
-   const theme = extendTheme({
-      components: {
-         Input: {
-            baseStyle: {
-               backgroundColor: 'rgba(128, 128, 128, 0.2)',
-               fontSize: 16,
-               ...input,
-               px: 5,
-            },
-            variants: {
-               profile: {
-                  backgroundColor: 'rgba(52, 52, 52, 0.0)',
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#9F9F9F',
-                  _text: {
-                     color: 'black',
-                  },
-               },
-            },
-         },
-         FormControlLabel: {
-            baseStyle: {
-               _text: {
-                  fontSize: 12,
-                  color: '#B8B8B8',
-                  fontWeight: 700,
-               },
-            },
-            variants: {
-               profile: {
-                  px: 5,
-               },
-            },
-         },
-         TextArea: {
-            variants: {
-               profile: {
-                  backgroundColor: 'rgba(52, 52, 52, 0.0)',
-                  border: 'none',
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#9F9F9F',
-                  _text: {
-                     color: 'black',
-                  },
-               },
-            },
-         },
-         Radio: {
-            baseStyle: {
-               _text: {
-                  color: stylePrimary.mainColor,
-                  fontSize: 10,
-               },
-            },
-         },
-      },
-   });
+   const {auth} = useSelector(state => state);
+
    return (
       <NativeBaseProvider theme={theme}>
          <NavigationContainer>
-            <AuthNavigator />
+            {auth.token == null ? <AuthNavigator /> : <MainStackNav />}
          </NavigationContainer>
       </NativeBaseProvider>
    );

@@ -1,11 +1,31 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {
+   View,
+   Text,
+   StyleSheet,
+   ScrollView,
+   TouchableOpacity,
+} from 'react-native';
 import ListMenu from '../../components/ListMenu';
 import Container from '../../components/Container';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import CButton from '../../components/Button';
+import {useDispatch, useSelector} from 'react-redux';
 
 const ProfileMenuList = ({navigation}) => {
+   const {auth} = useSelector(state => state);
+   const dispatch = useDispatch();
+
+   const logoutHandle = () => {
+      dispatch({
+         type: 'LOGOUT',
+      });
+
+      if (auth.token == null) {
+         navigation.navigate('Login');
+      }
+   };
+
    return (
       <View style={addStyles.layoutProfileMenu}>
          <ScrollView>
@@ -18,11 +38,13 @@ const ProfileMenuList = ({navigation}) => {
                   press={() => navigation.navigate('UpdateProfile')}
                />
                <View style={addStyles.layoutButton}>
-                  <CButton
-                     classButton={addStyles.buttonProfile}
-                     textButton={addStyles.fontButtonProfile}>
-                     Logout
-                  </CButton>
+                  <TouchableOpacity onPress={logoutHandle}>
+                     <CButton
+                        classButton={addStyles.buttonProfile}
+                        textButton={addStyles.fontButtonProfile}>
+                        Logout
+                     </CButton>
+                  </TouchableOpacity>
                </View>
             </Container>
          </ScrollView>

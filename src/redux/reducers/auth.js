@@ -123,7 +123,6 @@ const auth = (state = dataLogin, action) => {
       }
       case 'LOGOUT': {
          state.token = null;
-         window.localStorage.removeItem('token');
          state.isAuthenticated = false;
          state.isVerify = false;
          return {...state};
