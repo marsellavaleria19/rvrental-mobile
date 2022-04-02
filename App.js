@@ -6,71 +6,27 @@ import stylePrimary from './src/assets/styles/stylePrimary';
 import {NavigationContainer} from '@react-navigation/native';
 import NavMainStack from './src/components/MainStack';
 import History from './src/screen/History';
+import Main from './src/screen/Main';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+import ReduxStore from './src/redux/store';
 
 const App = () => {
-   const theme = extendTheme({
-      components: {
-         Input: {
-            baseStyle: {
-               backgroundColor: 'rgba(128, 128, 128, 0.2)',
-               fontSize: 16,
-               ...input,
-               px: 5,
-            },
-            variants: {
-               profile: {
-                  backgroundColor: 'rgba(52, 52, 52, 0.0)',
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#9F9F9F',
-                  _text: {
-                     color: 'black',
-                  },
-               },
-            },
-         },
-         FormControlLabel: {
-            baseStyle: {
-               _text: {
-                  fontSize: 12,
-                  color: '#B8B8B8',
-                  fontWeight: 700,
-               },
-            },
-            variants: {
-               profile: {
-                  px: 5,
-               },
-            },
-         },
-         TextArea: {
-            variants: {
-               profile: {
-                  backgroundColor: 'rgba(52, 52, 52, 0.0)',
-                  border: 'none',
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#9F9F9F',
-                  _text: {
-                     color: 'black',
-                  },
-               },
-            },
-         },
-         Radio: {
-            baseStyle: {
-               _text: {
-                  color: stylePrimary.mainColor,
-                  fontSize: 10,
-               },
-            },
-         },
-      },
-   });
+   const {store, persistor} = ReduxStore();
+
    return (
-      <NativeBaseProvider theme={theme}>
-         <NavigationContainer>
-            <NavMainStack />
-         </NavigationContainer>
-      </NativeBaseProvider>
+      <>
+         <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+               <Main />
+            </PersistGate>
+         </Provider>
+      </>
+      // <NativeBaseProvider theme={theme}>
+      //    <NavigationContainer>
+      //       <NavMainStack />
+      //    </NavigationContainer>
+      // </NativeBaseProvider>
    );
 };
 

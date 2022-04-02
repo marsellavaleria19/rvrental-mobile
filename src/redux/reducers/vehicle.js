@@ -1,0 +1,50 @@
+const dataVehicle = {
+   listVehicle: [],
+   pageInfo: {},
+   isLoading: false,
+   error: false,
+};
+
+const vehicle = (state = dataVehicle, action) => {
+   switch (action.type) {
+      case 'GET_VEHICLE_PENDING': {
+         state.isLoading = true;
+         return {...state};
+      }
+      case 'GET_VEHICLE_FULFILLED': {
+         const {data} = action.payload;
+         state.listVehicle = data.results;
+         state.pageInfo = data.pageInfo;
+         state.isLoading = false;
+         return {...state};
+      }
+      case 'GET_VEHICLE_REJECTED': {
+         state.isLoading = false;
+         state.isError = true;
+         return {...state};
+      }
+
+      case 'GET_VEHICLE_NEXT_PENDING': {
+         state.isLoading = true;
+         return {...state};
+      }
+      case 'GET_VEHICLE_NEXT_FULFILLED': {
+         const {data} = action.payload;
+         state.listVehicle = [...state.listVehicle, ...data.results];
+         state.pageInfo = data.pageInfo;
+         state.isLoading = false;
+         return {...state};
+      }
+      case 'GET_VEHICLE_NEXT_REJECTED': {
+         state.isLoading = false;
+         state.isError = true;
+         return {...state};
+      }
+
+      default: {
+         return {...state};
+      }
+   }
+};
+
+export default vehicle;

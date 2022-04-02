@@ -14,26 +14,31 @@ import stylePrimary from '../../assets/styles/stylePrimary';
 import {input, button} from '../../assets/styles/styleComponent';
 import image from '../../assets/images/background-forgot-password.png';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {forgotPasswordProcess} from '../../redux/actions/auth';
+import {useState, useEffect} from 'react';
+import {confirmForgotPasswordProcess} from '../../redux/actions/auth';
 import {NBAlert} from '../../components/NBAlert';
 
-const ForgotPassowrd = ({navigation}) => {
+const ChangePassowrd = ({navigation}) => {
    const {auth} = useSelector(state => state);
    const [email, setEmail] = useState('');
+   const [password, setPassword] = useState('');
+   const [confirmPassword, setConfirmPassword] = useState('');
+   const [code, setCode] = useState('');
    const dispatch = useDispatch();
    const [success, setSuccess] = useState(false);
 
    useEffect(() => {
-      if (auth.message !== '' && auth.isSubmitEmail == true && success) {
-         navigation.navigate('ChangePassword');
+      if (auth.message !== null && success) {
+         navigation.navigate('Login');
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth.message]);
 
-   const forgotPasswordHandle = () => {
-      dispatch(forgotPasswordProcess(email));
+   const changePasswordHandle = () => {
+      dispatch(
+         confirmForgotPasswordProcess(email, code, password, confirmPassword),
+      );
       setSuccess(true);
    };
 
@@ -53,33 +58,53 @@ const ForgotPassowrd = ({navigation}) => {
                <Text style={addStyles.textTitle}>
                   THAT’S OKAY, WE GOT YOUR BACK
                </Text>
-               <View style={addStyles.layoutLinkForgotPassword}>
-                  <Text style={addStyles.text}>
-                     Enter your email to get reset password code.
-                  </Text>
-               </View>
                <View>
                   {auth.isError && (
                      <NBAlert status="error" message={auth.errMessage} />
                   )}
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Enter your email address"
-                     value={email}
-                     change={setEmail}
-                  />
-                  <TouchableOpacity onPress={forgotPasswordHandle}>
+                  {auth.isSubmitEmail && (
+                     <NBAlert status="success" message={auth.message} />
+                  )}
+                  <View style={addStyles.layoutInput}>
+                     <Input
+                        classInput={addStyles.input}
+                        value={email}
+                        change={setEmail}
+                        placeholder="Email"
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <Input
+                        classInput={addStyles.input}
+                        value={code}
+                        change={setCode}
+                        placeholder="Code"
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <Input
+                        classInput={addStyles.input}
+                        value={password}
+                        change={setPassword}
+                        secure={true}
+                        placeholder="Password"
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <Input
+                        classInput={addStyles.input}
+                        value={confirmPassword}
+                        change={setConfirmPassword}
+                        secure={true}
+                        placeholder="Confirm Password"
+                     />
+                  </View>
+
+                  <TouchableOpacity onPress={changePasswordHandle}>
                      <CButton
                         classButton={addStyles.buttonForgotPassword}
                         textButton={addStyles.textForgotPassword}>
-                        Send Code
-                     </CButton>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={forgotPasswordHandle}>
-                     <CButton
-                        classButton={addStyles.buttonResendCode}
-                        textButton={addStyles.textResendCode}>
-                        Resend Code
+                        Change Passowrd
                      </CButton>
                   </TouchableOpacity>
                </View>
@@ -99,8 +124,11 @@ const addStyles = StyleSheet.create({
       marginTop: 50,
       marginBottom: 100,
    },
+   layoutInput: {
+      marginBottom: 18,
+   },
    input: {
-      backgroundColor: 'rgba(180, 180, 180, 0.5)',
+      backgroundColor: 'rgba(180, 180, 180, 0.6)',
       fontSize: stylePrimary.baseFontSize,
       ...input,
    },
@@ -166,4 +194,4 @@ const addStyles = StyleSheet.create({
 
 export {addStyles};
 
-export default ForgotPassowrd;
+export default ChangePassowrd;

@@ -14,28 +14,27 @@ import stylePrimary from '../../assets/styles/stylePrimary';
 import {input, button} from '../../assets/styles/styleComponent';
 import image from '../../assets/images/background-signup.png';
 import {useState, useEffect} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {registrationProcess} from '../../redux/actions/auth';
+import {NBAlert} from '../../components/NBAlert';
+import {verifyProcess} from '../../redux/actions/auth';
 
-const Signup = ({navigation}) => {
+const VerifyUser = ({navigation}) => {
+   const {auth} = useSelector(state => state);
    const [email, setEmail] = useState('');
-   const [username, setUsername] = useState('');
-   const [name, setName] = useState('');
-   const [mobileNumber, setMobileNumber] = useState('');
    const [password, setPassword] = useState('');
+   const [code, setCode] = useState('');
    const dispatch = useDispatch();
    const [success, setSuccess] = useState(false);
 
    useEffect(() => {
       if (success) {
-         navigation.navigate('VerifyUser');
+         navigation.navigate('Login');
       }
    }, [navigation, success]);
 
-   const signupHandle = () => {
-      dispatch(
-         registrationProcess(name, username, email, password, mobileNumber),
-      );
+   const verifyUserHandle = () => {
+      dispatch(verifyProcess(email, password, code));
       setSuccess(true);
    };
    return (
@@ -47,56 +46,38 @@ const Signup = ({navigation}) => {
             <Container>
                <Text style={addStyles.textTitle}>LET’S HAVE SOME RIDE</Text>
                <View style={addStyles.layoutForm}>
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Name"
-                     secure={false}
-                     value={name}
-                     change={setName}
-                  />
+                  {auth.isRegister && (
+                     <NBAlert status="success" message={auth.message} />
+                  )}
+                  {auth.isError && (
+                     <NBAlert status="error" message={auth.errMessage} />
+                  )}
                   <Input
                      classInput={addStyles.input}
                      placeholder="Email"
-                     secure={false}
                      value={email}
                      change={setEmail}
                   />
                   <Input
                      classInput={addStyles.input}
-                     placeholder="Username"
-                     secure={false}
-                     value={username}
-                     change={setUsername}
-                  />
-
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Mobile phone"
-                     secure={false}
-                     value={mobileNumber}
-                     change={setMobileNumber}
-                  />
-                  <Input
-                     classInput={addStyles.input}
                      placeholder="Password"
-                     secure={true}
                      value={password}
+                     secure={true}
                      change={setPassword}
                   />
-                  <TouchableOpacity onPress={signupHandle}>
+                  <Input
+                     classInput={addStyles.input}
+                     placeholder="Code"
+                     value={code}
+                     change={setCode}
+                  />
+                  <TouchableOpacity onPress={verifyUserHandle}>
                      <CButton
-                        classButton={addStyles.buttonSignup}
-                        textButton={addStyles.textSignup}>
-                        Signup
+                        classButton={addStyles.buttonVerifyUser}
+                        textButton={addStyles.textVerifyUser}>
+                        Verify Code
                      </CButton>
                   </TouchableOpacity>
-                  <View style={addStyles.layoutLinkLogin}>
-                     <Text style={addStyles.text}>Already have account?</Text>
-                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Login')}>
-                        <Text style={addStyles.textLink}>Login now</Text>
-                     </TouchableOpacity>
-                  </View>
                </View>
             </Container>
          </ImageBackground>
@@ -142,14 +123,14 @@ const addStyles = StyleSheet.create({
    layoutForm: {
       marginTop: 50,
    },
-   buttonSignup: {
+   buttonVerifyUser: {
       backgroundColor: stylePrimary.secondaryColor,
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: 50,
       ...button,
    },
-   textSignup: {
+   textVerifyUser: {
       color: stylePrimary.mainColor,
       fontWeight: '900',
       fontSize: 18,
@@ -158,4 +139,4 @@ const addStyles = StyleSheet.create({
 
 export {addStyles};
 
-export default Signup;
+export default VerifyUser;
