@@ -65,7 +65,7 @@ const Home = ({navigation}) => {
                            title={itemCategory.name}
                            navigate={() =>
                               navigation.navigate('DetailCategory', {
-                                 id: itemCategory.id,
+                                 categoryId: itemCategory.id,
                               })
                            }>
                            <ScrollView horizontal={true}>

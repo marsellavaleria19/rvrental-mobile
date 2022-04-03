@@ -22,15 +22,24 @@ import Rate from '../components/Rate';
 import LinearGradient from 'react-native-linear-gradient';
 import IconLeft from 'react-native-vector-icons/FontAwesome';
 import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import IconDate from 'react-native-vector-icons/Fontisto';
 import IconChat from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
+import {useDispatch, useSelector} from 'react-redux';
 
-const Reservation = ({navigation}) => {
+const Reservation = ({route, navigation}) => {
+   const {vehicle} = useSelector(state => state);
+   const {vehicleId} = route.params;
    const [date, setDate] = useState(new Date());
-   const [mode, setMode] = useState('date');
-   const [show, setShow] = useState(false);
+   const [qty, setQty] = useState(0);
+   const dispatch = useDispatch();
+
+   useEffect(() => {
+      dispatch({
+         TYPE: 'GET_VEHICLE_FULFILLED',
+      });
+   },[]);
 
    const onChange = (event, selectedDate) => {
       setDate(selectedDate);
@@ -154,7 +163,7 @@ const Reservation = ({navigation}) => {
                            <IconDate name="date" style={addStyles.iconDate} />
                         </TouchableOpacity>
                      </View>
-                     <BSelect placeholder="Day" />
+                     <BSelect width="40%" placeholder="Day" />
                      {/* <Input classInput={addStyles.inputDay} placeholder="Day" /> */}
                   </View>
                </View>
@@ -182,7 +191,7 @@ const addStyles = StyleSheet.create({
       marginTop: 40,
    },
    iconDate: {
-      color: 'FFFFFF',
+      color: '#FFFFFF',
       fontSize: 22,
       position: 'absolute',
       bottom: 15,
@@ -292,12 +301,13 @@ const addStyles = StyleSheet.create({
    layoutForm: {
       marginTop: 28,
       flexDirection: 'row',
+      width: '100%',
    },
    inputDate: {
       backgroundColor: 'rgba(57, 57, 57, 0.3)',
       // opacity: 0.1,
       borderRadius: 10,
-      width: 200,
+      minWidth: '60%',
       height: 50,
       paddingLeft: 10,
       marginRight: 10,

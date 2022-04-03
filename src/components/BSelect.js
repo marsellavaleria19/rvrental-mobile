@@ -11,20 +11,19 @@ import {
 import {StyleSheet} from 'react-native';
 import {color} from 'native-base/lib/typescript/theme/styled-system';
 
-const BSelect = ({classInput, placeholder, option, children}) => {
+const BSelect = ({width,placeholder,color, children}) => {
    let [service, setService] = React.useState('');
    return (
-      <Box w="3/4" maxW="300">
+      <Box w={width}>
          <Select
             selectedValue={service}
-            minWidth="200"
+            minWidth="20"
             accessibilityLabel="Choose Service"
-            placeholder="Choose Service"
+            placeholder={placeholder}
             _selectedItem={{
-               bg: 'teal.600',
+               bg: {color},
                endIcon: <CheckIcon size="5" />,
             }}
-            mt={1}
             onValueChange={itemValue => setService(itemValue)}>
             <Select.Item label="UX Research" value="ux" />
             <Select.Item label="Web Development" value="web" />
