@@ -6,6 +6,7 @@ import {
    ImageBackground,
    Image,
    TouchableOpacity,
+   SafeAreaView,
 } from 'react-native';
 import {styles} from '../assets/styles/styles';
 import Container from '../components/Container';
@@ -16,11 +17,24 @@ import {input, button} from '../assets/styles/styleComponent';
 import IconSearch from 'react-native-vector-icons/FontAwesome';
 import MainBarTitle from '../components/MainBarTitle';
 import ListBar from '../components/ListBar';
+import {useSelector, useDispatch} from 'react-redux';
+import {getListCategory} from '../redux/actions/category';
+import {getListVehicle} from '../redux/actions/vehicle';
+import {useEffect} from 'react';
+import {ScrollView} from 'native-base';
 // import {image} from '../assets/images/backgroud-image.png'
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
 
 const Home = ({navigation}) => {
+   const {category, vehicle} = useSelector(state => state);
+   const dispatch = useDispatch();
+
+   useEffect(() => {
+      dispatch(getListCategory());
+      dispatch(getListVehicle());
+   }, []);
+
    return (
       <View>
          <View>
@@ -42,39 +56,63 @@ const Home = ({navigation}) => {
                </Container>
             </ImageBackground>
          </View>
-         <ListBar
-            title="Car"
-            navigate={() => navigation.navigate('DetailCategory')}>
-            <Image
-               source={require('../assets/images/list-car1.png')}
-               style={addStyles.imageList}
-            />
-            <Image
-               source={require('../assets/images/list-car1.png')}
-               style={addStyles.imageList}
-            />
-         </ListBar>
-         <ListBar title="Car">
-            <Image
-               source={require('../assets/images/list-car1.png')}
-               style={addStyles.imageList}
-            />
-            <Image
-               source={require('../assets/images/list-car1.png')}
-               style={addStyles.imageList}
-            />
-         </ListBar>
-         <ListBar title="Car">
-            <Image
-               source={require('../assets/images/list-car1.png')}
-               style={addStyles.imageList}
-            />
-            <Image
-               source={require('../assets/images/list-car1.png')}
-               style={addStyles.imageList}
-            />
-         </ListBar>
-         <View />
+         <View>
+            <ScrollView h="65%">
+               {category.listCategory.length > 0 &&
+                  category.listCategory.map(itemCategory => {
+                     return (
+                        <ListBar
+                           title={itemCategory.name}
+                           navigate={() =>
+                              navigation.navigate('DetailCategory', {
+                                 id: itemCategory.id,
+                              })
+                           }>
+                           <ScrollView horizontal={true}>
+                              {vehicle.listVehicle.length > 0 &&
+                                 vehicle.listVehicle
+                                    .filter(
+                                       item =>
+                                          item.category_id === itemCategory.id,
+                                    )
+                                    .filter((item, index) => index < 5)
+                                    .map(item => {
+                                       return (
+                                          <Image
+                                             source={{
+                                                uri: `${item.photo}`,
+                                             }}
+                                             style={addStyles.imageList}
+                                          />
+                                       );
+                                    })}
+                           </ScrollView>
+                        </ListBar>
+                     );
+                  })}
+
+               {/* <ListBar title="Car">
+                  <Image
+                     source={require('../assets/images/list-car1.png')}
+                     style={addStyles.imageList}
+                  />
+                  <Image
+                     source={require('../assets/images/list-car1.png')}
+                     style={addStyles.imageList}
+                  />
+               </ListBar>
+               <ListBar title="Car">
+                  <Image
+                     source={require('../assets/images/list-car1.png')}
+                     style={addStyles.imageList}
+                  />
+                  <Image
+                     source={require('../assets/images/list-car1.png')}
+                     style={addStyles.imageList}
+                  />
+               </ListBar> */}
+            </ScrollView>
+         </View>
       </View>
    );
 };

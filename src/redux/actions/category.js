@@ -1,5 +1,5 @@
 import {default as axios} from 'axios';
-import AxiosCostum from '../../helpers/AxiosCostum';
+import AxiosCostum from '../../helpers/AxiosCustom';
 
 export const getListCategory = () => {
    return {
