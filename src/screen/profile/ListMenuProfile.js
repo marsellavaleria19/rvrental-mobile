@@ -13,6 +13,7 @@ import CButton from '../../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
 import imageProfile from '../../assets/images/profile.png';
 import {Image} from 'native-base';
+import {styles} from '../../assets/styles/styles';
 
 const ProfileMenuList = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -29,56 +30,76 @@ const ProfileMenuList = ({navigation}) => {
    };
 
    return (
-      <View style={addStyles.layoutProfileMenu}>
-         <ScrollView>
-            <Container>
-               <View>
-                  <Image
-                     size={100}
-                     resizeMode={'contain'}
-                     borderRadius={100}
-                     source={
-                        auth.user !== null
-                           ? {
-                                uri: `${auth.user.photo}`,
-                             }
-                           : `${imageProfile}`
-                     }
-                     alt="Profile"
+      <View style={styles.background}>
+         <View style={addStyles.layoutProfileMenu}>
+            <View style={addStyles.layoutProfile}>
+               <Image
+                  size={60}
+                  resizeMode={'contain'}
+                  borderRadius={100}
+                  source={
+                     auth.user !== null && auth.user.photo !== null
+                        ? {
+                             uri: `${auth.user.photo}`,
+                          }
+                        : `${imageProfile}`
+                  }
+                  alt="Profile"
+               />
+               <Text style={addStyles.textProfile}>{auth.user.fullName}</Text>
+            </View>
+            <ScrollView style={addStyles.scrollMenu}>
+               <Container>
+                  <ListMenu
+                     title="Your Favorite"
+                     press={() => navigation.navigate('Favorite')}
                   />
-                  <Text>{auth.user.fullName}</Text>
-               </View>
-               <ListMenu
-                  title="Your Favorite"
-                  press={() => navigation.navigate('Favorite')}
-               />
-               <ListMenu title="FAQ" />
-               <ListMenu title="Help" />
-               <ListMenu
-                  title="Update Profile"
-                  press={() => navigation.navigate('UpdateProfile')}
-               />
-               <View style={addStyles.layoutButton}>
-                  <TouchableOpacity onPress={logoutHandle}>
-                     <CButton
-                        classButton={addStyles.buttonProfile}
-                        textButton={addStyles.fontButtonProfile}>
-                        Logout
-                     </CButton>
-                  </TouchableOpacity>
-               </View>
-            </Container>
-         </ScrollView>
+                  <ListMenu title="FAQ" />
+                  <ListMenu title="Help" />
+                  <ListMenu
+                     title="Update Profile"
+                     press={() => navigation.navigate('UpdateProfile')}
+                  />
+                  <View style={addStyles.layoutButton}>
+                     <TouchableOpacity onPress={logoutHandle}>
+                        <CButton
+                           classButton={addStyles.buttonProfile}
+                           textButton={addStyles.fontButtonProfile}>
+                           Logout
+                        </CButton>
+                     </TouchableOpacity>
+                  </View>
+               </Container>
+            </ScrollView>
+         </View>
       </View>
    );
 };
 
 const addStyles = StyleSheet.create({
    layoutProfileMenu: {
-      marginTop: 100,
+      marginTop: 0,
+   },
+   layoutProfile: {
+      flexDirection: 'row',
+      height: 135,
+      backgroundColor: stylePrimary.secondaryColor,
+      width: '100%',
+      paddingTop: 30,
+      alignItems: 'center',
+      paddingHorizontal: 18,
+   },
+   textProfile: {
+      marginLeft: 27,
+      color: stylePrimary.mainColor,
+      fontWeight: stylePrimary.bold,
+      fontSize: 22,
    },
    flexRow: {
       flexDirection: 'row',
+   },
+   scrollMenu: {
+      marginTop: 36,
    },
    layoutButton: {
       marginTop: 299,

@@ -21,7 +21,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getListCategory} from '../redux/actions/category';
 import {getListVehicle} from '../redux/actions/vehicle';
 import {useEffect} from 'react';
-import {ScrollView} from 'native-base';
+import {FlatList, ScrollView} from 'native-base';
 // import {image} from '../assets/images/backgroud-image.png'
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
@@ -33,7 +33,13 @@ const Home = ({navigation}) => {
    useEffect(() => {
       dispatch(getListCategory());
       dispatch(getListVehicle());
-   }, []);
+   }, [dispatch]);
+
+   const itemPerCategory = category => {
+      return vehicle.listVehicle
+         .filter(item => item.category_id === category.id)
+         .filter((item, index) => index < 5);
+   };
 
    return (
       <View>
@@ -57,6 +63,35 @@ const Home = ({navigation}) => {
             </ImageBackground>
          </View>
          <View>
+            {/* <FlatList
+               data={category.listCategory}
+               renderItem={({itemCategory}) => {
+                  return (
+                     <ListBar
+                        title={itemCategory.name}
+                        navigate={() =>
+                           navigation.navigate('DetailCategory', {
+                              categoryId: itemCategory.id,
+                           })
+                        }>
+                        <FlatList
+                           data={itemPerCategory(itemCategory)}
+                           renderItem={({item}) => {
+                              return (
+                                 <Image
+                                    key={item.id}
+                                    source={{
+                                       uri: `${item.photo}`,
+                                    }}
+                                    style={addStyles.imageList}
+                                 />
+                              );
+                           }}
+                        />
+                     </ListBar>
+                  );
+               }}
+            /> */}
             <ScrollView h="65%">
                {category.listCategory.length > 0 &&
                   category.listCategory.map(itemCategory => {
@@ -91,27 +126,6 @@ const Home = ({navigation}) => {
                         </ListBar>
                      );
                   })}
-
-               {/* <ListBar title="Car">
-                  <Image
-                     source={require('../assets/images/list-car1.png')}
-                     style={addStyles.imageList}
-                  />
-                  <Image
-                     source={require('../assets/images/list-car1.png')}
-                     style={addStyles.imageList}
-                  />
-               </ListBar>
-               <ListBar title="Car">
-                  <Image
-                     source={require('../assets/images/list-car1.png')}
-                     style={addStyles.imageList}
-                  />
-                  <Image
-                     source={require('../assets/images/list-car1.png')}
-                     style={addStyles.imageList}
-                  />
-               </ListBar> */}
             </ScrollView>
          </View>
       </View>
