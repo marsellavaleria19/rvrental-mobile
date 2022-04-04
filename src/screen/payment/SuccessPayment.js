@@ -9,8 +9,20 @@ import imageBackground from '../../assets/images/background-reservation.png';
 import Rate from '../../components/Rate';
 import {ScrollView} from 'native-base';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {getDetailPayment} from '../../redux/actions/payment';
+import {useSelector, useDispatch} from 'react-redux';
+import moment from 'moment';
+import {useEffect} from 'react';
 
-const SuccessPayment = ({navigation}) => {
+const SuccessPayment = ({route, navigation}) => {
+   const {payment, auth} = useSelector(state => state);
+   const dispatch = useDispatch();
+   const {idHistory} = route.params;
+
+   // useEffect(() => {
+   //    dispatch(getDetailPayment(idHistory));
+   // }, []);
+
    return (
       <SafeAreaView>
          <ScrollView>
@@ -25,33 +37,56 @@ const SuccessPayment = ({navigation}) => {
                   </View>
                </View>
                <View style={addStyles.layoutDescription}>
-                  <Text style={addStyles.fontDescription}>2 Vespa</Text>
                   <Text style={addStyles.fontDescription}>
-                     Prepayement (no tax)
+                     {payment.dataPayment.qty} {payment.dataPayment.brand}
                   </Text>
-                  <Text style={addStyles.fontDescription}>4 days </Text>
                   <Text style={addStyles.fontDescription}>
-                     Jan 18 2021 to Jan 22 2021
+                     {payment.dataPayment.payment_type}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {payment.dataPayment.day} days{' '}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {moment(payment.dataPayment.rentStartDate).format(
+                        'DD MMM YYYY',
+                     )}{' '}
+                     to{' '}
+                     {moment(payment.dataPayment.rentEndDate).format(
+                        'DD MMM YYYY',
+                     )}
                   </Text>
                </View>
                <View style={addStyles.line} />
                <View style={addStyles.layoutFontUser}>
-                  <Text style={addStyles.fontUser}>ID : 9087627392624</Text>
                   <Text style={addStyles.fontUser}>
-                     Jessica Jane (jjane@mail.com)
+                     ID :{' '}
+                     {payment.dataPayment.idCard !== null
+                        ? payment.dataPayment.idCard
+                        : ''}
+                  </Text>
+                  <Text style={addStyles.fontUser}>
+                     {payment.dataPayment.fullname} (
+                     {payment.dataPayment.emailAddress})
                   </Text>
                   <View style={addStyles.layoutPhoneStatus}>
-                     <Text style={addStyles.fontUser}>0890876789 </Text>
+                     <Text style={addStyles.fontUser}>
+                        {payment.dataPayment.mobilePhone}{' '}
+                     </Text>
                      <Text style={addStyles.fontActive}>(active)</Text>
                   </View>
-                  <Text style={addStyles.fontUser}>Jakarta, Indonesia</Text>
+                  <Text style={addStyles.fontUser}>
+                     {payment.dataPayment.location}
+                  </Text>
                </View>
                <View style={addStyles.layoutButton}>
                   <CButton
                      classButton={addStyles.buttonPayment}
-                     press={() => navigation.navigate('History')}
+                     press={
+                        (() => navigation.navigate('History'),
+                        {idUser: auth.user.id})
+                     }
                      textButton={addStyles.fontButtonPayment}>
-                     Total : 245.000
+                     Total : {payment.dataPayment.totalPayment}
                   </CButton>
                </View>
             </Container>

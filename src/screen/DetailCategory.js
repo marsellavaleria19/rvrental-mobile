@@ -16,7 +16,7 @@ const DetailCategory = ({route, navigation}) => {
 
    useEffect(() => {
       dispatch(getListVehicleByCategory(categoryId));
-   }, []);
+   }, [categoryId, dispatch]);
 
    return (
       <Container>

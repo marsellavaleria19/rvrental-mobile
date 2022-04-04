@@ -79,6 +79,7 @@ const Home = ({navigation}) => {
                                     .map(item => {
                                        return (
                                           <Image
+                                             key={item.id}
                                              source={{
                                                 uri: `${item.photo}`,
                                              }}

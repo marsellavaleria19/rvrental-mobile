@@ -1,5 +1,12 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
+import {
+   Text,
+   View,
+   StyleSheet,
+   ImageBackground,
+   Image,
+   TouchableOpacity,
+} from 'react-native';
 import {styles} from '../../assets/styles/styles';
 import Container from '../../components/Container';
 import CButton from '../../components/Button';
@@ -8,14 +15,25 @@ import {button, rateLayout, rateText} from '../../assets/styles/styleComponent';
 import imageBackground from '../../assets/images/background-reservation.png';
 import Rate from '../../components/Rate';
 import IconInfo from 'react-native-vector-icons/Ionicons';
+import {useDispatch, useSelector} from 'react-redux';
+import {getDetailPayment} from '../../redux/actions/payment';
+import moment from 'moment';
 
-const PaymentDetail = ({navigation}) => {
+const PaymentDetail = ({route, navigation}) => {
+   const {payment} = useSelector(state => state);
+   const dispatch = useDispatch();
+   const {idHistory} = route.params;
+
+   React.useEffect(() => {
+      dispatch(getDetailPayment(idHistory));
+   }, []);
+
    return (
       <View>
          <Container>
             <View style={addStyles.positionRate}>
                <Image
-                  source={imageBackground}
+                  source={{uri: `${payment.dataPayment.photo}`}}
                   style={addStyles.imageBackground}
                />
                <View style={addStyles.rateLayout}>
@@ -23,30 +41,48 @@ const PaymentDetail = ({navigation}) => {
                </View>
             </View>
             <View style={addStyles.layoutDescription}>
-               <Text style={addStyles.fontDescription}>2 Vespa</Text>
                <Text style={addStyles.fontDescription}>
-                  Prepayement (no tax)
+                  {payment.dataPayment.qty} {payment.dataPayment.brand}
                </Text>
-               <Text style={addStyles.fontDescription}>4 days </Text>
                <Text style={addStyles.fontDescription}>
-                  Jan 18 2021 to Jan 22 2021
+                  {payment.dataPayment.payment_type}
+               </Text>
+               <Text style={addStyles.fontDescription}>
+                  {payment.dataPayment.day} days{' '}
+               </Text>
+               <Text style={addStyles.fontDescription}>
+                  {moment(payment.dataPayment.rentStartDate).format(
+                     'DD MMM YYYY',
+                  )}{' '}
+                  to{' '}
+                  {moment(payment.dataPayment.rentEndDate).format(
+                     'DD MMM YYYY',
+                  )}
                </Text>
             </View>
             <View style={addStyles.line} />
             <View style={addStyles.layoutPrice}>
-               <Text style={addStyles.price}>Rp. 245.000</Text>
+               <Text style={addStyles.price}>
+                  Rp. {payment.dataPayment.totalPayment}
+               </Text>
                <IconInfo
                   name="information-circle-sharp"
                   style={addStyles.iconInfo}
                />
             </View>
             <View style={addStyles.layoutButton}>
-               <CButton
-                  classButton={styles.buttonPayment}
-                  textButton={styles.fontButtonPayment}
-                  press={() => navigation.navigate('FinishPayment')}>
-                  Get Payment Code
-               </CButton>
+               <TouchableOpacity
+                  onPress={() =>
+                     navigation.navigate('FinishPayment', {
+                        idHistory: idHistory,
+                     })
+                  }>
+                  <CButton
+                     classButton={styles.buttonPayment}
+                     textButton={styles.fontButtonPayment}>
+                     Get Payment Code
+                  </CButton>
+               </TouchableOpacity>
             </View>
          </Container>
       </View>

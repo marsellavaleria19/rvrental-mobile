@@ -11,6 +11,8 @@ import Container from '../../components/Container';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import CButton from '../../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
+import imageProfile from '../../assets/images/profile.png';
+import {Image} from 'native-base';
 
 const ProfileMenuList = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -30,7 +32,26 @@ const ProfileMenuList = ({navigation}) => {
       <View style={addStyles.layoutProfileMenu}>
          <ScrollView>
             <Container>
-               <ListMenu title="Your Favorite" />
+               <View>
+                  <Image
+                     size={100}
+                     resizeMode={'contain'}
+                     borderRadius={100}
+                     source={
+                        auth.user !== null
+                           ? {
+                                uri: `${auth.user.photo}`,
+                             }
+                           : `${imageProfile}`
+                     }
+                     alt="Profile"
+                  />
+                  <Text>{auth.user.fullName}</Text>
+               </View>
+               <ListMenu
+                  title="Your Favorite"
+                  press={() => navigation.navigate('Favorite')}
+               />
                <ListMenu title="FAQ" />
                <ListMenu title="Help" />
                <ListMenu

@@ -24,7 +24,7 @@ export const getListVehicleByUrl = url => {
 
 export const getDetailVehicle = id => {
    return {
-      type: 'GET_VEHICLE',
+      type: 'GET_DETAIL_VEHICLE',
       payload: AxiosCustom().get(`/vehicles/${id}`),
    };
 };
