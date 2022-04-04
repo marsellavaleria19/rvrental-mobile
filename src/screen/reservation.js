@@ -27,19 +27,42 @@ import IconDate from 'react-native-vector-icons/Fontisto';
 import IconChat from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
+import {getDetailVehicle} from '../redux/actions/vehicle';
+import {Select} from 'native-base';
+import {reservationProcess} from '../redux/actions/reservation';
+import {increment, decrement} from '../redux/actions/counter';
 
 const Reservation = ({route, navigation}) => {
-   const {vehicle} = useSelector(state => state);
+   const {vehicle, counter, auth, reservation} = useSelector(state => state);
    const {vehicleId} = route.params;
    const [date, setDate] = useState(new Date());
    const [qty, setQty] = useState(0);
    const dispatch = useDispatch();
+   const [day, setDay] = useState(0);
+   const [control, setControl] = useState(false);
 
    useEffect(() => {
-      dispatch({
-         TYPE: 'GET_VEHICLE_FULFILLED',
-      });
-   },[]);
+      dispatch(getDetailVehicle(vehicleId));
+      setQty(0);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+   useEffect(() => {
+      if (reservation.dataReservation !== null && control) {
+         navigation.navigate('Payment');
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [reservation.dataReservation]);
+
+   const countIncrement = () => {
+      setQty(qty + 1);
+   };
+
+   const countDecrement = () => {
+      if (qty > 0) {
+         setQty(qty - 1);
+      }
+   };
 
    const onChange = (event, selectedDate) => {
       setDate(selectedDate);
@@ -52,6 +75,11 @@ const Reservation = ({route, navigation}) => {
          mode: 'date',
          is24Hour: true,
       });
+   };
+
+   const reservationHandle = () => {
+      dispatch(reservationProcess(vehicle.dataVehicle.id, qty, day, date));
+      setControl(true);
    };
 
    return (
@@ -87,8 +115,17 @@ const Reservation = ({route, navigation}) => {
                <View style={addStyles.marginLayout}>
                   <View style={addStyles.layoutDescriptionRate}>
                      <View>
-                        <Text style={addStyles.title}>Vespa Matic</Text>
-                        <Text style={addStyles.price}>Rp. 120.000/day</Text>
+                        <Text style={addStyles.title}>
+                           {vehicle.dataVehicle !== null &&
+                              vehicle.dataVehicle.name}
+                        </Text>
+                        <Text style={addStyles.price}>
+                           {vehicle.dataVehicle !== null
+                              ? `Rp. ${vehicle.dataVehicle.price.toLocaleString(
+                                   'id-ID',
+                                )}/day`
+                              : 'Rp.0'}
+                        </Text>
                      </View>
                      <View>
                         <View
@@ -117,7 +154,8 @@ const Reservation = ({route, navigation}) => {
                            />
                         </LinearGradient>
                         <Text style={addStyles.fontLocation}>
-                           Jalan Maliboboro, No. 21, Yogyakarta
+                           {vehicle.dataVehicle !== null &&
+                              vehicle.dataVehicle.location}
                         </Text>
                      </View>
                      <View style={addStyles.layoutDistance}>
@@ -136,17 +174,21 @@ const Reservation = ({route, navigation}) => {
                      <View style={addStyles.layoutQtyBikes}>
                         <Text style={addStyles.fontLabel}>Select bikes</Text>
                         <View style={addStyles.layoutQty}>
-                           <CButton
-                              classButton={addStyles.button}
-                              textButton={addStyles.text}>
-                              -
-                           </CButton>
-                           <Input classInput={addStyles.inputQty} value={0} />
-                           <CButton
-                              classButton={addStyles.button}
-                              textButton={addStyles.text}>
-                              +
-                           </CButton>
+                           <TouchableOpacity onPress={countDecrement}>
+                              <CButton
+                                 classButton={addStyles.button}
+                                 textButton={addStyles.text}>
+                                 -
+                              </CButton>
+                           </TouchableOpacity>
+                           <Text style={addStyles.inputQty}>{qty}</Text>
+                           <TouchableOpacity onPress={countIncrement}>
+                              <CButton
+                                 classButton={addStyles.button}
+                                 textButton={addStyles.text}>
+                                 +
+                              </CButton>
+                           </TouchableOpacity>
                         </View>
                      </View>
                   </View>
@@ -163,17 +205,28 @@ const Reservation = ({route, navigation}) => {
                            <IconDate name="date" style={addStyles.iconDate} />
                         </TouchableOpacity>
                      </View>
-                     <BSelect width="40%" placeholder="Day" />
+                     <BSelect
+                        width="40%"
+                        placeholder="Day"
+                        variant="reservation"
+                        select={day}
+                        change={itemValue => setDay(itemValue)}>
+                        <Select.Item label="1" value={1} />
+                        <Select.Item label="2" value={2} />
+                        <Select.Item label="3" value={3} />
+                     </BSelect>
                      {/* <Input classInput={addStyles.inputDay} placeholder="Day" /> */}
                   </View>
                </View>
                <View style={addStyles.layoutButton}>
-                  <CButton
-                     classButton={addStyles.buttonReservation}
-                     press={() => navigation.navigate('Payment')}
-                     textButton={addStyles.fontButtonReservation}>
-                     Reservation
-                  </CButton>
+                  <TouchableOpacity onPress={reservationHandle}>
+                     <CButton
+                        classButton={addStyles.buttonReservation}
+                        press={() => navigation.navigate('Payment')}
+                        textButton={addStyles.fontButtonReservation}>
+                        Reservation
+                     </CButton>
+                  </TouchableOpacity>
                </View>
             </Container>
          </ScrollView>

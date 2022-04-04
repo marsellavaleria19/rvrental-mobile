@@ -8,6 +8,7 @@ import PaymentDetail from '../screen/payment/PaymentDetail';
 import FinishPayment from '../screen/payment/FinishPayment';
 import SuccessPayment from '../screen/payment/SuccessPayment';
 import UpdateProfile from '../screen/profile/UpdateProfile';
+import Favorite from '../screen/Favorite';
 
 const NavMainStack = createNativeStackNavigator();
 
@@ -45,6 +46,13 @@ const MainStackNav = () => {
             }}
             name="SuccessPayment"
             component={SuccessPayment}
+         />
+         <NavMainStack.Screen
+            options={{
+               title: 'Favorite',
+            }}
+            name="Favorite"
+            component={Favorite}
          />
          <NavMainStack.Screen
             options={{

@@ -20,6 +20,11 @@ export const theme = extendTheme({
                   color: 'black',
                },
             },
+            reservation: {
+               _text: {
+                  color: stylePrimary.mainColor,
+               },
+            },
          },
       },
       FormControlLabel: {

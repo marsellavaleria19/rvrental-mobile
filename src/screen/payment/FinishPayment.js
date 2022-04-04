@@ -1,15 +1,51 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
+import {
+   Text,
+   View,
+   StyleSheet,
+   ImageBackground,
+   Image,
+   TouchableOpacity,
+} from 'react-native';
 import Container from '../../components/Container';
 import CButton from '../../components/Button';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import IconInfo from 'react-native-vector-icons/Ionicons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ScrollView} from 'native-base';
+import {useSelector, useDispatch} from 'react-redux';
+import {getDetailPayment} from '../../redux/actions/payment';
+import {useEffect, useState} from 'react';
+import moment from 'moment';
+import {paymentUpdate} from '../../redux/actions/payment';
+import {styles} from '../../assets/styles/styles';
 
-const FinishPayment = ({navigation}) => {
+const FinishPayment = ({route, navigation}) => {
+   const {payment, auth} = useSelector(state => state);
+   const dispatch = useDispatch();
+   const {idHistory} = route.params;
+   const [control, setControl] = useState(false);
+
+   // useEffect(() => {
+   //    dispatch(getDetailPayment(idHistory));
+   // }, []);
+
+   useEffect(() => {
+      if (payment.dataPayment !== null && control) {
+         navigation.navigate('SuccessPayment', {idHistory: idHistory});
+      }
+      setControl(false);
+   }, [control, idHistory, navigation, payment.dataPayment]);
+
+   const finishPaymentHandle = () => {
+      dispatch(
+         paymentUpdate(auth.token, payment.dataPayment.totalPayment, idHistory),
+      );
+      setControl(true);
+   };
+
    return (
-      <SafeAreaView>
+      <View>
          <ScrollView>
             <Container>
                <View style={addStyles.layoutPaymentCode}>
@@ -47,34 +83,47 @@ const FinishPayment = ({navigation}) => {
                   <Text style={addStyles.fontDescription}>
                      Order Details :{' '}
                   </Text>
-                  <Text style={addStyles.fontDescription}>2 Vespa</Text>
                   <Text style={addStyles.fontDescription}>
-                     Prepayement (no tax)
+                     {payment.dataPayment.qty} {payment.dataPayment.brand}
                   </Text>
-                  <Text style={addStyles.fontDescription}>4 days </Text>
                   <Text style={addStyles.fontDescription}>
-                     Jan 18 2021 to Jan 22 2021
+                     {payment.dataPayment.payment_type}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {payment.dataPayment.day} days{' '}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {moment(payment.dataPayment.rentStartDate).format(
+                        'DD MMM YYYY',
+                     )}{' '}
+                     to{' '}
+                     {moment(payment.dataPayment.rentEndDate).format(
+                        'DD MMM YYYY',
+                     )}
                   </Text>
                </View>
                <View style={addStyles.line} />
                <View style={addStyles.layoutPrice}>
-                  <Text style={addStyles.price}>Rp. 245.000</Text>
+                  <Text style={addStyles.price}>
+                     Rp. {payment.dataPayment.totalPayment}
+                  </Text>
                   <IconInfo
                      name="information-circle-sharp"
                      style={addStyles.iconInfo}
                   />
                </View>
                <View style={addStyles.layoutButton}>
-                  <CButton
-                     classButton={addStyles.buttonPayment}
-                     press={() => navigation.navigate('SuccessPayment')}
-                     textButton={addStyles.fontButtonPayment}>
-                     Finish Payment
-                  </CButton>
+                  <TouchableOpacity onPress={finishPaymentHandle}>
+                     <CButton
+                        classButton={styles.buttonPayment}
+                        textButton={styles.fontButtonPayment}>
+                        Finish Payment
+                     </CButton>
+                  </TouchableOpacity>
                </View>
             </Container>
          </ScrollView>
-      </SafeAreaView>
+      </View>
    );
 };
 

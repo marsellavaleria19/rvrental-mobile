@@ -7,11 +7,18 @@ import NavMainStack from '../components/MainStack';
 import AuthNavigator from '../components/AuthNavigator';
 import ChangePassword from './auth/ChangePassword';
 import {theme} from '../assets/styles/themeNativeBase';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import MainStackNav from '../components/MainStack';
+import {useEffect} from 'react';
+import {getDataUser} from '../redux/actions/auth';
 
 const Main = () => {
    const {auth} = useSelector(state => state);
+   const dispatch = useDispatch();
+
+   useEffect(() => {
+      dispatch(getDataUser(auth.token));
+   }, [auth.token, dispatch]);
 
    return (
       <NativeBaseProvider theme={theme}>
