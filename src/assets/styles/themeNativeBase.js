@@ -7,9 +7,12 @@ export const theme = extendTheme({
       Input: {
          baseStyle: {
             backgroundColor: 'rgba(128, 128, 128, 0.2)',
-            fontSize: 16,
-            ...input,
+            height: 51,
             px: 5,
+            _text: {
+               color: stylePrimary.mainColor,
+               fontSize: 16,
+            },
          },
          variants: {
             profile: {
@@ -17,7 +20,7 @@ export const theme = extendTheme({
                borderBottomWidth: 1,
                borderBottomColor: '#9F9F9F',
                _text: {
-                  color: 'black',
+                  color: stylePrimary.mainColor,
                },
             },
             reservation: {
