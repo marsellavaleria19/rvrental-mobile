@@ -34,11 +34,6 @@ export const getDetailPayment = id => {
 };
 
 export const paymentUpdate = (token, payment, id) => {
-   console.log('masuk payment update');
-   console.log(token);
-   console.log(payment);
-   console.log(id);
-
    var data = {
       prepayment: payment,
       status_id: 2,
@@ -49,5 +44,28 @@ export const paymentUpdate = (token, payment, id) => {
    return {
       type: 'PAYMENT',
       payload: AxiosCostum(token).patch(`/histories/${id}`, qs.stringify(data)),
+   };
+};
+
+export const saveDataPayment = (reservation, idUser, dataPayment) => {
+   var data = {
+      idUser,
+      idVehicle: reservation.idVehicle,
+      rentStartDate: reservation.rentStartDate,
+      rentEndDate: reservation.rentEndDate,
+      prepayment: 0,
+      status: 1,
+      qty: reservation.qty,
+      idCard: dataPayment.idCard,
+      fullname: `${dataPayment.firstname} ${dataPayment.lastname}`,
+      mobilePhone: dataPayment.mobileNumber,
+      emailAddress: dataPayment.email,
+      location: dataPayment.location,
+      payment_type: dataPayment.paymentType,
+   };
+
+   return {
+      type: 'SAVE_PAYMENT',
+      payload: data,
    };
 };

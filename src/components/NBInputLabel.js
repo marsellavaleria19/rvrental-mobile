@@ -12,6 +12,8 @@ const NBInputLabel = ({
    placeholder,
    classVariant,
    label,
+   change,
+   value,
    errorMessage,
    children,
 }) => {
@@ -21,7 +23,12 @@ const NBInputLabel = ({
             <FormControl.Label variant={classVariant}>
                {label}
             </FormControl.Label>
-            <Input placeholder={placeholder} variant={classVariant} />
+            <Input
+               placeholder={placeholder}
+               variant={classVariant}
+               value={value}
+               onChangeText={change}
+            />
             {/* <FormControl.ErrorMessage
                leftIcon={<WarningOutlineIcon size="xs" />}>
                {errorMessage}
