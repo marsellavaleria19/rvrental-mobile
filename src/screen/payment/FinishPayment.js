@@ -53,7 +53,7 @@ const FinishPayment = ({route, navigation}) => {
                <View style={addStyles.layoutPaymentCode}>
                   <Text style={addStyles.textPaymentCode}>Payment Code</Text>
                   <Text style={addStyles.paymentCode}>
-                     {history.dataHistory.codePayment}
+                     {history.dataHistory.paymentCode}
                   </Text>
                   <Text style={addStyles.textDetail}>
                      Insert your payment code while you transfer booking order

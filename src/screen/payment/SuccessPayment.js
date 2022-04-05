@@ -19,13 +19,28 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {getDetailPayment} from '../../redux/actions/payment';
 import {useSelector, useDispatch} from 'react-redux';
 import moment from 'moment';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {getDetailHistory} from '../../redux/actions/history';
 
 const SuccessPayment = ({route, navigation}) => {
    const {history, auth} = useSelector(state => state);
    const dispatch = useDispatch();
    const {idHistory} = route.params;
+   const [control, setControl] = useState(false);
+
+   useEffect(() => {
+      if (history.listHistory.length > 0 && control) {
+         navigation.navigate('HistoryNav');
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [history.listHistory]);
+
+   const successPaymentHandle = () => {
+      dispatch({
+         type: 'HISTORY_SET_SUCCESS',
+      });
+      setControl(true);
+   };
 
    return (
       <View style={styles.background}>
@@ -84,11 +99,7 @@ const SuccessPayment = ({route, navigation}) => {
                   </Text>
                </View>
                <View style={addStyles.layoutButton}>
-                  <TouchableOpacity
-                     onPress={
-                        (() => navigation.navigate('History'),
-                        {idUser: auth.user.id})
-                     }>
+                  <TouchableOpacity onPress={successPaymentHandle}>
                      <CButton
                         classButton={addStyles.buttonPayment}
                         textButton={addStyles.fontButtonPayment}>

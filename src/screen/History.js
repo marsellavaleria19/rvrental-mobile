@@ -9,20 +9,27 @@ import image from '../assets/images/background-reservation.png';
 import {FlatList, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'react-redux';
 import {getListHistory} from '../redux/actions/history';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 
-const History = ({navigation, route}) => {
+const History = ({navigation}) => {
    const {history, auth} = useSelector(state => state);
+   const [listHistory, setListHistory] = useState([]);
    const dispatch = useDispatch();
 
    useEffect(() => {
       dispatch(getListHistory(auth.token));
-
+      setListHistory(listHistoryByIdUser());
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
+   useEffect(() => {
+      if (history.listHistory > 0 && history.isSuccessPayment) {
+         dispatch(getListHistory(auth.token));
+      }
+   });
+
    const listHistoryByIdUser = () => {
-      return history.listHistory.filter(item => item.user_id == auth.user.id);
+      return history.listHistory;
    };
 
    return (
@@ -51,7 +58,10 @@ const History = ({navigation, route}) => {
                   <Text style={addStyles.title}>A Week Ago</Text>
                </View>
                <FlatList
-                  data={listHistoryByIdUser}
+                  data={history.listHistory.filter(
+                     item => item.user_id == auth.user.id,
+                  )}
+                  keyExtractor={item => item.id}
                   renderItem={({item}) => {
                      return (
                         <ListHistory

@@ -6,8 +6,8 @@ export const historyInput = (reservation, idUser, dataPayment, token) => {
    var data = {
       idUser,
       idVehicle: reservation.idVehicle,
-      rentStartDate: reservation.rentStartDate,
-      rentEndDate: reservation.rentEndDate,
+      startRentDate: reservation.rentStartDate,
+      endRentDate: reservation.rentEndDate,
       prepayment: 0,
       status: 1,
       qty: reservation.qty,
@@ -21,7 +21,7 @@ export const historyInput = (reservation, idUser, dataPayment, token) => {
 
    console.log(data);
    return {
-      type: 'HISTORY',
+      type: 'HISTORY_DETAIL',
       payload: AxiosCostum(token).post('/histories', qs.stringify(data)),
    };
 };

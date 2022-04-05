@@ -5,8 +5,8 @@ export const reservationProcess = (vehicle, qty, day, date) => {
    if (day == 1) {
       rentEndDate = rentStartDate;
    } else {
-      day = day - 1;
-      tempDay = rentStartDate.getDate() + day;
+      const dayTemp = day - 1;
+      tempDay = rentStartDate.getDate() + dayTemp;
       rentEndDate = new Date(new Date().setDate(tempDay));
    }
 

@@ -5,6 +5,7 @@ const dataHistory = {
    isLoading: false,
    errMessage: null,
    message: null,
+   isSuccessPayment: false,
 };
 
 const history = (state = dataHistory, action) => {
@@ -49,6 +50,9 @@ const history = (state = dataHistory, action) => {
          state.isError = true;
          state.errMessage = data.message;
          return {...state};
+      }
+      case 'HISTORY_SET_SUCCESS': {
+         state.isSuccessPayment = true;
       }
       default: {
          return {...state};
