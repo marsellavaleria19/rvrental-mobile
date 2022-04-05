@@ -1,5 +1,12 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
+import {
+   Text,
+   View,
+   StyleSheet,
+   ImageBackground,
+   Image,
+   TouchableOpacity,
+} from 'react-native';
 import {styles} from '../../assets/styles/styles';
 import Container from '../../components/Container';
 import CButton from '../../components/Button';
@@ -13,20 +20,18 @@ import {getDetailPayment} from '../../redux/actions/payment';
 import {useSelector, useDispatch} from 'react-redux';
 import moment from 'moment';
 import {useEffect} from 'react';
+import {getDetailHistory} from '../../redux/actions/history';
 
 const SuccessPayment = ({route, navigation}) => {
-   const {payment, auth} = useSelector(state => state);
+   const {history, auth} = useSelector(state => state);
    const dispatch = useDispatch();
    const {idHistory} = route.params;
 
-   // useEffect(() => {
-   //    dispatch(getDetailPayment(idHistory));
-   // }, []);
-
    return (
-      <SafeAreaView>
+      <View style={styles.background}>
          <ScrollView>
             <Container>
+               <Text style={addStyles.statusPayment}>Payment Success!</Text>
                <View style={addStyles.positionRate}>
                   <Image
                      source={imageBackground}
@@ -38,20 +43,20 @@ const SuccessPayment = ({route, navigation}) => {
                </View>
                <View style={addStyles.layoutDescription}>
                   <Text style={addStyles.fontDescription}>
-                     {payment.dataPayment.qty} {payment.dataPayment.brand}
+                     {history.dataHistory.qty} {history.dataHistory.brand}
                   </Text>
                   <Text style={addStyles.fontDescription}>
-                     {payment.dataPayment.payment_type}
+                     {history.dataHistory.payment_type}
                   </Text>
                   <Text style={addStyles.fontDescription}>
-                     {payment.dataPayment.day} days{' '}
+                     {history.dataHistory.day} days{' '}
                   </Text>
                   <Text style={addStyles.fontDescription}>
-                     {moment(payment.dataPayment.rentStartDate).format(
+                     {moment(history.dataHistory.rentStartDate).format(
                         'DD MMM YYYY',
                      )}{' '}
                      to{' '}
-                     {moment(payment.dataPayment.rentEndDate).format(
+                     {moment(history.dataHistory.rentEndDate).format(
                         'DD MMM YYYY',
                      )}
                   </Text>
@@ -60,38 +65,41 @@ const SuccessPayment = ({route, navigation}) => {
                <View style={addStyles.layoutFontUser}>
                   <Text style={addStyles.fontUser}>
                      ID :{' '}
-                     {payment.dataPayment.idCard !== null
-                        ? payment.dataPayment.idCard
+                     {history.dataHistory.idCard !== null
+                        ? history.dataHistory.idCard
                         : ''}
                   </Text>
                   <Text style={addStyles.fontUser}>
-                     {payment.dataPayment.fullname} (
-                     {payment.dataPayment.emailAddress})
+                     {history.dataHistory.fullname} (
+                     {history.dataHistory.emailAddress})
                   </Text>
                   <View style={addStyles.layoutPhoneStatus}>
                      <Text style={addStyles.fontUser}>
-                        {payment.dataPayment.mobilePhone}{' '}
+                        {history.dataHistory.mobilePhone}{' '}
                      </Text>
                      <Text style={addStyles.fontActive}>(active)</Text>
                   </View>
                   <Text style={addStyles.fontUser}>
-                     {payment.dataPayment.location}
+                     {history.dataHistory.location}
                   </Text>
                </View>
                <View style={addStyles.layoutButton}>
-                  <CButton
-                     classButton={addStyles.buttonPayment}
-                     press={
+                  <TouchableOpacity
+                     onPress={
                         (() => navigation.navigate('History'),
                         {idUser: auth.user.id})
-                     }
-                     textButton={addStyles.fontButtonPayment}>
-                     Total : {payment.dataPayment.totalPayment}
-                  </CButton>
+                     }>
+                     <CButton
+                        classButton={addStyles.buttonPayment}
+                        textButton={addStyles.fontButtonPayment}>
+                        Total :{' '}
+                        {history.dataHistory.prepayment.toLocaleString('id-ID')}
+                     </CButton>
+                  </TouchableOpacity>
                </View>
             </Container>
          </ScrollView>
-      </SafeAreaView>
+      </View>
    );
 };
 
@@ -158,6 +166,13 @@ const addStyles = StyleSheet.create({
       fontSize: 24,
       fontWeight: stylePrimary.bold,
       color: stylePrimary.mainColor,
+   },
+   statusPayment: {
+      fontSize: 24,
+      fontWeight: stylePrimary.bold,
+      marginTop: 35,
+      color: 'green',
+      textAlign: 'center',
    },
 });
 

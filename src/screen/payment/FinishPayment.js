@@ -17,40 +17,44 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getDetailPayment} from '../../redux/actions/payment';
 import {useEffect, useState} from 'react';
 import moment from 'moment';
-import {paymentUpdate} from '../../redux/actions/payment';
+import {getDetailHistory, historyUpdate} from '../../redux/actions/history';
 import {styles} from '../../assets/styles/styles';
 
 const FinishPayment = ({route, navigation}) => {
-   const {payment, auth} = useSelector(state => state);
+   const {payment, reservation, auth, history} = useSelector(state => state);
    const dispatch = useDispatch();
-   const {idHistory} = route.params;
    const [control, setControl] = useState(false);
-
-   // useEffect(() => {
-   //    dispatch(getDetailPayment(idHistory));
-   // }, []);
+   const {idHistory} = route.params;
 
    useEffect(() => {
-      if (payment.dataPayment !== null && control) {
+      dispatch(getDetailHistory(idHistory));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+   useEffect(() => {
+      if (history.dataHistory !== null && control) {
          navigation.navigate('SuccessPayment', {idHistory: idHistory});
       }
       setControl(false);
-   }, [control, idHistory, navigation, payment.dataPayment]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [history.dataHistory]);
 
    const finishPaymentHandle = () => {
       dispatch(
-         paymentUpdate(auth.token, payment.dataPayment.totalPayment, idHistory),
+         historyUpdate(auth.token, history.dataHistory.totalPayment, idHistory),
       );
       setControl(true);
    };
 
    return (
-      <View>
+      <View style={styles.background}>
          <ScrollView>
             <Container>
                <View style={addStyles.layoutPaymentCode}>
                   <Text style={addStyles.textPaymentCode}>Payment Code</Text>
-                  <Text style={addStyles.paymentCode}>90887620</Text>
+                  <Text style={addStyles.paymentCode}>
+                     {history.dataHistory.codePayment}
+                  </Text>
                   <Text style={addStyles.textDetail}>
                      Insert your payment code while you transfer booking order
                   </Text>
@@ -68,7 +72,9 @@ const FinishPayment = ({route, navigation}) => {
                <View style={addStyles.layoutBookingCode}>
                   <View style={addStyles.layoutCode}>
                      <Text style={addStyles.text}>Booking code :</Text>
-                     <Text style={addStyles.textCode}>VSP09875</Text>
+                     <Text style={addStyles.textCode}>
+                        {history.dataHistory.bookingCode}
+                     </Text>
                   </View>
                   <Text style={addStyles.textDetail}>
                      Use booking code to pick up your vespa
@@ -84,20 +90,20 @@ const FinishPayment = ({route, navigation}) => {
                      Order Details :{' '}
                   </Text>
                   <Text style={addStyles.fontDescription}>
-                     {payment.dataPayment.qty} {payment.dataPayment.brand}
+                     {history.dataHistory.qty} {history.dataHistory.brand}
                   </Text>
                   <Text style={addStyles.fontDescription}>
-                     {payment.dataPayment.payment_type}
+                     {history.dataHistory.payment_type}
                   </Text>
                   <Text style={addStyles.fontDescription}>
-                     {payment.dataPayment.day} days{' '}
+                     {history.dataHistory.day} days{' '}
                   </Text>
                   <Text style={addStyles.fontDescription}>
-                     {moment(payment.dataPayment.rentStartDate).format(
+                     {moment(history.dataHistory.rentStartDate).format(
                         'DD MMM YYYY',
                      )}{' '}
                      to{' '}
-                     {moment(payment.dataPayment.rentEndDate).format(
+                     {moment(history.dataHistory.rentEndDate).format(
                         'DD MMM YYYY',
                      )}
                   </Text>
@@ -105,7 +111,10 @@ const FinishPayment = ({route, navigation}) => {
                <View style={addStyles.line} />
                <View style={addStyles.layoutPrice}>
                   <Text style={addStyles.price}>
-                     Rp. {payment.dataPayment.totalPayment}
+                     Rp.{' '}
+                     {reservation.dataReservation.totalPayment.toLocaleString(
+                        'id-ID',
+                     )}
                   </Text>
                   <IconInfo
                      name="information-circle-sharp"
