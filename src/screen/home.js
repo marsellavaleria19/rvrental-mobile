@@ -75,7 +75,7 @@ const Home = ({navigation}) => {
                            <IconSearch name="search" style={addStyles.icon} />
                         </TouchableOpacity>
                      </View>
-                     {auth.user.role == 'admin' && showButtonItem()}
+                     {auth.user?.role == 'admin' && showButtonItem()}
                   </Container>
                </ImageBackground>
             </View>
