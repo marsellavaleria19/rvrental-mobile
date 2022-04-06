@@ -22,12 +22,13 @@ import {getListCategory} from '../redux/actions/category';
 import {getListVehicle} from '../redux/actions/vehicle';
 import {useEffect, useState} from 'react';
 import {FlatList, ScrollView} from 'native-base';
+import auth from '../redux/reducers/auth';
 // import {image} from '../assets/images/backgroud-image.png'
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
 
 const Home = ({navigation}) => {
-   const {category, vehicle} = useSelector(state => state);
+   const {category, vehicle, auth} = useSelector(state => state);
    const dispatch = useDispatch();
    const [listVehicle, setLisstVehicle] = useState([]);
 
@@ -62,6 +63,15 @@ const Home = ({navigation}) => {
                            <IconSearch name="search" style={addStyles.icon} />
                         </TouchableOpacity>
                      </View>
+                     {auth.user?.role == 'admin' && (
+                        <TouchableOpacity>
+                           <CButton
+                              classButton={addStyles.buttonNewItem}
+                              textButton={addStyles.fontButtonNewItem}>
+                              Add new item
+                           </CButton>
+                        </TouchableOpacity>
+                     )}
                   </Container>
                </ImageBackground>
             </View>
@@ -167,6 +177,20 @@ const addStyles = StyleSheet.create({
       height: 168,
       width: 265,
       borderRadius: 10,
+   },
+   buttonNewItem: {
+      backgroundColor: stylePrimary.secondaryColor,
+      marginTop: 10,
+      marginBottom: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 66,
+      borderRadius: 10,
+   },
+   fontButtonNewItem: {
+      fontSize: 24,
+      color: stylePrimary.mainColor,
+      fontWeight: '700',
    },
 });
 

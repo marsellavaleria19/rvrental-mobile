@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux';
 import auth from './auth';
 import category from './category';
-import storage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistReducer} from 'redux-persist';
 import vehicle from './vehicle';
 import counter from './counter';
@@ -11,22 +11,22 @@ import history from './history';
 
 const persistForAuth = {
    key: 'auth',
-   storage,
+   storage: AsyncStorage,
 };
 
 const persistForCategory = {
    key: 'category',
-   storage,
+   storage: AsyncStorage,
 };
 
 const persistForVehicle = {
    key: 'vehicle',
-   storage,
+   storage: AsyncStorage,
 };
 
 const persistForHistory = {
    key: 'history',
-   storage,
+   storage: AsyncStorage,
 };
 
 const rootReducers = combineReducers({
