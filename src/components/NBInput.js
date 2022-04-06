@@ -21,7 +21,6 @@ const NBInput = ({
          <FormControl>
             <Input
                placeholder={placeholder}
-               mt="4"
                variant={classVariant}
                value={value}
                onChangeText={change}

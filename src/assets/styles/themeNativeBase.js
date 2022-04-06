@@ -23,6 +23,15 @@ export const theme = extendTheme({
                   color: stylePrimary.mainColor,
                },
             },
+            item: {
+               backgroundColor: 'rgba(52, 52, 52, 0.0)',
+               borderBottomWidth: 1,
+               borderBottomColor: '#9F9F9F',
+               _text: {
+                  color: stylePrimary.mainColor,
+                  textAlign: 'center',
+               },
+            },
             reservation: {
                _text: {
                   color: stylePrimary.mainColor,
@@ -53,6 +62,16 @@ export const theme = extendTheme({
                borderBottomColor: '#9F9F9F',
                _text: {
                   color: 'black',
+               },
+            },
+            item: {
+               backgroundColor: 'rgba(52, 52, 52, 0.0)',
+               borderWidth: 0,
+               borderBottomWidth: 1,
+               borderBottomColor: '#9F9F9F',
+               height: 51,
+               _text: {
+                  color: stylePrimary.mainColor,
                },
             },
          },
