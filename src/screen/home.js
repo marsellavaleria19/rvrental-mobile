@@ -20,20 +20,23 @@ import ListBar from '../components/ListBar';
 import {useSelector, useDispatch} from 'react-redux';
 import {getListCategory} from '../redux/actions/category';
 import {getListVehicle} from '../redux/actions/vehicle';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {FlatList, ScrollView} from 'native-base';
+import auth from '../redux/reducers/auth';
 // import {image} from '../assets/images/backgroud-image.png'
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
 
 const Home = ({navigation}) => {
-   const {category, vehicle} = useSelector(state => state);
+   const {category, vehicle, auth} = useSelector(state => state);
    const dispatch = useDispatch();
+   const [listVehicle, setLisstVehicle] = useState([]);
 
    useEffect(() => {
       dispatch(getListCategory());
       dispatch(getListVehicle());
-   }, [dispatch]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
 
    const itemPerCategory = category => {
       return vehicle.listVehicle
@@ -42,57 +45,68 @@ const Home = ({navigation}) => {
    };
 
    return (
-      <View>
-         <View>
-            <ImageBackground
-               source={require('../assets/images/background-search.png')}
-               resizeMode="cover"
-               style={addStyles.imageBackgroundSearch}>
-               <Container>
-                  <View style={addStyles.layoutSearch}>
-                     <Input
-                        classInput={addStyles.input}
-                        placeholder="Search vehicle"
-                     />
-                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Filter')}>
-                        <IconSearch name="search" style={addStyles.icon} />
-                     </TouchableOpacity>
-                  </View>
-               </Container>
-            </ImageBackground>
-         </View>
-         <View>
-            {/* <FlatList
-               data={category.listCategory}
-               renderItem={({itemCategory}) => {
-                  return (
-                     <ListBar
-                        title={itemCategory.name}
-                        navigate={() =>
-                           navigation.navigate('DetailCategory', {
-                              categoryId: itemCategory.id,
-                           })
-                        }>
-                        <FlatList
-                           data={itemPerCategory(itemCategory)}
-                           renderItem={({item}) => {
-                              return (
-                                 <Image
-                                    key={item.id}
-                                    source={{
-                                       uri: `${item.photo}`,
-                                    }}
-                                    style={addStyles.imageList}
-                                 />
-                              );
-                           }}
+      <View style={styles.background}>
+         <ScrollView>
+            <View>
+               <ImageBackground
+                  source={require('../assets/images/background-search.png')}
+                  resizeMode="cover"
+                  style={addStyles.imageBackgroundSearch}>
+                  <Container>
+                     <View style={addStyles.layoutSearch}>
+                        <Input
+                           classInput={addStyles.input}
+                           placeholder="Search vehicle"
                         />
-                     </ListBar>
-                  );
-               }}
-            /> */}
-            <ScrollView h="65%">
+                        <TouchableOpacity
+                           onPress={() => navigation.navigate('Filter')}>
+                           <IconSearch name="search" style={addStyles.icon} />
+                        </TouchableOpacity>
+                     </View>
+                     {auth.user?.role == 'admin' && (
+                        <TouchableOpacity>
+                           <CButton
+                              classButton={addStyles.buttonNewItem}
+                              textButton={addStyles.fontButtonNewItem}>
+                              Add new item
+                           </CButton>
+                        </TouchableOpacity>
+                     )}
+                  </Container>
+               </ImageBackground>
+            </View>
+            <View>
+               <FlatList
+                  data={category.listCategory}
+                  renderItem={({item}) => {
+                     return (
+                        <ListBar
+                           title={item.name}
+                           navigate={() =>
+                              navigation.navigate('DetailCategory', {
+                                 categoryId: item.id,
+                              })
+                           }>
+                           <FlatList
+                              horizontal={true}
+                              data={itemPerCategory(item)}
+                              renderItem={({item}) => {
+                                 return (
+                                    <Image
+                                       key={item.id}
+                                       source={{
+                                          uri: `${item.photo}`,
+                                       }}
+                                       style={addStyles.imageList}
+                                    />
+                                 );
+                              }}
+                           />
+                        </ListBar>
+                     );
+                  }}
+               />
+               {/* <ScrollView h="65%">
                {category.listCategory.length > 0 &&
                   category.listCategory.map(itemCategory => {
                      return (
@@ -126,8 +140,9 @@ const Home = ({navigation}) => {
                         </ListBar>
                      );
                   })}
-            </ScrollView>
-         </View>
+            </ScrollView> */}
+            </View>
+         </ScrollView>
       </View>
    );
 };
@@ -162,6 +177,20 @@ const addStyles = StyleSheet.create({
       height: 168,
       width: 265,
       borderRadius: 10,
+   },
+   buttonNewItem: {
+      backgroundColor: stylePrimary.secondaryColor,
+      marginTop: 10,
+      marginBottom: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 66,
+      borderRadius: 10,
+   },
+   fontButtonNewItem: {
+      fontSize: 24,
+      color: stylePrimary.mainColor,
+      fontWeight: '700',
    },
 });
 

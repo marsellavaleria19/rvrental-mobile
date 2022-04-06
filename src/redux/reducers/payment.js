@@ -18,6 +18,10 @@ const payment = (state = statePayment, action) => {
          state.isError = false;
          return {...state};
       }
+      case 'SAVE_PAYMENT': {
+         state.dataPayment = action.payload;
+         return {...state};
+      }
       case 'PAYMENT_REJECTED': {
          const {data} = action.payload.response;
          state.isLoading = false;

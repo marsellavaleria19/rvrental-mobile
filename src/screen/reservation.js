@@ -78,7 +78,7 @@ const Reservation = ({route, navigation}) => {
    };
 
    const reservationHandle = () => {
-      dispatch(reservationProcess(vehicle.dataVehicle.id, qty, day, date));
+      dispatch(reservationProcess(vehicle.dataVehicle, qty, day, date));
       setControl(true);
    };
 

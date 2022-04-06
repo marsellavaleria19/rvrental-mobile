@@ -6,11 +6,34 @@ import IconChevron from 'react-native-vector-icons/FontAwesome';
 import stylePrimary from '../assets/styles/stylePrimary';
 import ListHistory from '../components/ListHistoryFavorite';
 import image from '../assets/images/background-reservation.png';
-import {ScrollView} from 'native-base';
+import {FlatList, ScrollView} from 'native-base';
+import {useDispatch, useSelector} from 'react-redux';
+import {getListHistory} from '../redux/actions/history';
+import {useEffect, useState} from 'react';
 
-const History = () => {
+const History = ({navigation}) => {
+   const {history, auth} = useSelector(state => state);
+   const [listHistory, setListHistory] = useState([]);
+   const dispatch = useDispatch();
+
+   useEffect(() => {
+      dispatch(getListHistory(auth.token));
+      setListHistory(listHistoryByIdUser());
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+   useEffect(() => {
+      if (history.listHistory > 0 && history.isSuccessPayment) {
+         dispatch(getListHistory(auth.token));
+      }
+   });
+
+   const listHistoryByIdUser = () => {
+      return history.listHistory;
+   };
+
    return (
-      <SafeAreaView>
+      <View style={styles.background}>
          <Container>
             <ScrollView>
                <View style={addStyles.layoutToday}>
@@ -34,7 +57,29 @@ const History = () => {
                <View style={addStyles.layoutWeek}>
                   <Text style={addStyles.title}>A Week Ago</Text>
                </View>
-               <ListHistory
+               <FlatList
+                  data={history.listHistory.filter(
+                     item => item.user_id == auth.user.id,
+                  )}
+                  keyExtractor={item => item.id}
+                  renderItem={({item}) => {
+                     return (
+                        <ListHistory
+                           path={
+                              item.photo !== null
+                                 ? {uri: `${item.photo}`}
+                                 : image
+                           }
+                           title={item.brand}
+                           reservationDate={`${item.rentStartDate} to ${item.rentEndDate}`}
+                           payment={item.prepayment}
+                           status={item.status}
+                           isHistory={true}
+                        />
+                     );
+                  }}
+               />
+               {/* <ListHistory
                   path={image}
                   title="Vespa Matic"
                   reservationDate="Jan 18 to 21 2021"
@@ -81,10 +126,10 @@ const History = () => {
                   payment={245000}
                   status="Has been returned"
                   isHistory={true}
-               />
+               /> */}
             </ScrollView>
          </Container>
-      </SafeAreaView>
+      </View>
    );
 };
 

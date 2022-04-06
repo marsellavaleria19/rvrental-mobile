@@ -6,6 +6,7 @@ import {
    ImageBackground,
    Image,
    TouchableOpacity,
+   ScrollView,
 } from 'react-native';
 import {styles} from '../../assets/styles/styles';
 import Container from '../../components/Container';
@@ -15,76 +16,98 @@ import {button, rateLayout, rateText} from '../../assets/styles/styleComponent';
 import imageBackground from '../../assets/images/background-reservation.png';
 import Rate from '../../components/Rate';
 import IconInfo from 'react-native-vector-icons/Ionicons';
+import {historyInput} from '../../redux/actions/history';
 import {useDispatch, useSelector} from 'react-redux';
-import {getDetailPayment} from '../../redux/actions/payment';
 import moment from 'moment';
+import {useEffect, useState} from 'react';
 
-const PaymentDetail = ({route, navigation}) => {
-   const {payment} = useSelector(state => state);
+const PaymentDetail = ({navigation}) => {
+   const {payment, history, reservation, auth} = useSelector(state => state);
    const dispatch = useDispatch();
-   const {idHistory} = route.params;
+   const [control, setControl] = useState(false);
+   // React.useEffect(() => {
+   //    dispatch(getDetailPayment(idHistory));
+   // }, []);
 
-   React.useEffect(() => {
-      dispatch(getDetailPayment(idHistory));
-   }, []);
+   useEffect(() => {
+      if (history.dataHistory !== null && control) {
+         navigation.navigate('FinishPayment', {
+            idHistory: history.dataHistory.id,
+         });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [history.dataHistory]);
+
+   const paymentHandle = () => {
+      dispatch(
+         historyInput(
+            reservation.dataReservation,
+            auth.user.id,
+            payment.dataPayment,
+            auth.token,
+         ),
+      );
+      setControl(true);
+   };
 
    return (
-      <View>
-         <Container>
-            <View style={addStyles.positionRate}>
-               <Image
-                  source={{uri: `${payment.dataPayment.photo}`}}
-                  style={addStyles.imageBackground}
-               />
-               <View style={addStyles.rateLayout}>
-                  <Rate rate={3.5} />
+      <View style={styles.background}>
+         <ScrollView>
+            <Container>
+               <View style={addStyles.positionRate}>
+                  <Image
+                     source={{uri: `${reservation.dataReservation.photo}`}}
+                     style={addStyles.imageBackground}
+                  />
+                  <View style={addStyles.rateLayout}>
+                     <Rate rate={3.5} />
+                  </View>
                </View>
-            </View>
-            <View style={addStyles.layoutDescription}>
-               <Text style={addStyles.fontDescription}>
-                  {payment.dataPayment.qty} {payment.dataPayment.brand}
-               </Text>
-               <Text style={addStyles.fontDescription}>
-                  {payment.dataPayment.payment_type}
-               </Text>
-               <Text style={addStyles.fontDescription}>
-                  {payment.dataPayment.day} days{' '}
-               </Text>
-               <Text style={addStyles.fontDescription}>
-                  {moment(payment.dataPayment.rentStartDate).format(
-                     'DD MMM YYYY',
-                  )}{' '}
-                  to{' '}
-                  {moment(payment.dataPayment.rentEndDate).format(
-                     'DD MMM YYYY',
-                  )}
-               </Text>
-            </View>
-            <View style={addStyles.line} />
-            <View style={addStyles.layoutPrice}>
-               <Text style={addStyles.price}>
-                  Rp. {payment.dataPayment.totalPayment}
-               </Text>
-               <IconInfo
-                  name="information-circle-sharp"
-                  style={addStyles.iconInfo}
-               />
-            </View>
-            <View style={addStyles.layoutButton}>
-               <TouchableOpacity
-                  onPress={() =>
-                     navigation.navigate('FinishPayment', {
-                        idHistory: idHistory,
-                     })
-                  }>
-                  <CButton
-                     classButton={styles.buttonPayment}
-                     textButton={styles.fontButtonPayment}>
-                     Get Payment Code
-                  </CButton>
-               </TouchableOpacity>
-            </View>
-         </Container>
+               <View style={addStyles.layoutDescription}>
+                  <Text style={addStyles.fontDescription}>
+                     {reservation.dataReservation.qty}{' '}
+                     {reservation.dataReservation.brand}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {payment.dataPayment.payment_type}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {reservation.dataReservation.day} days{' '}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {moment(reservation.dataReservation.rentStartDate).format(
+                        'DD MMM YYYY',
+                     )}{' '}
+                     to{' '}
+                     {moment(reservation.dataReservation.rentEndDate).format(
+                        'DD MMM YYYY',
+                     )}
+                  </Text>
+               </View>
+               <View style={addStyles.line} />
+               <View style={addStyles.layoutPrice}>
+                  <Text style={addStyles.price}>
+                     Rp.{' '}
+                     {reservation.dataReservation.totalPayment.toLocaleString(
+                        'id-ID',
+                     )}
+                  </Text>
+                  <IconInfo
+                     name="information-circle-sharp"
+                     style={addStyles.iconInfo}
+                  />
+               </View>
+               <View style={addStyles.layoutButton}>
+                  <TouchableOpacity onPress={paymentHandle}>
+                     <CButton
+                        classButton={styles.buttonPayment}
+                        textButton={styles.fontButtonPayment}>
+                        Get Payment Code
+                     </CButton>
+                  </TouchableOpacity>
+               </View>
+            </Container>
+         </ScrollView>
       </View>
    );
 };
