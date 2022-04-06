@@ -11,12 +11,21 @@ import {
 import {StyleSheet} from 'react-native';
 import {color} from 'native-base/lib/typescript/theme/styled-system';
 
-const BSelect = ({width, placeholder, selected, change, color, children}) => {
+const BSelect = ({
+   width,
+   placeholder,
+   selected,
+   change,
+   color,
+   backgroud,
+   children,
+}) => {
    return (
       <Box w={width}>
          <Select
             selectedValue={selected}
             minWidth="20"
+            bgColor={backgroud}
             placeholder={placeholder}
             _selectedItem={{
                bg: {color},

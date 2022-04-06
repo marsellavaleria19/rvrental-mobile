@@ -44,6 +44,18 @@ const Home = ({navigation}) => {
          .filter((item, index) => index < 5);
    };
 
+   const showButtonItem = () => {
+      return (
+         <TouchableOpacity onPress={() => navigation.navigate('AddItem')}>
+            <CButton
+               classButton={addStyles.buttonNewItem}
+               textButton={addStyles.fontButtonNewItem}>
+               Add new item
+            </CButton>
+         </TouchableOpacity>
+      );
+   };
+
    return (
       <View style={styles.background}>
          <ScrollView>
@@ -63,15 +75,7 @@ const Home = ({navigation}) => {
                            <IconSearch name="search" style={addStyles.icon} />
                         </TouchableOpacity>
                      </View>
-                     {auth.user?.role == 'admin' && (
-                        <TouchableOpacity>
-                           <CButton
-                              classButton={addStyles.buttonNewItem}
-                              textButton={addStyles.fontButtonNewItem}>
-                              Add new item
-                           </CButton>
-                        </TouchableOpacity>
-                     )}
+                     {auth.user.role == 'admin' && showButtonItem()}
                   </Container>
                </ImageBackground>
             </View>
