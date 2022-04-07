@@ -18,6 +18,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
 import BSelect from '../../components/BSelect';
 import {getListCategory} from '../../redux/actions/category';
+import RNFetchBlob from 'rn-fetch-blob'
 
 const AddItem = ({navigation}) => {
    const {category} = useSelector(state => state);
@@ -44,6 +45,19 @@ const AddItem = ({navigation}) => {
          setQty(qty - 1);
       }
    };
+
+   const addItemHandle = ()=>{
+      
+      RNFetchBlob.fetch(
+         'PATCH',
+         `http://192.168.1.2:5000/users/${auth.user.id}`,
+         {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${auth.token}`,
+         },
+         dataUpdate,
+      );
+   }
 
    return (
       <View style={styles.background}>

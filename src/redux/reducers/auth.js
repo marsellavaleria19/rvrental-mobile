@@ -121,6 +121,13 @@ const auth = (state = dataLogin, action) => {
          state.user = data.results;
          return {...state};
       }
+      case 'LOGIN_PROFILE_REJECTED': {
+         const {data} = action.payload.response;
+         state.isLoading = false;
+         state.isError = true;
+         state.errMessage = data.message;
+         return {...state};
+      }
       case 'LOGOUT': {
          state.token = null;
          state.isAuthenticated = false;
