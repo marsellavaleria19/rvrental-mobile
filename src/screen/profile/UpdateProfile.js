@@ -18,11 +18,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
 import {launchImageLibrary} from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
-import {updateUser} from '../../redux/actions/user';
+import {updateUser, uploadImageUser} from '../../redux/actions/user';
 import {NBAlert} from '../../components/NBAlert';
 import IconDate from 'react-native-vector-icons/Fontisto';
 import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import {getDataUser} from '../../redux/actions/auth';
 
 const UpdateProfile = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -36,17 +37,36 @@ const UpdateProfile = ({navigation}) => {
    const [upload, setUpload] = useState(false);
    const dispatch = useDispatch();
    const [control, setControl] = useState(false);
-   const [success, setSuccess] = useState(null);
-   const [error, setError] = useState('');
+   const [image, setImage] = useState({});
 
    useEffect(() => {
-      setName(auth.user.fullName);
-      setEmail(auth.user.email);
-      setMobileNumber(auth.user.mobileNumber);
-      setAddress(auth.user.address);
-      setPicture(imageProfile);
+      setName(auth.user?.fullName);
+      setEmail(auth.user?.email);
+      setMobileNumber(auth.user?.mobileNumber);
+      setAddress(auth.user?.address);
+      setPicture(
+         auth.user?.photo !== null
+            ? {uri: `${auth.user?.photo}`}
+            : imageProfile,
+      );
+      setUpload(false);
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
+
+   useEffect(() => {
+      if (auth.user !== null && control) {
+         navigation.navigate('Profile');
+         // dispatch(getDataUser(auth.token));
+         // setName(auth.user?.fullName);
+         // setEmail(auth.user?.email);
+         // setMobileNumber(auth.user?.mobileNumber);
+         // setAddress(auth.user?.address);
+         // setPicture({uri: `${auth.user?.photo}`});
+         // setControl(false);
+      }
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [auth.user]);
 
    const onChange = (event, selectedDate) => {
       setBirthDate(selectedDate);
@@ -61,35 +81,38 @@ const UpdateProfile = ({navigation}) => {
       });
    };
 
+   const browseImage = async () => {
+      const imagePicker = await launchImageLibrary({}, async image => {
+         console.log(image);
+         setPicture({uri: image.assets[0].uri});
+      });
+      setImage(imagePicker);
+   };
+
    const updateProfileHandle = async () => {
       try {
+         console.log('Hai');
          console.log(name);
+         console.log(image);
          var dataSend = {
             fullName: name,
             gender: gender,
             mobileNumber: mobileNumber,
-            birthDate: birthDate,
             address: address,
+            birthDate: moment(birthDate.toLocaleString()).format('YYYY-MM-DD'),
          };
 
-         var dataUpdate = [];
+         if (Object.keys(image).length > 0) {
+            dispatch(
+               updateUser(auth.token, auth.user.id, dataSend, image.assets[0]),
+            );
+         } else {
+            dispatch(updateUser(auth.token, auth.user.id, dataSend));
+         }
 
-         Object.keys(dataSend).forEach(key => {
-            dataUpdate.push({name: `${key}`, data: dataSend[key]});
-         });
-
-         const result = await RNFetchBlob.fetch(
-            'PATCH',
-            `http://192.168.1.2:5000/users/${auth.user.id}`,
-            {
-               'Content-Type': 'multipart/form-data',
-               Authorization: `Bearer ${auth.token}`,
-            },
-            dataUpdate,
-         );
          setControl(true);
       } catch (err) {
-         setError(err);
+         console.log(err);
       }
    };
 
@@ -97,19 +120,24 @@ const UpdateProfile = ({navigation}) => {
       <View style={styles.background}>
          <Container>
             <ScrollView>
-               <View>
-                  {control && (
-                     <NBAlert
-                        status="success"
-                        message={'Data user updated successfully!'}
+               {/* <View style={addStyles.layoutImageEdit}>
+                  {!upload ? (
+                     <Image
+                        size={100}
+                        resizeMode={'contain'}
+                        borderRadius={100}
+                        source={imageProfile}
+                        alt="Profile"
                      />
+                  ) : (
+                     <View style={addStyles.layoutLoading}>
+                        <View style={addStyles.spinner}>
+                           <Spinner size="lg" color="white" />
+                        </View>
+                     </View>
                   )}
-                  {error && (
-                     <NBAlert
-                        status="error"
-                        message={'Data user failed to update'}
-                     />
-                  )}
+               </View> */}
+               <View style={addStyles.layoutImageEdit}>
                   {!upload ? (
                      <Image
                         size={100}
@@ -125,8 +153,6 @@ const UpdateProfile = ({navigation}) => {
                         </View>
                      </View>
                   )}
-               </View>
-               <View style={addStyles.layoutImageEdit}>
                   <View style={addStyles.layoutButtonImage}>
                      <CButton
                         classButton={addStyles.buttonImage}
@@ -134,7 +160,7 @@ const UpdateProfile = ({navigation}) => {
                         textButton={addStyles.fontButtonImage}>
                         Take Picture
                      </CButton>
-                     <TouchableOpacity>
+                     <TouchableOpacity onPress={browseImage}>
                         <CButton
                            classButton={addStyles.buttonGallery}
                            textButton={addStyles.fontButtonGallery}>
@@ -222,7 +248,6 @@ const UpdateProfile = ({navigation}) => {
                         />
                      </Box>
                   </View>
-                  <Text>Hallo {name}</Text>
                   <View style={addStyles.layoutButton}>
                      <TouchableOpacity onPress={updateProfileHandle}>
                         <CButton

@@ -7,11 +7,12 @@ import {getListVehicleByCategory} from '../redux/actions/vehicle';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {FlatList} from 'native-base';
-// import {image} from '../assets/images/backgroud-image.png'
+import auth from '../redux/reducers/auth';
+import image from '../assets/images/image-item.png';
 
 const DetailCategory = ({route, navigation}) => {
    const {categoryId} = route.params;
-   const {vehicle} = useSelector(state => state);
+   const {vehicle, auth} = useSelector(state => state);
    const dispatch = useDispatch();
 
    useEffect(() => {
@@ -26,7 +27,7 @@ const DetailCategory = ({route, navigation}) => {
                return (
                   <ListDetail
                      path={{
-                        uri: `${item.photo}`,
+                        uri: `${item.photo !== null ? item.photo : image}`,
                      }}
                      title={item.name}
                      description={
@@ -39,9 +40,16 @@ const DetailCategory = ({route, navigation}) => {
                      price={item.price}
                      rate={item.rate}
                      navigate={() =>
-                        navigation.navigate('Reservation', {
-                           vehicleId: item.id,
-                        })
+                        navigation.navigate(
+                           `${
+                              auth.user !== null && auth.user.role == 'admin'
+                                 ? 'EditItem'
+                                 : 'Reservation'
+                           }`,
+                           {
+                              vehicleId: item.id,
+                           },
+                        )
                      }
                   />
                );

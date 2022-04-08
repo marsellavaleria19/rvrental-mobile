@@ -38,15 +38,15 @@ const ProfileMenuList = ({navigation}) => {
                   resizeMode={'contain'}
                   borderRadius={100}
                   source={
-                     auth.user !== null && auth.user.photo !== null
+                     auth.user !== null && auth.user?.photo !== null
                         ? {
-                             uri: `${auth.user.photo}`,
+                             uri: `${auth.user?.photo}`,
                           }
                         : `${imageProfile}`
                   }
                   alt="Profile"
                />
-               <Text style={addStyles.textProfile}>{auth.user.fullName}</Text>
+               <Text style={addStyles.textProfile}>{auth.user?.fullName}</Text>
             </View>
             <ScrollView style={addStyles.scrollMenu}>
                <Container>
@@ -102,7 +102,7 @@ const addStyles = StyleSheet.create({
       marginTop: 36,
    },
    layoutButton: {
-      marginTop: 299,
+      marginTop: 100,
       marginBottom: 20,
    },
    buttonProfile: {

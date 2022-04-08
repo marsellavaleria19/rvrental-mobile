@@ -1,7 +1,18 @@
 const dataLogin = {
    token: null,
    message: null,
-   user: null,
+   user: {
+      // id: 43,
+      // fullName: 'Admin',
+      // NickName: null,
+      // gender: 'Female',
+      // photo: 'http://192.168.1.2:5000/uploads/rn_image_picker_lib_temp_5dfbd7db-1161-459a-85f2-fd1cc23e08c0.jpg',
+      // address: 'Jl.ABC no 113',
+      // birthDate: '2022-04-07T17:00:00.000Z',
+      // mobileNumber: '12344321',
+      // email: 'admin@mail.com',
+      // role: 'admin',
+   },
    isError: false,
    isLoading: false,
    isAuthenticated: false,
@@ -117,11 +128,32 @@ const auth = (state = dataLogin, action) => {
       }
       case 'LOGIN_PROFILE_FULFILLED': {
          const {data} = action.payload;
+         console.log(data);
          state.isLoading = false;
          state.user = data.results;
          return {...state};
       }
       case 'LOGIN_PROFILE_REJECTED': {
+         const {data} = action.payload.response;
+         state.isLoading = false;
+         state.isError = true;
+         state.errMessage = data.message;
+         return {...state};
+      }
+      case 'UPDATE_PROFILE_PENDING': {
+         state.isLoading = true;
+         return {...state};
+      }
+      case 'UPDATE_PROFILE_FULFILLED': {
+         console.log('Hai!');
+         console.log(action.payload);
+         const {data} = action.payload;
+         console.log(data);
+         state.isLoading = false;
+         state.user = data.results;
+         return {...state};
+      }
+      case 'UPDATE_PROFILE_REJECTED': {
          const {data} = action.payload.response;
          state.isLoading = false;
          state.isError = true;

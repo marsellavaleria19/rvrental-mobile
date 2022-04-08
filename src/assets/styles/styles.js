@@ -46,6 +46,10 @@ const styles = StyleSheet.create({
       fontSize: 14,
       color: 'green',
    },
+   statusNotAvailable: {
+      fontSize: 14,
+      color: 'red',
+   },
    priceDetail: {
       fontSize: 16,
       fontWeight: '700',

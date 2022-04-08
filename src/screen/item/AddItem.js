@@ -9,32 +9,50 @@ import {
    ScrollView,
 } from 'react-native';
 import CButton from '../../components/Button';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {styles} from '../../assets/styles/styles';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import {TextArea, Box, Image, Select} from 'native-base';
-import imageProfile from '../../assets/images/profile.png';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
 import BSelect from '../../components/BSelect';
-import {getListCategory} from '../../redux/actions/category';
-import RNFetchBlob from 'rn-fetch-blob'
+import {getListCategory, addDataCategory} from '../../redux/actions/category';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {addDataVehicle} from '../../redux/actions/vehicle';
+import imagePhoto from '../../assets/images/image-photo.png';
+import {NBAlert} from '../../components/NBAlert';
+import NBModal from '../../components/NBModal';
 
 const AddItem = ({navigation}) => {
    const {category} = useSelector(state => state);
-   const {auth} = useSelector(state => state);
+   const {auth, vehicle} = useSelector(state => state);
    const [name, setName] = useState('');
    const [price, setPrice] = useState('');
    const [qty, setQty] = useState(0);
-   const [mobileNumber, setMobileNumber] = useState('');
    const [description, setDescription] = useState('');
    const [location, setLocation] = useState('');
+   const [categoryId, setCategoryId] = useState('');
    const dispatch = useDispatch();
+   const [image, setImage] = useState([]);
+   const [picture, setPicture] = useState(null);
+   const [control, setControl] = useState(false);
+   const [show, setShow] = useState(false);
+   const handleShow = () => setShow(true);
+   const handleClose = () => setShow(false);
+   const [dataCategory, setDataCategory] = useState(null);
 
    useEffect(() => {
       dispatch(getListCategory());
+      setPicture(imagePhoto);
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
+
+   useEffect(() => {
+      if (category.dataCategory !== null && control) {
+         dispatch(getListCategory());
+         setCategoryId(category.dataCategory.id);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [category.dataCategory]);
 
    const countIncrement = () => {
       setQty(qty + 1);
@@ -46,40 +64,67 @@ const AddItem = ({navigation}) => {
       }
    };
 
-   const addItemHandle = ()=>{
-      
-      RNFetchBlob.fetch(
-         'PATCH',
-         `http://192.168.1.2:5000/users/${auth.user.id}`,
-         {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${auth.token}`,
-         },
-         dataUpdate,
-      );
-   }
+   const browseImage = async () => {
+      const imagePicker = await launchImageLibrary({}, async image => {
+         setPicture({uri: image.assets[0].uri});
+      });
+      setImage({...imagePicker});
+   };
+
+   const addItemHandle = () => {
+      console.log(image);
+      var dataSend = {
+         name,
+         category_id: categoryId.toString(),
+         location,
+         price,
+         qty: qty.toString(),
+         isAvailable: '1',
+      };
+      // console.log(dataSend);
+      // var dataVehicle = [];
+      // Object.keys(dataSend).forEach(key => {
+      //    dataVehicle.push({name: `${key}`, data: dataSend[key]});
+      // });
+      // console.log(dataVehicle);
+
+      dispatch(addDataVehicle(auth.token, dataSend, image.assets[0]));
+      setControl(true);
+   };
+
+   const addCategoryHandle = () => {
+      dispatch(addDataCategory(auth.token, dataCategory));
+      setControl(true);
+      setCategoryId(dataCategory.id);
+      setShow(false);
+      setDataCategory(null);
+   };
 
    return (
       <View style={styles.background}>
          <Container>
             <ScrollView>
+               {control && (
+                  <NBAlert status="success" message={vehicle.message} />
+               )}
+               {vehicle.isError && (
+                  <NBAlert status="error" message={vehicle.errMessage} />
+               )}
                <View style={addStyles.layoutImageEdit}>
                   <Image
                      size={100}
                      resizeMode={'contain'}
                      borderRadius={100}
-                     source={
-                        auth.user !== null && auth.user.photo !== null
-                           ? {uri: `${auth.user.photo}`}
-                           : imageProfile
-                     }
+                     source={picture}
                      alt="Profile"
                   />
-                  <CButton
-                     classButton={addStyles.buttonAddPicture}
-                     textButton={addStyles.fontButtonAddPicture}>
-                     Add pictures
-                  </CButton>
+                  <TouchableOpacity onPress={browseImage}>
+                     <CButton
+                        classButton={addStyles.buttonAddPicture}
+                        textButton={addStyles.fontButtonAddPicture}>
+                        Add pictures
+                     </CButton>
+                  </TouchableOpacity>
                </View>
                <View style={addStyles.layoutForm}>
                   <View style={addStyles.layoutInput}>
@@ -106,7 +151,7 @@ const AddItem = ({navigation}) => {
                               placeholder="Describe your product min. 150 characters"
                               variant="item"
                               value={description}
-                              onChange={setDescription}
+                              onChangeText={setDescription}
                            />
                         </Box>
                      </View>
@@ -133,26 +178,38 @@ const AddItem = ({navigation}) => {
                            <Text style={addStyles.label}>Add to</Text>
                            <BSelect
                               width="100%"
-                              placeholder="Location"
+                              placeholder="Category"
                               backgroud="white"
-                              select={location}
-                              change={itemValue => setLocation(itemValue)}>
-                              {category.listCategory.length > 0 &&
-                                 category.listCategory.map(item => {
-                                    return (
-                                       <Select.Item
-                                          label={item.name}
-                                          value={item.id}
-                                       />
-                                    );
-                                 })}
-                              {/* <Select.Item label="Bandung" value={'Bandung'} />
-                              <Select.Item label="Jakarta" value={'Jakarta'} />
+                              select={categoryId}
+                              change={itemValue => setCategoryId(itemValue)}>
+                              {category.listCategory.map(item => {
+                                 return (
+                                    <Select.Item
+                                       label={item.name}
+                                       value={item.id}
+                                    />
+                                 );
+                              })}
                               <Select.Item
-                                 label="Yogyakarta"
+                                 label="Add Category"
                                  value={'Yogyakarta'}
-                              /> */}
+                                 onPress={handleShow}
+                              />
                            </BSelect>
+                           <NBModal
+                              title="Category"
+                              show={show}
+                              functionShow={handleShow}
+                              functionClose={handleClose}
+                              functionHandle={addCategoryHandle}
+                              buttonTitile="Save">
+                              <NBInput
+                                 placeholder={'Type Category'}
+                                 classVariant="item"
+                                 value={dataCategory}
+                                 change={setDataCategory}
+                              />
+                           </NBModal>
                         </Box>
                      </View>
                      <View style={addStyles.layoutQtyBikes}>
@@ -178,8 +235,7 @@ const AddItem = ({navigation}) => {
                   </View>
 
                   <View style={addStyles.layoutButton}>
-                     <TouchableOpacity
-                        onPress={() => navigation.navigate('EditItem')}>
+                     <TouchableOpacity onPress={addItemHandle}>
                         <CButton
                            classButton={styles.buttonPayment}
                            textButton={styles.fontButtonPayment}>
@@ -214,6 +270,7 @@ const addStyles = StyleSheet.create({
       top: 40,
       justifyContent: 'center',
       marginBottom: 35,
+      width: '100%',
    },
    label: {
       color: stylePrimary.mainColor,
@@ -280,7 +337,7 @@ const addStyles = StyleSheet.create({
       alignItems: 'center',
       borderRadius: 10,
       marginTop: 23,
-      width: '50%',
+      width: '100%',
    },
    fontButtonAddPicture: {
       fontSize: 13,
