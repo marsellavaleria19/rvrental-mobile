@@ -28,19 +28,21 @@ const SuccessPayment = ({route, navigation}) => {
    const {idHistory} = route.params;
    const [control, setControl] = useState(false);
 
-   useEffect(() => {
-      if (history.listHistory.length > 0 && control) {
-         navigation.navigate('HistoryNav');
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [history.listHistory]);
+   // useEffect(() => {
+   //    if (history.listHistory.length > 0 && control) {
+   //       navigation.navigate('HistoryNav');
+   //    }
+   //    // eslint-disable-next-line react-hooks/exhaustive-deps
+   // }, [history.listHistory]);
 
    const successPaymentHandle = () => {
       dispatch({
          type: 'HISTORY_SET_SUCCESS',
       });
       setControl(true);
+      navigation.navigate('HistoryNav');
    };
+
 
    return (
       <View style={styles.background}>

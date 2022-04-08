@@ -17,7 +17,9 @@ const Main = () => {
    const dispatch = useDispatch();
 
    useEffect(() => {
-      dispatch(getDataUser(auth.token));
+      if (auth.token !== null) {
+         dispatch(getDataUser(auth.token));
+      }
    }, [auth.token, dispatch]);
 
    return (

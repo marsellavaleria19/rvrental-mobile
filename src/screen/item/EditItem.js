@@ -14,30 +14,52 @@ import Container from '../../components/Container';
 import CButton from '../../components/Button';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import IconRun from 'react-native-vector-icons/FontAwesome5';
-import imageBackground from '../../assets/images/background-reservation.png';
+import imageBackground from '../../assets/images/image-item.png';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons';
 import Rate from '../../components/Rate';
 import LinearGradient from 'react-native-linear-gradient';
 import IconLeft from 'react-native-vector-icons/FontAwesome';
 import {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-// import {getDetailVehicle} from '../redux/actions/vehicle';
+import {getDetailVehicle} from '../../redux/actions/vehicle';
 // import {reservationProcess} from '../redux/actions/reservation';
 
-const EditItem = ({navigation}) => {
-   const {vehicle, counter, auth, reservation} = useSelector(state => state);
-   // const {vehicleId} = route.params;
-   const [date, setDate] = useState(new Date());
+const EditItem = ({route, navigation}) => {
+   const {vehicle} = useSelector(state => state);
+   const {vehicleId} = route.params;
    const [qty, setQty] = useState(0);
+   const [picture, setPicture] = useState();
    const dispatch = useDispatch();
-   const [day, setDay] = useState(0);
-   const [control, setControl] = useState(false);
+   const [name, setName] = useState('');
+   const [price, setPrice] = useState(0);
+   const [location, setLocation] = useState('');
+   const [isAvailable, setIsAvailable] = useState(0);
 
-   // useEffect(() => {
-   //    dispatch(getDetailVehicle(vehicleId));
-   //    setQty(0);
-   //    // eslint-disable-next-line react-hooks/exhaustive-deps
-   // }, []);
+   useEffect(() => {
+      dispatch(getDetailVehicle(vehicleId));
+      setQty(vehicle.dataVehicle?.qty);
+      // setPicture(
+      //    vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
+      //       ? {uri: `${vehicle.dataVehicle.photo}`}
+      //       : imageBackground,
+      // );
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+   useEffect(() => {
+      if (vehicle.dataVehicle !== null) {
+         setName(vehicle.dataVehicle.name);
+         setPrice(`${vehicle.dataVehicle.price}`);
+         setLocation(vehicle.dataVehicle.location);
+         setQty(vehicle.dataVehicle.qty);
+         setIsAvailable(vehicle.dataVehicle.isAvailable);
+         setPicture(
+            vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
+               ? {uri: `${vehicle.dataVehicle.photo}`}
+               : imageBackground,
+         );
+      }
+   }, [vehicle.dataVehicle]);
 
    const countIncrement = () => {
       setQty(qty + 1);
@@ -59,7 +81,7 @@ const EditItem = ({navigation}) => {
          <ScrollView>
             <View>
                <ImageBackground
-                  source={imageBackground}
+                  source={picture}
                   resizeMode="cover"
                   style={addStyles.imageBackground}>
                   <Container>
@@ -83,15 +105,10 @@ const EditItem = ({navigation}) => {
                <View style={addStyles.marginLayout}>
                   <View style={addStyles.layoutDescriptionRate}>
                      <View>
-                        <Text style={addStyles.title}>
-                           {vehicle.dataVehicle !== null &&
-                              vehicle.dataVehicle.name}
-                        </Text>
+                        <Text style={addStyles.title}>{name}</Text>
                         <Text style={addStyles.price}>
-                           {vehicle.dataVehicle !== null
-                              ? `Rp. ${vehicle.dataVehicle.price.toLocaleString(
-                                   'id-ID',
-                                )}/day`
+                           {price !== 0
+                              ? `Rp. ${price.toLocaleString('id-ID')}/day`
                               : 'Rp.0'}
                         </Text>
                      </View>
@@ -109,10 +126,7 @@ const EditItem = ({navigation}) => {
                               style={addStyles.iconLocation}
                            />
                         </LinearGradient>
-                        <Text style={addStyles.fontLocation}>
-                           {vehicle.dataVehicle !== null &&
-                              vehicle.dataVehicle.location}
-                        </Text>
+                        <Text style={addStyles.fontLocation}>{location}</Text>
                      </View>
                      <View style={addStyles.layoutDistance}>
                         <LinearGradient
@@ -151,7 +165,9 @@ const EditItem = ({navigation}) => {
                </View>
                <View style={addStyles.layoutButton}>
                   <TouchableOpacity
-                     onPress={() => navigation.navigate('UpdateItem')}>
+                     onPress={() =>
+                        navigation.navigate('UpdateItem', {vehicleId})
+                     }>
                      <CButton
                         classButton={addStyles.buttonReservation}
                         textButton={addStyles.fontButtonReservation}>

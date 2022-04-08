@@ -3,6 +3,7 @@ const dataCategory = {
    pageInfo: {},
    isLoading: false,
    error: false,
+   dataCategory: null,
 };
 
 const category = (state = dataCategory, action) => {
@@ -19,6 +20,21 @@ const category = (state = dataCategory, action) => {
          return {...state};
       }
       case 'GET_CATEGORY_REJECTED': {
+         state.isLoading = false;
+         state.isError = true;
+         return {...state};
+      }
+      case 'GET_DETAIL_CATEGORY_PENDING': {
+         state.isLoading = true;
+         return {...state};
+      }
+      case 'GET_DETAIL_CATEGORY_FULFILLED': {
+         const {data} = action.payload;
+         state.dataCategory = data.results;
+         state.isLoading = false;
+         return {...state};
+      }
+      case 'GET_DETAIL_CATEGORY_REJECTED': {
          state.isLoading = false;
          state.isError = true;
          return {...state};

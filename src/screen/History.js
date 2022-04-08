@@ -23,10 +23,10 @@ const History = ({navigation}) => {
    }, []);
 
    useEffect(() => {
-      if (history.listHistory > 0 && history.isSuccessPayment) {
-         dispatch(getListHistory(auth.token));
-      }
-   });
+      // if (history.listHistory > 0 && history.isSuccessPayment) {
+      dispatch(getListHistory(auth.token));
+      // }
+   }, [history.listHistory, auth.token, dispatch]);
 
    const listHistoryByIdUser = () => {
       return history.listHistory;
