@@ -18,6 +18,7 @@ const BSelect = ({
    change,
    color,
    backgroud,
+   variantSelect,
    children,
 }) => {
    return (
@@ -26,11 +27,13 @@ const BSelect = ({
             selectedValue={selected}
             minWidth="20"
             bgColor={backgroud}
+            color={color}
             placeholder={placeholder}
             _selectedItem={{
                bg: {color},
                endIcon: <CheckIcon size="5" />,
             }}
+            variant={variantSelect}
             onValueChange={change}>
             {children}
          </Select>

@@ -8,6 +8,7 @@ import counter from './counter';
 import reservation from './reservation';
 import payment from './payment';
 import history from './history';
+import search from './search';
 
 const persistForAuth = {
    key: 'auth',
@@ -19,10 +20,10 @@ const persistForCategory = {
    storage: AsyncStorage,
 };
 
-const persistForVehicle = {
-   key: 'vehicle',
-   storage: AsyncStorage,
-};
+// const persistForVehicle = {
+//    key: 'vehicle',
+//    storage: AsyncStorage,
+// };
 
 const persistForHistory = {
    key: 'history',
@@ -31,11 +32,13 @@ const persistForHistory = {
 
 const rootReducers = combineReducers({
    auth: persistReducer(persistForAuth, auth),
+   vehicle,
    category: persistReducer(persistForCategory, category),
-   vehicle: persistReducer(persistForVehicle, vehicle),
+   // vehicle: persistReducer(persistForVehicle, vehicle),
    reservation,
    payment,
    history: persistReducer(persistForHistory, history),
+   search,
 });
 
 export default rootReducers;

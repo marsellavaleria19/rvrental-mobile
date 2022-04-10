@@ -13,6 +13,7 @@ import {ScrollView} from 'native-base';
 
 const Payment = ({navigation}) => {
    const {reservation, payment, auth} = useSelector(state => state);
+   const [errValidation, setErrValidation] = useState({});
    const [idCard, setIdCard] = useState('');
    const [firstname, setFirstname] = useState('');
    const [lastname, setLastname] = useState('');
@@ -55,22 +56,38 @@ const Payment = ({navigation}) => {
             <Container>
                <View style={addStyles.layoutForm}>
                   <Input
-                     placeholder={'ID card number'}
-                     size={16}
+                     classVariant="loginSignup"
+                     placeholder="ID Card number"
                      value={idCard}
                      change={setIdCard}
+                     isValidate={Object.keys(errValidation).length > 0 && true}
+                     errorMessage={
+                        Object.keys(errValidation).length > 0 &&
+                        errValidation.idCard
+                     }
                   />
                   <Input
                      placeholder={'First Name'}
                      size={16}
+                     classVariant="payment"
                      value={firstname}
                      change={setFirstname}
+                     isValidate={Object.keys(errValidation).length > 0 && true}
+                     errorMessage={
+                        Object.keys(errValidation).length > 0 &&
+                        errValidation.idCard
+                     }
                   />
                   <Input
                      placeholder={'Last Name'}
                      size={16}
                      value={lastname}
                      change={setLastname}
+                     isValidate={Object.keys(errValidation).length > 0 && true}
+                     errorMessage={
+                        Object.keys(errValidation).length > 0 &&
+                        errValidation.idCard
+                     }
                   />
                   <Input
                      placeholder={'Mobile phone (must be active)'}

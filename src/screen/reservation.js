@@ -15,7 +15,7 @@ import Input from '../components/Input';
 import CButton from '../components/Button';
 import stylePrimary from '../assets/styles/stylePrimary';
 import IconRun from 'react-native-vector-icons/FontAwesome5';
-import imageBackground from '../assets/images/background-reservation.png';
+import imageBackground from '../assets/images/image-item.png';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons';
 import BSelect from '../components/BSelect';
 import Rate from '../components/Rate';
@@ -40,10 +40,16 @@ const Reservation = ({route, navigation}) => {
    const dispatch = useDispatch();
    const [day, setDay] = useState(0);
    const [control, setControl] = useState(false);
+   const [picture, setPicture] = useState();
 
    useEffect(() => {
       dispatch(getDetailVehicle(vehicleId));
       setQty(0);
+      setPicture(
+         vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
+            ? {uri: `${vehicle.dataVehicle.photo}`}
+            : imageBackground,
+      );
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
@@ -87,7 +93,7 @@ const Reservation = ({route, navigation}) => {
          <ScrollView>
             <View>
                <ImageBackground
-                  source={imageBackground}
+                  source={picture}
                   resizeMode="cover"
                   style={addStyles.imageBackground}>
                   <Container>
@@ -146,7 +152,7 @@ const Reservation = ({route, navigation}) => {
                      <Text style={styles.statusAvailable}>Available</Text>
                      <View style={addStyles.layoutLocation}>
                         <LinearGradient
-                           colors={['#FFC7A733', '#FFD57933']}
+                           colors={[stylePrimary.secondaryColor, '#7796b6']}
                            style={[addStyles.layoutIconLocation]}>
                            <IconMaterial
                               name="location-on"
@@ -160,7 +166,7 @@ const Reservation = ({route, navigation}) => {
                      </View>
                      <View style={addStyles.layoutDistance}>
                         <LinearGradient
-                           colors={['#FFC7A733', '#FFD57933']}
+                           colors={[stylePrimary.secondaryColor, '#7796b6']}
                            style={[addStyles.layoutIconLocation]}>
                            <IconRun
                               name="running"
@@ -208,7 +214,7 @@ const Reservation = ({route, navigation}) => {
                      <BSelect
                         width="40%"
                         placeholder="Day"
-                        variant="reservation"
+                        variantSelect="reservation"
                         select={day}
                         change={itemValue => setDay(itemValue)}>
                         <Select.Item label="1" value={1} />
@@ -244,19 +250,19 @@ const addStyles = StyleSheet.create({
       marginTop: 40,
    },
    iconDate: {
-      color: '#FFFFFF',
+      color: stylePrimary.mainColor,
       fontSize: 22,
       position: 'absolute',
       bottom: 15,
       right: 20,
    },
    iconBack: {
-      color: '#FFFFFF',
+      color: stylePrimary.mainColor,
       fontSize: 22,
       marginLeft: 20,
    },
    iconHeart: {
-      color: 'white',
+      color: stylePrimary.mainColor,
       fontWeight: '700',
       fontSize: 30,
       marginLeft: 10,
@@ -272,7 +278,7 @@ const addStyles = StyleSheet.create({
       justifyContent: 'space-between',
    },
    iconLocation: {
-      color: 'orange',
+      color: stylePrimary.mainColor,
       fontSize: 20,
    },
    flexRow: {
@@ -357,7 +363,9 @@ const addStyles = StyleSheet.create({
       width: '100%',
    },
    inputDate: {
-      backgroundColor: 'rgba(57, 57, 57, 0.3)',
+      backgroundColor: stylePrimary.backgrorund,
+      borderColor: stylePrimary.mainColor,
+      borderWidth: 1,
       // opacity: 0.1,
       borderRadius: 10,
       minWidth: '60%',

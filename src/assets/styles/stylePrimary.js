@@ -6,8 +6,9 @@ const stylePrimary = {
    baseFontColor: 'white',
 
    // Colors
-   mainColor: 'black',
-   secondaryColor: '#FFCD61',
+   mainColor: '#30475E',
+   secondaryColor: '#7E8A97',
+   backgrorund: '#E7DEC8',
    offWhite: '#f4f4f4',
    darkColor: '#404040',
 

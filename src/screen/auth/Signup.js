@@ -14,10 +14,15 @@ import stylePrimary from '../../assets/styles/stylePrimary';
 import {input, button} from '../../assets/styles/styleComponent';
 import image from '../../assets/images/background-signup.png';
 import {useState, useEffect} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {registrationProcess} from '../../redux/actions/auth';
+import {ScrollView} from 'native-base';
+import NBInput from '../../components/NBInput';
+import {NBAlert} from '../../components/NBAlert';
+import {validation} from '../../helpers/validation';
 
 const Signup = ({navigation}) => {
+   const {auth} = useSelector(state => state);
    const [email, setEmail] = useState('');
    const [username, setUsername] = useState('');
    const [name, setName] = useState('');
@@ -25,18 +30,38 @@ const Signup = ({navigation}) => {
    const [password, setPassword] = useState('');
    const dispatch = useDispatch();
    const [success, setSuccess] = useState(false);
+   const [errValidation, setErrValidation] = useState({});
 
    useEffect(() => {
       if (success) {
-         navigation.navigate('VerifyUser');
+         navigation.navigate('Login');
       }
    }, [navigation, success]);
 
    const signupHandle = () => {
-      dispatch(
-         registrationProcess(name, username, email, password, mobileNumber),
-      );
-      setSuccess(true);
+      let requirement = {
+         username: 'required',
+         name: 'required',
+         mobileNumber: 'required|number|phone',
+         email: 'required',
+         password: 'required',
+      };
+      let data = {
+         email: email,
+         username: username,
+         name: name,
+         mobileNumber: mobileNumber,
+         password: password,
+      };
+      var validate = validation(data, requirement);
+      if (Object.keys(validate).length == 0) {
+         dispatch(
+            registrationProcess(name, username, email, password, mobileNumber),
+         );
+         setSuccess(true);
+      } else {
+         setErrValidation(validate);
+      }
    };
    return (
       <View style={styles.background}>
@@ -45,59 +70,96 @@ const Signup = ({navigation}) => {
             resizeMode="cover"
             style={styles.image}>
             <Container>
-               <Text style={addStyles.textTitle}>LET’S HAVE SOME RIDE</Text>
-               <View style={addStyles.layoutForm}>
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Name"
-                     secure={false}
-                     value={name}
-                     change={setName}
-                  />
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Email"
-                     secure={false}
-                     value={email}
-                     change={setEmail}
-                  />
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Username"
-                     secure={false}
-                     value={username}
-                     change={setUsername}
-                  />
-
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Mobile phone"
-                     secure={false}
-                     value={mobileNumber}
-                     change={setMobileNumber}
-                  />
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Password"
-                     secure={true}
-                     value={password}
-                     change={setPassword}
-                  />
-                  <TouchableOpacity onPress={signupHandle}>
-                     <CButton
-                        classButton={addStyles.buttonSignup}
-                        textButton={addStyles.textSignup}>
-                        Signup
-                     </CButton>
-                  </TouchableOpacity>
-                  <View style={addStyles.layoutLinkLogin}>
-                     <Text style={addStyles.text}>Already have account?</Text>
-                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Login')}>
-                        <Text style={addStyles.textLink}>Login now</Text>
+               <ScrollView>
+                  <Text style={addStyles.textTitle}>LET’S HAVE SOME RIDE</Text>
+                  <View style={addStyles.layoutForm}>
+                     {auth.isError && (
+                        <NBAlert status="error" message={auth.errMessage} />
+                     )}
+                     <NBInput
+                        classVariant="loginSignup"
+                        placeholder="Name"
+                        value={name}
+                        change={setName}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.name
+                        }
+                     />
+                     <NBInput
+                        classVariant="loginSignup"
+                        placeholder="Email"
+                        value={email}
+                        change={setEmail}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.email
+                        }
+                     />
+                     <NBInput
+                        classVariant="loginSignup"
+                        placeholder="Username"
+                        value={username}
+                        change={setUsername}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.username
+                        }
+                     />
+                     <NBInput
+                        classVariant="loginSignup"
+                        placeholder="Mobile phone"
+                        value={mobileNumber}
+                        change={setMobileNumber}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.mobileNumber
+                        }
+                     />
+                     <NBInput
+                        classVariant="loginSignup"
+                        placeholder="Password"
+                        value={password}
+                        change={setPassword}
+                        secure={true}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.password
+                        }
+                     />
+                     <TouchableOpacity onPress={signupHandle}>
+                        <CButton
+                           classButton={addStyles.buttonSignup}
+                           textButton={addStyles.textSignup}>
+                           Signup
+                        </CButton>
                      </TouchableOpacity>
+                     <View style={addStyles.layoutLinkLogin}>
+                        <Text style={addStyles.text}>
+                           Already have account?
+                        </Text>
+                        <TouchableOpacity
+                           onPress={() => navigation.navigate('Login')}>
+                           <Text style={addStyles.textLink}>Login now</Text>
+                        </TouchableOpacity>
+                     </View>
                   </View>
-               </View>
+               </ScrollView>
             </Container>
          </ImageBackground>
       </View>

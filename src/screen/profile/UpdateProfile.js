@@ -89,31 +89,27 @@ const UpdateProfile = ({navigation}) => {
       setImage(imagePicker);
    };
 
-   const updateProfileHandle = async () => {
-      try {
-         console.log('Hai');
-         console.log(name);
-         console.log(image);
-         var dataSend = {
-            fullName: name,
-            gender: gender,
-            mobileNumber: mobileNumber,
-            address: address,
-            birthDate: moment(birthDate.toLocaleString()).format('YYYY-MM-DD'),
-         };
+   const updateProfileHandle = () => {
+      console.log('Hai');
+      console.log(name);
+      console.log(image);
+      var dataSend = {
+         fullName: name,
+         gender: gender,
+         mobileNumber: mobileNumber,
+         address: address,
+         birthDate: moment(birthDate.toLocaleString()).format('YYYY-MM-DD'),
+      };
 
-         if (Object.keys(image).length > 0) {
-            dispatch(
-               updateUser(auth.token, auth.user.id, dataSend, image.assets[0]),
-            );
-         } else {
-            dispatch(updateUser(auth.token, auth.user.id, dataSend));
-         }
-
-         setControl(true);
-      } catch (err) {
-         console.log(err);
+      if (Object.keys(image).length > 0) {
+         dispatch(
+            updateUser(auth.token, auth.user.id, dataSend, image.assets[0]),
+         );
+      } else {
+         dispatch(updateUser(auth.token, auth.user.id, dataSend));
       }
+
+      setControl(true);
    };
 
    return (
