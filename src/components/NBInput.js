@@ -20,7 +20,7 @@ const NBInput = ({
 }) => {
    return (
       <Box>
-         <FormControl isInvalid>
+         <FormControl isInvalid={isValidate}>
             <Input
                placeholder={placeholder}
                variant={classVariant}

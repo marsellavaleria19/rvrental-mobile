@@ -54,6 +54,16 @@ const Reservation = ({route, navigation}) => {
    }, []);
 
    useEffect(() => {
+      if (vehicle.dataVehicle !== null) {
+         setPicture(
+            vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
+               ? {uri: `${vehicle.dataVehicle.photo}`}
+               : imageBackground,
+         );
+      }
+   }, [vehicle.dataVehicle]);
+
+   useEffect(() => {
       if (reservation.dataReservation !== null && control) {
          navigation.navigate('Payment');
       }
