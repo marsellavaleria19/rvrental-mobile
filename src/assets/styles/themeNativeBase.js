@@ -102,7 +102,7 @@ export const theme = extendTheme({
       Select: {
          variants: {
             filter: {
-               backgroundColor: 'white',
+               backgroundColor: stylePrimary.backgrorund,
                borderWidth: 0,
                fontSize: 18,
                fontWeight: '600',

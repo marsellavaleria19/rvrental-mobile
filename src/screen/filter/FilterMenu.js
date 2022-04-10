@@ -141,7 +141,6 @@ const FilterMenu = ({navigation}) => {
                   <BSelect
                      width="100%"
                      placeholder="Your Location"
-                     backgroud={'white'}
                      color="dark.50"
                      variantSelect="filter"
                      value={location}
@@ -198,7 +197,6 @@ const FilterMenu = ({navigation}) => {
                   <BSelect
                      width="100%"
                      placeholder="Type"
-                     backgroud={'white'}
                      color="dark.50"
                      variantSelect="filter"
                      value={categoryId}
@@ -279,7 +277,7 @@ const addStyles = StyleSheet.create({
       fontWeight: '700',
    },
    inputDate: {
-      backgroundColor: 'white',
+      backgroundColor: stylePrimary.backgrorund,
       // opacity: 0.1,
       borderWidth: 0,
       minWidth: '100%',
