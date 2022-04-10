@@ -10,6 +10,8 @@ import BSelect from '../../components/BSelect';
 import {useDispatch, useSelector} from 'react-redux';
 import {saveDataPayment} from '../../redux/actions/payment';
 import {ScrollView} from 'native-base';
+import {validation} from '../../helpers/validation';
+import StepperPayment from '../../components/StepperPayment';
 
 const Payment = ({navigation}) => {
    const {reservation, payment, auth} = useSelector(state => state);
@@ -46,17 +48,34 @@ const Payment = ({navigation}) => {
          location: location,
          paymentType: paymentType,
       };
-      dispatch(saveDataPayment(data));
-      setControl(true);
+      let requirement = {
+         idCard: 'required|number',
+         firstname: 'required',
+         lastname: 'required',
+         mobileNumber: 'required',
+         email: 'required',
+         location: 'required',
+         paymentType: 'required',
+      };
+      var validate = validation(data, requirement);
+      if (Object.keys(validate).length == 0) {
+         dispatch(saveDataPayment(data));
+         setControl(true);
+      } else {
+         setErrValidation(validate);
+      }
    };
 
    return (
       <View style={styles.background}>
          <ScrollView>
             <Container>
+               <View style={addStyles.layoutStepper}>
+                  <StepperPayment active={1} count={3} />
+               </View>
                <View style={addStyles.layoutForm}>
                   <Input
-                     classVariant="loginSignup"
+                     classVariant="payment"
                      placeholder="ID Card number"
                      value={idCard}
                      change={setIdCard}
@@ -75,7 +94,7 @@ const Payment = ({navigation}) => {
                      isValidate={Object.keys(errValidation).length > 0 && true}
                      errorMessage={
                         Object.keys(errValidation).length > 0 &&
-                        errValidation.idCard
+                        errValidation.firstname
                      }
                   />
                   <Input
@@ -83,35 +102,54 @@ const Payment = ({navigation}) => {
                      size={16}
                      value={lastname}
                      change={setLastname}
+                     classVariant="payment"
                      isValidate={Object.keys(errValidation).length > 0 && true}
                      errorMessage={
                         Object.keys(errValidation).length > 0 &&
-                        errValidation.idCard
+                        errValidation.lastname
                      }
                   />
                   <Input
                      placeholder={'Mobile phone (must be active)'}
                      size={16}
+                     classVariant="payment"
                      value={mobileNumber}
                      change={setMobileNumber}
+                     isValidate={Object.keys(errValidation).length > 0 && true}
+                     errorMessage={
+                        Object.keys(errValidation).length > 0 &&
+                        errValidation.mobileNumber
+                     }
                   />
                   <Input
                      placeholder={'Email address'}
                      size={16}
                      value={email}
                      change={setEmail}
+                     classVariant="payment"
+                     isValidate={Object.keys(errValidation).length > 0 && true}
+                     errorMessage={
+                        Object.keys(errValidation).length > 0 &&
+                        errValidation.email
+                     }
                   />
                   <Input
                      placeholder={'Location (home,office,etc)'}
                      size={16}
                      value={location}
                      change={setLocation}
+                     classVariant="payment"
+                     isValidate={Object.keys(errValidation).length > 0 && true}
+                     errorMessage={
+                        Object.keys(errValidation).length > 0 &&
+                        errValidation.location
+                     }
                   />
                   <View style={addStyles.layoutInput}>
                      <BSelect
                         width="100%"
                         placeholder="Payment Type"
-                        variant="reservation"
+                        variantSelect="reservation"
                         select={paymentType}
                         change={itemValue => setPaymentType(itemValue)}>
                         <BSelect.Item label="Prepayment" value={'Prepayment'} />
@@ -143,7 +181,10 @@ const Payment = ({navigation}) => {
 
 const addStyles = StyleSheet.create({
    layoutForm: {
-      marginTop: 135,
+      marginTop: 50,
+   },
+   layoutStepper: {
+      marginTop: 50,
    },
    layoutInput: {
       marginTop: 10,

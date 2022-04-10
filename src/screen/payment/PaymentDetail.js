@@ -20,6 +20,7 @@ import {historyInput} from '../../redux/actions/history';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import {useEffect, useState} from 'react';
+import StepperPayment from '../../components/StepperPayment';
 
 const PaymentDetail = ({navigation}) => {
    const {payment, history, reservation, auth} = useSelector(state => state);
@@ -54,6 +55,9 @@ const PaymentDetail = ({navigation}) => {
       <View style={styles.background}>
          <ScrollView>
             <Container>
+               <View style={addStyles.layoutStepper}>
+                  <StepperPayment active={2} count={3} />
+               </View>
                <View style={addStyles.positionRate}>
                   <Image
                      source={{uri: `${reservation.dataReservation.photo}`}}
@@ -118,6 +122,9 @@ const addStyles = StyleSheet.create({
       height: 300,
       borderRadius: 20,
    },
+   layoutStepper: {
+      marginTop: 50,
+   },
    positionRate: {
       position: 'relative',
       height: 300,
@@ -155,7 +162,7 @@ const addStyles = StyleSheet.create({
    },
    iconInfo: {
       fontSize: 36,
-      color: '#DFDEDE',
+      color: stylePrimary.mainColor,
    },
    layoutButton: {
       marginTop: 30,

@@ -1,18 +1,20 @@
+import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import stylePrimary from '../assets/styles/stylePrimary';
+import {styles} from '../assets/styles/styles';
 
 const DEFAULT_WEIGHT = 30;
 
 const StepperPayment = ({active, count, weight = DEFAULT_WEIGHT}) => {
-   const STEPPER_WIDTH = weight * count;
+   const STEPPER_WIDTH = (weight + 10) * count;
    const arrayItem = [...Array(count - 1)];
 
    const addStyles = StyleSheet.create({
       layoutStepper: {
          flexDirection: 'row',
-         alignItems: 'center',
          justifyContent: 'center',
+         alignItems: 'center',
       },
       layoutLine: {
          flexDirection: 'row',
@@ -22,39 +24,39 @@ const StepperPayment = ({active, count, weight = DEFAULT_WEIGHT}) => {
       },
       line: {
          height: 4,
-         width: weight,
+         width: weight + 5,
       },
       stepper: {
          flexDirection: 'row',
          justifyContent: 'space-between',
          alignItems: 'center',
          height: weight,
-         width: STEPPER_WIDTH,
       },
-      itemStepper: {
+      item: {
          width: weight,
          height: weight,
          borderRadius: weight / 2,
-         alignItems: 'center',
          justifyContent: 'center',
+         alignItems: 'center',
+         color: 'white',
       },
-      textWrapper: {
+      text: {
          fontSize: weight / 2,
-         color: stylePrimary.baseFontColor,
+         color: 'white',
          fontWeight: 'bold',
       },
    });
 
    return (
       <View style={addStyles.layoutStepper}>
-         <View style={addStyles.stepper}>
+         <View style={[addStyles.stepper, {width: STEPPER_WIDTH}]}>
             <View style={addStyles.layoutLine}>
-               {arrayItem.map((item, index) => {
+               {arrayItem.map((o, i) => {
                   return (
                      <LinearGradient
                         colors={
-                           active - 1 >= index + 1
-                              ? ['#F8A170', '#FFCD61']
+                           active - 1 >= i + 1
+                              ? [stylePrimary.secondaryColor, '#7796b6']
                               : ['#DFDEDE', '#DFDEDE']
                         }
                         style={addStyles.line}
@@ -62,10 +64,22 @@ const StepperPayment = ({active, count, weight = DEFAULT_WEIGHT}) => {
                   );
                })}
             </View>
-            <View>
-               <LinearGradient/>
-            </View>
+            {[...Array(count)].map((o, i) => {
+               return (
+                  <LinearGradient
+                     colors={
+                        active >= i + 1
+                           ? [stylePrimary.secondaryColor, '#7796b6']
+                           : ['#DFDEDE', '#DFDEDE']
+                     }
+                     style={addStyles.item}>
+                     <Text style={addStyles.text}>{i + 1}</Text>
+                  </LinearGradient>
+               );
+            })}
          </View>
       </View>
    );
 };
+
+export default StepperPayment;

@@ -19,6 +19,7 @@ import {useEffect, useState} from 'react';
 import moment from 'moment';
 import {getDetailHistory, historyUpdate} from '../../redux/actions/history';
 import {styles} from '../../assets/styles/styles';
+import StepperPayment from '../../components/StepperPayment';
 
 const FinishPayment = ({route, navigation}) => {
    const {payment, reservation, auth, history} = useSelector(state => state);
@@ -50,6 +51,9 @@ const FinishPayment = ({route, navigation}) => {
       <View style={styles.background}>
          <ScrollView>
             <Container>
+               <View style={addStyles.layoutStepper}>
+                  <StepperPayment active={3} count={3} />
+               </View>
                <View style={addStyles.layoutPaymentCode}>
                   <Text style={addStyles.textPaymentCode}>Payment Code</Text>
                   <Text style={addStyles.paymentCode}>
@@ -149,6 +153,9 @@ const addStyles = StyleSheet.create({
    layoutPaymentCode: {
       alignItems: 'center',
       marginTop: 36,
+   },
+   layoutStepper: {
+      marginTop: 50,
    },
    textDetail: {
       fontSize: 13,

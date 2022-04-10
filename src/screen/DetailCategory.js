@@ -9,6 +9,7 @@ import {useEffect} from 'react';
 import {FlatList} from 'native-base';
 import auth from '../redux/reducers/auth';
 import image from '../assets/images/image-item.png';
+import {styles} from '../assets/styles/styles';
 
 const DetailCategory = ({route, navigation}) => {
    const {categoryId} = route.params;
@@ -20,43 +21,44 @@ const DetailCategory = ({route, navigation}) => {
    }, [categoryId, dispatch]);
 
    return (
-      <Container>
-         <FlatList
-            data={vehicle.listVehicle}
-            renderItem={({item}) => {
-               return (
-                  <ListDetail
-                     path={{
-                        uri: `${item.photo !== null ? item.photo : image}`,
-                     }}
-                     title={item.name}
-                     description={
-                        item.description !== null ? item.description : '-'
-                     }
-                     detail="2.1 km for your location"
-                     status={
-                        item.isAvailable == 1 ? 'Available' : 'Not Available'
-                     }
-                     price={item.price}
-                     rate={item.rate}
-                     navigate={() =>
-                        navigation.navigate(
-                           `${
-                              auth.user !== null && auth.user.role == 'admin'
-                                 ? 'EditItem'
-                                 : 'Reservation'
-                           }`,
-                           {
-                              vehicleId: item.id,
-                           },
-                        )
-                     }
-                  />
-               );
-            }}
-         />
+      <View style={styles.background}>
+         <Container>
+            <FlatList
+               data={vehicle.listVehicle}
+               renderItem={({item}) => {
+                  return (
+                     <ListDetail
+                        path={{
+                           uri: `${item.photo !== null ? item.photo : image}`,
+                        }}
+                        title={item.name}
+                        description={
+                           item.description !== null ? item.description : '-'
+                        }
+                        detail="2.1 km for your location"
+                        status={
+                           item.isAvailable == 1 ? 'Available' : 'Not Available'
+                        }
+                        price={item.price}
+                        rate={item.rate}
+                        navigate={() =>
+                           navigation.navigate(
+                              `${
+                                 auth.user !== null && auth.user.role == 'admin'
+                                    ? 'EditItem'
+                                    : 'Reservation'
+                              }`,
+                              {
+                                 vehicleId: item.id,
+                              },
+                           )
+                        }
+                     />
+                  );
+               }}
+            />
 
-         {/* <ListDetail
+            {/* <ListDetail
             path={require('../assets/images/list-car1.png')}
             title="Vespa Matic"
             description="Max for 2 person"
@@ -74,7 +76,8 @@ const DetailCategory = ({route, navigation}) => {
             price="Rp. 140.000"
             rate="4.5"
          /> */}
-      </Container>
+         </Container>
+      </View>
    );
 };
 
