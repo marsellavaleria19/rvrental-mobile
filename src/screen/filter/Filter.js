@@ -18,6 +18,8 @@ import {getListSearchFilter} from '../../redux/actions/search';
 import image from '../..//assets/images/image-photo.png';
 import {FlatList} from 'native-base';
 import {getNextListSearchFilter} from '../../redux/actions/search';
+import {styles} from '../../assets/styles/styles';
+import stylePrimary from '../../assets/styles/stylePrimary';
 
 const Filter = ({navigation}) => {
    const {search} = useSelector(state => state);
@@ -51,7 +53,10 @@ const Filter = ({navigation}) => {
    };
 
    return (
-      <View>
+      <View style={styles.background}>
+         <View style={addStyles.layoutFilterName}>
+            <Text style={addStyles.textFilterName}>{filter.name}</Text>
+         </View>
          <Container>
             <View>
                <TouchableOpacity
@@ -145,14 +150,23 @@ const addStyles = StyleSheet.create({
       height: 280,
    },
    icon: {
-      color: '#DFDEDE',
+      color: stylePrimary.mainColor,
       fontWeight: '700',
       fontSize: 20,
       marginRight: 4,
    },
+   layoutFilterName: {
+      height: 55,
+      backgroundColor: stylePrimary.mainColor,
+   },
+   textFilterName: {
+      marginTop: 15,
+      marginLeft: 30,
+      color: stylePrimary.backgrorund,
+      fontSize: 16,
+   },
    layoutFilter: {
       flexDirection: 'row',
-      marginTop: 20,
       height: 50,
       alignItems: 'center',
    },
