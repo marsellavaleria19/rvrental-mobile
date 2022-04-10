@@ -23,6 +23,21 @@ export const theme = extendTheme({
                   color: stylePrimary.mainColor,
                },
             },
+            loginSignup: {
+               marginTop: 18,
+               backgroundColor: 'rgba(180, 180, 180, 0.5)',
+               fontSize: stylePrimary.baseFontSize,
+               placeholderTextColor: 'white',
+               ...input,
+            },
+            payment: {
+               marginTop: 18,
+               backgroundColor: stylePrimary.backgrorund,
+               fontSize: stylePrimary.mainColor,
+               placeholderTextColor: stylePrimary.mainColor,
+               borderColor: stylePrimary.mainColor,
+               borderWidth: 1,
+            },
             item: {
                backgroundColor: 'rgba(52, 52, 52, 0.0)',
                borderBottomWidth: 1,
@@ -81,6 +96,26 @@ export const theme = extendTheme({
             _text: {
                color: stylePrimary.mainColor,
                fontSize: 10,
+            },
+         },
+      },
+      Select: {
+         variants: {
+            filter: {
+               backgroundColor: 'white',
+               borderWidth: 0,
+               fontSize: 18,
+               fontWeight: '600',
+               placeholderTextColor: stylePrimary.mainColor,
+               customDropdownIconProps: {color: 'dark.50', mr: '3'},
+               padding: 0,
+            },
+            reservation: {
+               backgroundColor: stylePrimary.backgrorund,
+               borderColor: stylePrimary.mainColor,
+               borderWidth: 1,
+               // opacity: 0.1,
+               borderRadius: 10,
             },
          },
       },

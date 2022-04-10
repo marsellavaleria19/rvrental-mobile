@@ -35,31 +35,21 @@ export const updateUser = (token, id, dataSend, image = null) => {
    }
 
    Object.keys(dataSend).forEach(key => {
-      dataUpdate.push({name: `${key}`, data: dataSend[key]});
+      if (key) {
+         dataUpdate.push({name: `${key}`, data: dataSend[key]});
+      }
    });
-
-   const result = RNFetchBlob.fetch(
-      'PATCH',
-      `http://192.168.1.2:5000/users/${id}`,
-      {
-         'Content-Type': 'multipart/form-data',
-         Authorization: `Bearer ${token}`,
-      },
-      dataUpdate,
-   );
 
    return {
       type: 'UPDATE_PROFILE',
-      payload: result,
-
-      // RNFetchBlob.fetch(
-      //    'PATCH',
-      //    `http://192.168.1.2:5000/users/${id}`,
-      //    {
-      //       'Content-Type': 'multipart/form-data',
-      //       Authorization: `Bearer ${token}`,
-      //    },
-      //    dataUpdate,
-      // ),
+      payload: RNFetchBlob.fetch(
+         'PATCH',
+         `http://192.168.1.2:5000/users/${id}`,
+         {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+         },
+         dataUpdate,
+      ),
    };
 };

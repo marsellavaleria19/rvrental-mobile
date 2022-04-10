@@ -15,14 +15,14 @@ import CButton from '../components/Button';
 import stylePrimary from '../assets/styles/stylePrimary';
 import {input, button} from '../assets/styles/styleComponent';
 import IconSearch from 'react-native-vector-icons/FontAwesome';
-import MainBarTitle from '../components/MainBarTitle';
 import ListBar from '../components/ListBar';
 import {useSelector, useDispatch} from 'react-redux';
 import {getListCategory} from '../redux/actions/category';
 import {getListVehicle} from '../redux/actions/vehicle';
 import {useEffect, useState} from 'react';
 import {FlatList, ScrollView} from 'native-base';
-import auth from '../redux/reducers/auth';
+import filter from '../helpers/FilterSearch';
+import {getListSearchFilter} from '../redux/actions/search';
 // import {image} from '../assets/images/backgroud-image.png'
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
@@ -31,6 +31,7 @@ const Home = ({navigation}) => {
    const {category, vehicle, auth} = useSelector(state => state);
    const dispatch = useDispatch();
    const [listVehicle, setLisstVehicle] = useState([]);
+   const [search, setSearch] = useState('');
 
    useEffect(() => {
       dispatch(getListCategory());
@@ -42,6 +43,11 @@ const Home = ({navigation}) => {
       return vehicle.listVehicle
          .filter(item => item.category_id === category.id)
          .filter((item, index) => index < 5);
+   };
+
+   const searchHandle = () => {
+      filter.name = search;
+      navigation.navigate('Filter');
    };
 
    const showButtonItem = () => {
@@ -69,9 +75,10 @@ const Home = ({navigation}) => {
                         <Input
                            classInput={addStyles.input}
                            placeholder="Search vehicle"
+                           value={search}
+                           change={setSearch}
                         />
-                        <TouchableOpacity
-                           onPress={() => navigation.navigate('Filter')}>
+                        <TouchableOpacity onPress={searchHandle}>
                            <IconSearch name="search" style={addStyles.icon} />
                         </TouchableOpacity>
                      </View>
@@ -96,13 +103,28 @@ const Home = ({navigation}) => {
                               data={itemPerCategory(item)}
                               renderItem={({item}) => {
                                  return (
-                                    <Image
-                                       key={item.id}
-                                       source={{
-                                          uri: `${item.photo}`,
-                                       }}
-                                       style={addStyles.imageList}
-                                    />
+                                    <TouchableOpacity
+                                       onPress={() =>
+                                          navigation.navigate(
+                                             `${
+                                                auth.user !== null &&
+                                                auth.user.role == 'admin'
+                                                   ? 'EditItem'
+                                                   : 'Reservation'
+                                             }`,
+                                             {
+                                                vehicleId: item.id,
+                                             },
+                                          )
+                                       }>
+                                       <Image
+                                          key={item.id}
+                                          source={{
+                                             uri: `${item.photo}`,
+                                          }}
+                                          style={addStyles.imageList}
+                                       />
+                                    </TouchableOpacity>
                                  );
                               }}
                            />

@@ -12,6 +12,7 @@ import Favorite from '../screen/Favorite';
 import AddItem from '../screen/item/AddItem';
 import EditItem from '../screen/item/EditItem';
 import UpdateItem from '../screen/item/UpdateItem';
+import FilterMenu from '../screen/filter/FilterMenu';
 
 const NavMainStack = createNativeStackNavigator();
 
@@ -77,6 +78,13 @@ const MainStackNav = () => {
             }}
             name="UpdateItem"
             component={UpdateItem}
+         />
+         <NavMainStack.Screen
+            options={{
+               title: 'Filter',
+            }}
+            name="FilterMenu"
+            component={FilterMenu}
          />
          {/* <NavMainStack.Screen name="Reservation" component={Reservation} />
          <NavMainStack.Screen name="PaymentDetail" component={PaymentDetail} />

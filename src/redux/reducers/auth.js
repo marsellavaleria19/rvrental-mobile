@@ -150,7 +150,7 @@ const auth = (state = dataLogin, action) => {
          const {data} = action.payload;
          console.log(data);
          state.isLoading = false;
-         state.user = data.results;
+         state.user = JSON.parse(data).results;
          return {...state};
       }
       case 'UPDATE_PROFILE_REJECTED': {
