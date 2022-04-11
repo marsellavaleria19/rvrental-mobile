@@ -21,7 +21,9 @@ import {addDataVehicle} from '../../redux/actions/vehicle';
 import imagePhoto from '../../assets/images/image-photo.png';
 import {NBAlert} from '../../components/NBAlert';
 import NBModal from '../../components/NBModal';
+import {validation} from '../../helpers/validation';
 
+const newLocal = 'required';
 const AddItem = ({navigation}) => {
    const {category} = useSelector(state => state);
    const {auth, vehicle} = useSelector(state => state);
@@ -33,16 +35,16 @@ const AddItem = ({navigation}) => {
    const [categoryId, setCategoryId] = useState('');
    const dispatch = useDispatch();
    const [image, setImage] = useState([]);
-   const [picture, setPicture] = useState(null);
+   const [picture, setPicture] = useState(imagePhoto);
    const [control, setControl] = useState(false);
    const [show, setShow] = useState(false);
    const handleShow = () => setShow(true);
    const handleClose = () => setShow(false);
    const [dataCategory, setDataCategory] = useState(null);
+   const [errValidation, setErrValidation] = useState({});
 
    useEffect(() => {
       dispatch(getListCategory());
-      setPicture(imagePhoto);
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
@@ -80,6 +82,7 @@ const AddItem = ({navigation}) => {
          price,
          qty: qty.toString(),
          isAvailable: '1',
+         description: description,
       };
       // console.log(dataSend);
       // var dataVehicle = [];
@@ -87,9 +90,18 @@ const AddItem = ({navigation}) => {
       //    dataVehicle.push({name: `${key}`, data: dataSend[key]});
       // });
       // console.log(dataVehicle);
+      var requirement = {
+         name: 'required',
+         price: 'required|number',
+      };
 
-      dispatch(addDataVehicle(auth.token, dataSend, image.assets[0]));
-      setControl(true);
+      const validate = validation(dataSend, requirement);
+      if (Object.keys(validate).length == 0) {
+         dispatch(addDataVehicle(auth.token, dataSend, image.assets[0]));
+         setControl(true);
+      } else {
+         setErrValidation(validate);
+      }
    };
 
    const addCategoryHandle = () => {
@@ -133,6 +145,13 @@ const AddItem = ({navigation}) => {
                         classVariant="item"
                         value={name}
                         change={setName}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.name
+                        }
                      />
                   </View>
                   <View style={addStyles.layoutInput}>
@@ -141,6 +160,13 @@ const AddItem = ({navigation}) => {
                         classVariant="item"
                         value={price}
                         change={setPrice}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.price
+                        }
                      />
                   </View>
                   <View style={addStyles.layoutFormDescription}>
@@ -161,7 +187,7 @@ const AddItem = ({navigation}) => {
                            <BSelect
                               width="100%"
                               placeholder="Location"
-                              backgroud="white"
+                              variantSelect="item"
                               select={location}
                               change={itemValue => setLocation(itemValue)}>
                               <Select.Item label="Bandung" value={'Bandung'} />
@@ -179,7 +205,7 @@ const AddItem = ({navigation}) => {
                            <BSelect
                               width="100%"
                               placeholder="Category"
-                              backgroud="white"
+                              variantSelect="item"
                               select={categoryId}
                               change={itemValue => setCategoryId(itemValue)}>
                               {category.listCategory.map(item => {
@@ -337,7 +363,7 @@ const addStyles = StyleSheet.create({
       alignItems: 'center',
       borderRadius: 10,
       marginTop: 23,
-      width: '100%',
+      width: 150,
    },
    fontButtonAddPicture: {
       fontSize: 13,

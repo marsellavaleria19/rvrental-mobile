@@ -117,6 +117,17 @@ export const theme = extendTheme({
                // opacity: 0.1,
                borderRadius: 10,
             },
+            item: {
+               backgroundColor: 'rgba(52, 52, 52, 0.0)',
+               borderWidth: 0,
+               borderBottomWidth: 1,
+               borderBottomColor: '#9F9F9F',
+               placeholderTextColor: stylePrimary.mainColor,
+               height: 51,
+               _text: {
+                  color: stylePrimary.mainColor,
+               },
+            },
          },
       },
    },

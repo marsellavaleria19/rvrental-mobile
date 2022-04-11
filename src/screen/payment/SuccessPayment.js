@@ -43,7 +43,6 @@ const SuccessPayment = ({route, navigation}) => {
       navigation.navigate('HistoryNav');
    };
 
-
    return (
       <View style={styles.background}>
          <ScrollView>

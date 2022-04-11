@@ -42,7 +42,7 @@ export const addDataVehicle = (token, dataSend, image) => {
       dataVehicle.push({name: `${key}`, data: dataSend[key]});
    });
    return {
-      type: 'GET_DETAIL_VEHICLE',
+      type: 'GET_RESULT_VEHICLE',
       payload: RNFetchBlob.fetch(
          'POST',
          'http://192.168.1.2:5000/vehicles',
@@ -70,7 +70,7 @@ export const updateDataVehicle = (token, dataSend, id, image = null) => {
       dataVehicle.push({name: `${key}`, data: dataSend[key]});
    });
    return {
-      type: 'GET_DETAIL_VEHICLE',
+      type: 'GET_RESULT_VEHICLE',
       payload: RNFetchBlob.fetch(
          'PATCH',
          `http://192.168.1.2:5000/vehicles/${id}`,
@@ -85,7 +85,7 @@ export const updateDataVehicle = (token, dataSend, id, image = null) => {
 
 export const deleteDataVehicle = (token, id) => {
    return {
-      type: 'GET_DETAIL_VEHICLE',
+      type: 'GET_DELETE_VEHICLE',
       payload: AxiosCustom(token).delete(`/vehicles/${id}`),
    };
 };
