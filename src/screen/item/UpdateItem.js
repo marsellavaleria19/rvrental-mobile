@@ -13,7 +13,7 @@ import CButton from '../../components/Button';
 import CInput from '../../components/Input';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import IconRun from 'react-native-vector-icons/FontAwesome5';
-import imageBackground from '../../assets/images/background-reservation.png';
+import imageBackground from '../../assets/images/image-photo.png';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons';
 import Rate from '../../components/Rate';
 import LinearGradient from 'react-native-linear-gradient';
@@ -29,6 +29,7 @@ import {Select, Box} from 'native-base';
 import BSelect from '../../components/BSelect';
 import {launchImageLibrary} from 'react-native-image-picker';
 import NBModal from '../../components/NBModal';
+import {NBAlert} from '../../components/NBAlert';
 // import {getDetailVehicle} from '../redux/actions/vehicle';
 // import {reservationProcess} from '../redux/actions/reservation';
 
@@ -44,7 +45,7 @@ const UpdateItem = ({route, navigation}) => {
    const dispatch = useDispatch();
    const [day, setDay] = useState(0);
    const [control, setControl] = useState(false);
-   const [picture, setPicture] = useState();
+   const [picture, setPicture] = useState(imageBackground);
    const [image, setImage] = useState({});
    const [show, setShow] = useState(false);
    const handleShow = () => setShow(true);
@@ -96,6 +97,7 @@ const UpdateItem = ({route, navigation}) => {
    const deleteItemHandle = () => {
       dispatch(deleteDataVehicle(auth.token, vehicleId));
       setControl(true);
+      setShow(false);
    };
 
    const browseImage = async () => {
@@ -135,6 +137,12 @@ const UpdateItem = ({route, navigation}) => {
             </View>
             <Container>
                <View style={addStyles.marginLayout}>
+                  {control && (
+                     <NBAlert status="success" message={vehicle.message} />
+                  )}
+                  {vehicle.isError && (
+                     <NBAlert status="error" message={vehicle.errMessage} />
+                  )}
                   <View style={addStyles.layoutDescriptionRate}>
                      <View>
                         <CInput
@@ -183,7 +191,7 @@ const UpdateItem = ({route, navigation}) => {
                      </Text>
                      <View style={addStyles.layoutLocation}>
                         <LinearGradient
-                           colors={['#FFC7A733', '#FFD57933']}
+                           colors={[stylePrimary.secondaryColor, '#7796b6']}
                            style={[addStyles.layoutIconLocation]}>
                            <IconMaterial
                               name="location-on"
@@ -198,7 +206,7 @@ const UpdateItem = ({route, navigation}) => {
                      </View>
                      <View style={addStyles.layoutDistance}>
                         <LinearGradient
-                           colors={['#FFC7A733', '#FFD57933']}
+                           colors={[stylePrimary.secondaryColor, '#7796b6']}
                            style={[addStyles.layoutIconLocation]}>
                            <IconRun
                               name="running"
@@ -269,7 +277,7 @@ const addStyles = StyleSheet.create({
       marginTop: 40,
    },
    iconBack: {
-      color: '#FFFFFF',
+      color: stylePrimary.mainColor,
       fontSize: 22,
       marginLeft: 20,
    },
@@ -294,7 +302,7 @@ const addStyles = StyleSheet.create({
       justifyContent: 'space-between',
    },
    iconLocation: {
-      color: 'orange',
+      color: stylePrimary.mainColor,
       fontSize: 20,
    },
    flexRow: {
@@ -304,10 +312,12 @@ const addStyles = StyleSheet.create({
    title: {
       fontSize: 24,
       fontWeight: '700',
+      color: stylePrimary.mainColor,
    },
    price: {
       fontSize: 24,
       fontWeight: '700',
+      color: stylePrimary.mainColor,
    },
    marginLayout: {
       marginTop: 12,

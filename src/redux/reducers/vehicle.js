@@ -38,6 +38,36 @@ const vehicle = (state = dataVehicle, action) => {
          state.isLoading = true;
          return {...state};
       }
+      case 'GET_RESULT_VEHICLE_PENDING': {
+         state.isLoading = true;
+         return {...state};
+      }
+      case 'GET_RESULT_VEHICLE_FULFILLED': {
+         const {data} = action.payload;
+         const parse = JSON.parse(data);
+         state.dataVehicle = parse.results;
+         state.message = parse.message;
+         state.isLoading = false;
+         return {...state};
+      }
+      case 'GET_RESULT_VEHICLE_REJECTED': {
+         state.isLoading = true;
+         return {...state};
+      }
+      case 'GET_DELETE_VEHICLE_PENDING': {
+         state.isLoading = true;
+         return {...state};
+      }
+      case 'GET_DELETE_VEHICLE_FULFILLED': {
+         const {data} = action.payload;
+         state.message = data.message;
+         state.isLoading = false;
+         return {...state};
+      }
+      case 'GET_DELETE_VEHICLE_REJECTED': {
+         state.isLoading = true;
+         return {...state};
+      }
       case 'GET_VEHICLE_NEXT_PENDING': {
          state.isLoading = true;
          return {...state};

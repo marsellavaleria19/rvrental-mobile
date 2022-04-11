@@ -119,7 +119,7 @@ const EditItem = ({route, navigation}) => {
                      <Text style={styles.statusAvailable}>Available</Text>
                      <View style={addStyles.layoutLocation}>
                         <LinearGradient
-                           colors={['#FFC7A733', '#FFD57933']}
+                           colors={[stylePrimary.secondaryColor, '#7796b6']}
                            style={[addStyles.layoutIconLocation]}>
                            <IconMaterial
                               name="location-on"
@@ -130,7 +130,7 @@ const EditItem = ({route, navigation}) => {
                      </View>
                      <View style={addStyles.layoutDistance}>
                         <LinearGradient
-                           colors={['#FFC7A733', '#FFD57933']}
+                           colors={[stylePrimary.secondaryColor, '#7796b6']}
                            style={[addStyles.layoutIconLocation]}>
                            <IconRun
                               name="running"
@@ -198,7 +198,7 @@ const addStyles = StyleSheet.create({
       right: 20,
    },
    iconBack: {
-      color: '#FFFFFF',
+      color: stylePrimary.mainColor,
       fontSize: 22,
       marginLeft: 20,
    },
@@ -219,7 +219,7 @@ const addStyles = StyleSheet.create({
       justifyContent: 'space-between',
    },
    iconLocation: {
-      color: 'orange',
+      color: stylePrimary.mainColor,
       fontSize: 20,
    },
    flexRow: {
