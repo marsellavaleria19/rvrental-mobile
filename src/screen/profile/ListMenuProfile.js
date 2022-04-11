@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-   View,
-   Text,
-   StyleSheet,
-   ScrollView,
-   TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import ListMenu from '../../components/ListMenu';
 import Container from '../../components/Container';
 import stylePrimary from '../../assets/styles/stylePrimary';
@@ -14,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import imageProfile from '../../assets/images/profile.png';
 import {Image} from 'native-base';
 import {styles} from '../../assets/styles/styles';
+import {ScrollView} from 'native-base';
 
 const ProfileMenuList = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -48,7 +43,7 @@ const ProfileMenuList = ({navigation}) => {
                />
                <Text style={addStyles.textProfile}>{auth.user?.fullName}</Text>
             </View>
-            <ScrollView style={addStyles.scrollMenu}>
+            <ScrollView h="70%" style={addStyles.scrollMenu}>
                <Container>
                   <ListMenu
                      title="Your Favorite"

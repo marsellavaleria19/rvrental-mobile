@@ -9,6 +9,7 @@ import reservation from './reservation';
 import payment from './payment';
 import history from './history';
 import search from './search';
+import favorite from './favorite';
 
 const persistForAuth = {
    key: 'auth',
@@ -39,6 +40,7 @@ const rootReducers = combineReducers({
    payment,
    history: persistReducer(persistForHistory, history),
    search,
+   favorite,
 });
 
 export default rootReducers;

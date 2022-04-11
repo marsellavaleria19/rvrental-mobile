@@ -30,10 +30,16 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getDetailVehicle} from '../redux/actions/vehicle';
 import {Select} from 'native-base';
 import {reservationProcess} from '../redux/actions/reservation';
-import {increment, decrement} from '../redux/actions/counter';
+import {
+   addFavorite,
+   getListFavorite,
+   deleteFavorite,
+} from '../redux/actions/favorite';
 
 const Reservation = ({route, navigation}) => {
-   const {vehicle, counter, auth, reservation} = useSelector(state => state);
+   const {vehicle, counter, auth, reservation, favorite} = useSelector(
+      state => state,
+   );
    const {vehicleId} = route.params;
    const [date, setDate] = useState(new Date());
    const [qty, setQty] = useState(0);
@@ -41,6 +47,7 @@ const Reservation = ({route, navigation}) => {
    const [day, setDay] = useState(0);
    const [control, setControl] = useState(false);
    const [picture, setPicture] = useState();
+   const [isAddvorite, setAddFavorite] = useState(false);
 
    useEffect(() => {
       dispatch(getDetailVehicle(vehicleId));
@@ -50,6 +57,7 @@ const Reservation = ({route, navigation}) => {
             ? {uri: `${vehicle.dataVehicle.photo}`}
             : imageBackground,
       );
+      dispatch(getListFavorite());
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
@@ -98,6 +106,24 @@ const Reservation = ({route, navigation}) => {
       setControl(true);
    };
 
+   const favoriteHandle = itemFavorite => {
+      if (favorite.listFavorite.length > 0) {
+         const listFavorite = favorite.listFavorite.filter(
+            item => item.id == itemFavorite.id,
+         );
+         if (listFavorite.length > 0) {
+            dispatch(deleteFavorite(itemFavorite));
+            setAddFavorite(false);
+         } else {
+            dispatch(addFavorite(itemFavorite));
+            setAddFavorite(true);
+         }
+      } else {
+         dispatch(addFavorite(itemFavorite));
+         setAddFavorite(true);
+      }
+   };
+
    return (
       <SafeAreaView style={styles.background}>
          <ScrollView>
@@ -117,11 +143,31 @@ const Reservation = ({route, navigation}) => {
                            />
                         </TouchableOpacity>
                         <View style={addStyles.flexRow}>
-                           <Rate rate={4.5} />
-                           <IconMaterial
-                              name="favorite-outline"
-                              style={addStyles.iconHeart}
+                           <Rate
+                              rate={
+                                 vehicle.dataVehicle !== null &&
+                                 vehicle.dataVehicle.rate
+                              }
                            />
+                           <TouchableOpacity
+                              onPress={() =>
+                                 favoriteHandle(vehicle.dataVehicle)
+                              }>
+                              {isAddvorite ||
+                              favorite.listFavorite.filter(
+                                 item => item.id == vehicle.dataVehicle.id,
+                              ).length > 0 ? (
+                                 <IconMaterial
+                                    name="favorite"
+                                    style={addStyles.iconHeartFill}
+                                 />
+                              ) : (
+                                 <IconMaterial
+                                    name="favorite-outline"
+                                    style={addStyles.iconHeart}
+                                 />
+                              )}
+                           </TouchableOpacity>
                         </View>
                      </View>
                   </Container>
@@ -137,9 +183,7 @@ const Reservation = ({route, navigation}) => {
                         </Text>
                         <Text style={addStyles.price}>
                            {vehicle.dataVehicle !== null
-                              ? `Rp. ${vehicle.dataVehicle.price.toLocaleString(
-                                   'id-ID',
-                                )}/day`
+                              ? `Rp. ${vehicle.dataVehicle.price.toLocaleString()}/day`
                               : 'Rp.0'}
                         </Text>
                      </View>
@@ -273,6 +317,12 @@ const addStyles = StyleSheet.create({
    },
    iconHeart: {
       color: stylePrimary.mainColor,
+      fontWeight: '700',
+      fontSize: 30,
+      marginLeft: 10,
+   },
+   iconHeartFill: {
+      color: 'red',
       fontWeight: '700',
       fontSize: 30,
       marginLeft: 10,

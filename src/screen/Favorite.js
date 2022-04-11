@@ -7,65 +7,70 @@ import stylePrimary from '../assets/styles/stylePrimary';
 import ListFavorite from '../components/ListHistoryFavorite';
 import image from '../assets/images/background-reservation.png';
 import {ScrollView} from 'native-base';
+import {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {getListFavorite} from '../redux/actions/favorite';
+import {FlatList} from 'native-base';
+import ListDetail from '../components/ListDetail';
 
-const Favorite = () => {
+const Favorite = ({navigation}) => {
+   const {favorite, auth} = useSelector(state => state);
+   const dispatch = useDispatch();
+
+   useEffect(() => {
+      dispatch(getListFavorite());
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
    return (
-      <SafeAreaView>
+      <View style={styles.background}>
          <Container>
             <ScrollView>
                <View style={addStyles.layoutFavorite}>
-                  <ListFavorite
-                     path={image}
-                     title="Vespa Matic"
-                     reservationDate="Jan 18 to 21 2021"
-                     payment={245000}
-                     location="Senayan, Jakarta"
-                     isHistory={false}
-                  />
-                  <ListFavorite
-                     path={image}
-                     title="Vespa Matic"
-                     reservationDate="Jan 18 to 21 2021"
-                     payment={245000}
-                     location="Senayan, Jakarta"
-                     isHistory={false}
-                  />
-                  <ListFavorite
-                     path={image}
-                     title="Vespa Matic"
-                     reservationDate="Jan 18 to 21 2021"
-                     payment={245000}
-                     location="Senayan, Jakarta"
-                     isHistory={false}
-                  />
-                  <ListFavorite
-                     path={image}
-                     title="Vespa Matic"
-                     reservationDate="Jan 18 to 21 2021"
-                     payment={245000}
-                     location="Senayan, Jakarta"
-                     isHistory={false}
-                  />
-                  <ListFavorite
-                     path={image}
-                     title="Vespa Matic"
-                     reservationDate="Jan 18 to 21 2021"
-                     payment={245000}
-                     location="Senayan, Jakarta"
-                     isHistory={false}
-                  />
-                  <ListFavorite
-                     path={image}
-                     title="Vespa Matic"
-                     reservationDate="Jan 18 to 21 2021"
-                     payment={245000}
-                     location="Senayan, Jakarta"
-                     isHistory={false}
-                  />
+                  {favorite.listFavorite.length > 0 ? (
+                     <FlatList
+                        data={favorite.listFavorite}
+                        renderItem={({item}) => {
+                           return (
+                              <ListDetail
+                                 path={{
+                                    uri: `${
+                                       item.photo !== null ? item.photo : image
+                                    }`,
+                                 }}
+                                 title={item.name}
+                                 description={
+                                    item.description !== null
+                                       ? item.description
+                                       : '-'
+                                 }
+                                 detail="2.1 km for your location"
+                                 status={
+                                    item.isAvailable == 1
+                                       ? 'Available'
+                                       : 'Not Available'
+                                 }
+                                 price={item.price}
+                                 rate={item.rate}
+                                 navigate={() =>
+                                    navigation.navigate(
+                                       `${auth.user !== null && 'Reservation'}`,
+                                       {
+                                          vehicleId: item.id,
+                                       },
+                                    )
+                                 }
+                              />
+                           );
+                        }}
+                     />
+                  ) : (
+                     <Text>Data not found</Text>
+                  )}
                </View>
             </ScrollView>
          </Container>
-      </SafeAreaView>
+      </View>
    );
 };
 
