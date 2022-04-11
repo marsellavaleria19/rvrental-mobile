@@ -23,12 +23,13 @@ import {NBAlert} from '../../components/NBAlert';
 import IconDate from 'react-native-vector-icons/Fontisto';
 import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import {validation} from '../../helpers/validation';
 import {getDataUser} from '../../redux/actions/auth';
 
 const UpdateProfile = ({navigation}) => {
    const {auth} = useSelector(state => state);
    const [name, setName] = useState('');
-   const [gender, setGender] = useState('Female');
+   const [gender, setGender] = useState('');
    const [email, setEmail] = useState('');
    const [mobileNumber, setMobileNumber] = useState('');
    const [birthDate, setBirthDate] = useState(new Date());
@@ -38,12 +39,14 @@ const UpdateProfile = ({navigation}) => {
    const dispatch = useDispatch();
    const [control, setControl] = useState(false);
    const [image, setImage] = useState({});
+   const [errValidation, setErrValidation] = useState({});
 
    useEffect(() => {
       setName(auth.user?.fullName);
       setEmail(auth.user?.email);
       setMobileNumber(auth.user?.mobileNumber);
       setAddress(auth.user?.address);
+      setGender(auth.user.gender);
       setPicture(
          auth.user?.photo !== null
             ? {uri: `${auth.user?.photo}`}
@@ -90,9 +93,6 @@ const UpdateProfile = ({navigation}) => {
    };
 
    const updateProfileHandle = () => {
-      console.log('Hai');
-      console.log(name);
-      console.log(image);
       var dataSend = {
          fullName: name,
          gender: gender,
@@ -100,16 +100,26 @@ const UpdateProfile = ({navigation}) => {
          address: address,
          birthDate: moment(birthDate.toLocaleString()).format('YYYY-MM-DD'),
       };
+      let requirement = {
+         fullName: 'required',
+         gender: 'required',
+         mobileNumber: 'required',
+         birthDate: 'required',
+      };
 
-      if (Object.keys(image).length > 0) {
-         dispatch(
-            updateUser(auth.token, auth.user.id, dataSend, image.assets[0]),
-         );
+      var validate = validation(dataSend, requirement);
+      if (Object.keys(validate).length == 0) {
+         if (Object.keys(image).length > 0) {
+            dispatch(
+               updateUser(auth.token, auth.user.id, dataSend, image.assets[0]),
+            );
+         } else {
+            dispatch(updateUser(auth.token, auth.user.id, dataSend));
+         }
+         setControl(true);
       } else {
-         dispatch(updateUser(auth.token, auth.user.id, dataSend));
+         setErrValidation(validate);
       }
-
-      setControl(true);
    };
 
    return (
@@ -134,21 +144,13 @@ const UpdateProfile = ({navigation}) => {
                   )}
                </View> */}
                <View style={addStyles.layoutImageEdit}>
-                  {!upload ? (
-                     <Image
-                        size={100}
-                        resizeMode={'contain'}
-                        borderRadius={100}
-                        source={picture}
-                        alt="Profile"
-                     />
-                  ) : (
-                     <View style={addStyles.layoutLoading}>
-                        <View style={addStyles.spinner}>
-                           <Spinner size="lg" color="white" />
-                        </View>
-                     </View>
-                  )}
+                  <Image
+                     size={100}
+                     resizeMode={'contain'}
+                     borderRadius={100}
+                     source={picture}
+                     alt="Profile"
+                  />
                   <View style={addStyles.layoutButtonImage}>
                      <CButton
                         classButton={addStyles.buttonImage}
@@ -173,6 +175,13 @@ const UpdateProfile = ({navigation}) => {
                         label="Name"
                         value={name}
                         change={setName}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.fullName
+                        }
                      />
                   </View>
                   <View style={addStyles.layoutRadio}>
@@ -207,6 +216,7 @@ const UpdateProfile = ({navigation}) => {
                         label="Email Address"
                         value={email}
                         change={setEmail}
+                        disabled={true}
                      />
                   </View>
                   <View style={addStyles.layoutInput}>
@@ -216,17 +226,32 @@ const UpdateProfile = ({navigation}) => {
                         label="Phone Number"
                         value={mobileNumber}
                         change={setMobileNumber}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.mobileNumber
+                        }
                      />
                   </View>
-                  <View style={{position: 'relative'}}>
+                  <View style={[addStyles.layoutInput, {position: 'relative'}]}>
                      <NBInputLabel
                         classInput={addStyles.inputDate}
                         placeholder="Birthdate"
                         classVariant="profile"
+                        label="Birth date"
                         value={moment(birthDate.toLocaleString()).format(
                            'YYYY-MM-DD',
                         )}
                         change={setBirthDate}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.birthdate
+                        }
                      />
                      <TouchableOpacity onPress={showDatePicker}>
                         <IconDate name="date" style={addStyles.iconDate} />
