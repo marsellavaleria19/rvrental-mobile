@@ -14,12 +14,14 @@ const NBInputLabel = ({
    label,
    change,
    value,
+   isValidate,
+   disabled,
    errorMessage,
    children,
 }) => {
    return (
       <Box>
-         <FormControl>
+         <FormControl isInvalid={isValidate} isDisabled={disabled}>
             <FormControl.Label variant={classVariant}>
                {label}
             </FormControl.Label>
@@ -29,10 +31,12 @@ const NBInputLabel = ({
                value={value}
                onChangeText={change}
             />
-            {/* <FormControl.ErrorMessage
-               leftIcon={<WarningOutlineIcon size="xs" />}>
-               {errorMessage}
-            </FormControl.ErrorMessage> */}
+            {isValidate && (
+               <FormControl.ErrorMessage
+                  leftIcon={<WarningOutlineIcon size="xs" />}>
+                  {errorMessage}
+               </FormControl.ErrorMessage>
+            )}
          </FormControl>
       </Box>
    );

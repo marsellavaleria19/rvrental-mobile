@@ -9,7 +9,6 @@ export const validation = (data, requirement) => {
       if (requirement[key].toString().includes('|')) {
          var split = requirement[key].split('|');
          console.log(split);
-         var regex = '/^[0-9]+$/';
          split.forEach(item => {
             if (item == 'required') {
                if (data[key] == null || data[key] == '') {
