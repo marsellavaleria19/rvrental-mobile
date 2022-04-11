@@ -26,6 +26,10 @@ const FinishPayment = ({route, navigation}) => {
    const dispatch = useDispatch();
    const [control, setControl] = useState(false);
    const {idHistory} = route.params;
+   const [hour, setHour] = useState();
+   const [minutes, setMinutes] = useState();
+   const [second, setSecond] = useState();
+   let interval;
 
    useEffect(() => {
       dispatch(getDetailHistory(idHistory));
@@ -39,6 +43,22 @@ const FinishPayment = ({route, navigation}) => {
       setControl(false);
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [history.dataHistory]);
+
+   // const startTime = () => {
+   //    const countDownDate = new Date(history.dataHistory.createdAt).getTime();
+   //    interval = setInterval(() => {
+   //       const now = new Date().getTime();
+   //       const diffrent = countDownDate - now;
+   //       const hours = Math.floor(
+   //          (diffrent % (24 * 60 * 60 * 1000)) / (1000 * 60 * 60),
+   //       );
+   //       const minutes = Math.floor(
+   //          (diffrent % (60 * 60 * 1000)) / (1000 * 60),
+   //       );
+
+   //       const seconds = Math.floor()
+   //    });
+   // };
 
    const finishPaymentHandle = () => {
       dispatch(
