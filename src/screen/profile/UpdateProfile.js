@@ -34,7 +34,7 @@ const UpdateProfile = ({navigation}) => {
    const [mobileNumber, setMobileNumber] = useState('');
    const [birthDate, setBirthDate] = useState(new Date());
    const [address, setAddress] = useState('');
-   const [picture, setPicture] = useState('');
+   const [picture, setPicture] = useState(imageProfile);
    const [upload, setUpload] = useState(false);
    const dispatch = useDispatch();
    const [control, setControl] = useState(false);
