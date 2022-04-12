@@ -1,117 +1,285 @@
 import * as React from 'react';
 import Container from '../../components/Container';
 import NBInputLabel from '../../components/NBInputLabel';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {
+   View,
+   StyleSheet,
+   Text,
+   TouchableOpacity,
+   ScrollView,
+} from 'react-native';
 import CButton from '../../components/Button';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {styles} from '../../assets/styles/styles';
-import CInput from '../../components/Input';
-import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
-import {useState} from 'react';
-import IconDate from 'react-native-vector-icons/Fontisto';
-import moment from 'moment';
 import stylePrimary from '../../assets/styles/stylePrimary';
-import {TextArea, Box, Image, Radio, Stack} from 'native-base';
-import imageProfile from '../../assets/images/avat-1.png';
-import NBRadio from '../../components/BNRadio';
-import IconEdit from 'react-native-vector-icons/FontAwesome';
+import {TextArea, Box, Image, Radio, Stack, Spinner, HStack} from 'native-base';
+import imageProfile from '../../assets/images/profile.png';
+import {useDispatch, useSelector} from 'react-redux';
+import {useEffect, useState} from 'react';
+import {launchImageLibrary} from 'react-native-image-picker';
+import RNFetchBlob from 'rn-fetch-blob';
+import {updateUser, uploadImageUser} from '../../redux/actions/user';
+import {NBAlert} from '../../components/NBAlert';
+import IconDate from 'react-native-vector-icons/Fontisto';
+import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
+import moment from 'moment';
+import {validation} from '../../helpers/validation';
+import {getDataUser} from '../../redux/actions/auth';
 
 const UpdateProfile = ({navigation}) => {
-   const [value, setValue] = React.useState('one');
+   const {auth} = useSelector(state => state);
+   const [name, setName] = useState('');
+   const [gender, setGender] = useState('');
+   const [email, setEmail] = useState('');
+   const [mobileNumber, setMobileNumber] = useState('');
+   const [birthDate, setBirthDate] = useState(new Date());
+   const [address, setAddress] = useState('');
+   const [picture, setPicture] = useState('');
+   const [upload, setUpload] = useState(false);
+   const dispatch = useDispatch();
+   const [control, setControl] = useState(false);
+   const [image, setImage] = useState({});
+   const [errValidation, setErrValidation] = useState({});
+
+   useEffect(() => {
+      setName(auth.user?.fullName);
+      setEmail(auth.user?.email);
+      setMobileNumber(auth.user?.mobileNumber);
+      setAddress(auth.user?.address);
+      setGender(auth.user.gender);
+      setPicture(
+         auth.user?.photo !== null
+            ? {uri: `${auth.user?.photo}`}
+            : imageProfile,
+      );
+      setUpload(false);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+   useEffect(() => {
+      if (auth.user !== null && control) {
+         navigation.navigate('Profile');
+         // dispatch(getDataUser(auth.token));
+         // setName(auth.user?.fullName);
+         // setEmail(auth.user?.email);
+         // setMobileNumber(auth.user?.mobileNumber);
+         // setAddress(auth.user?.address);
+         // setPicture({uri: `${auth.user?.photo}`});
+         // setControl(false);
+      }
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [auth.user]);
+
+   const onChange = (event, selectedDate) => {
+      setBirthDate(selectedDate);
+   };
+
+   const showDatePicker = () => {
+      DateTimePickerAndroid.open({
+         value: birthDate,
+         onChange,
+         mode: 'date',
+         is24Hour: true,
+      });
+   };
+
+   const browseImage = async () => {
+      const imagePicker = await launchImageLibrary({}, async image => {
+         console.log(image);
+         setPicture({uri: image.assets[0].uri});
+      });
+      setImage(imagePicker);
+   };
+
+   const updateProfileHandle = () => {
+      var dataSend = {
+         fullName: name,
+         gender: gender,
+         mobileNumber: mobileNumber,
+         address: address,
+         birthDate: moment(birthDate.toLocaleString()).format('YYYY-MM-DD'),
+      };
+      let requirement = {
+         fullName: 'required',
+         gender: 'required',
+         mobileNumber: 'required',
+         birthDate: 'required',
+      };
+
+      var validate = validation(dataSend, requirement);
+      if (Object.keys(validate).length == 0) {
+         if (Object.keys(image).length > 0) {
+            dispatch(
+               updateUser(auth.token, auth.user.id, dataSend, image.assets[0]),
+            );
+         } else {
+            dispatch(updateUser(auth.token, auth.user.id, dataSend));
+         }
+         setControl(true);
+      } else {
+         setErrValidation(validate);
+      }
+   };
+
    return (
-      <View>
+      <View style={styles.background}>
          <Container>
-            <View style={addStyles.layoutImageEdit}>
-               <View>
+            <ScrollView>
+               {/* <View style={addStyles.layoutImageEdit}>
+                  {!upload ? (
+                     <Image
+                        size={100}
+                        resizeMode={'contain'}
+                        borderRadius={100}
+                        source={imageProfile}
+                        alt="Profile"
+                     />
+                  ) : (
+                     <View style={addStyles.layoutLoading}>
+                        <View style={addStyles.spinner}>
+                           <Spinner size="lg" color="white" />
+                        </View>
+                     </View>
+                  )}
+               </View> */}
+               <View style={addStyles.layoutImageEdit}>
                   <Image
                      size={100}
                      resizeMode={'contain'}
                      borderRadius={100}
-                     source={imageProfile}
+                     source={picture}
                      alt="Profile"
                   />
+                  <View style={addStyles.layoutButtonImage}>
+                     <CButton
+                        classButton={addStyles.buttonImage}
+                        press={() => navigation.navigate('PaymentDetail')}
+                        textButton={addStyles.fontButtonImage}>
+                        Take Picture
+                     </CButton>
+                     <TouchableOpacity onPress={browseImage}>
+                        <CButton
+                           classButton={addStyles.buttonGallery}
+                           textButton={addStyles.fontButtonGallery}>
+                           Browse From Gallery
+                        </CButton>
+                     </TouchableOpacity>
+                  </View>
                </View>
-               <View style={addStyles.layoutButtonImage}>
-                  <CButton
-                     classButton={addStyles.buttonImage}
-                     press={() => navigation.navigate('PaymentDetail')}
-                     textButton={addStyles.fontButtonImage}>
-                     Take Picture
-                  </CButton>
-                  <CButton
-                     classButton={addStyles.buttonGallery}
-                     press={() => navigation.navigate('PaymentDetail')}
-                     textButton={addStyles.fontButtonGallery}>
-                     Browse From Gallery
-                  </CButton>
-               </View>
-            </View>
-            <View style={addStyles.layoutForm}>
-               <View style={addStyles.layoutInput}>
-                  <NBInputLabel
-                     placeholder={'Name'}
-                     classVariant="profile"
-                     label="Name"
-                  />
-               </View>
-               <View style={addStyles.layoutRadio}>
-                  <Radio.Group
-                     name="myRadioGroup"
-                     accessibilityLabel="favorite number"
-                     value={value}
-                     onChange={nextValue => {
-                        setValue(nextValue);
-                     }}>
-                     <Stack
-                        direction={{
-                           base: 'row',
-                        }}
-                        alignItems="center"
-                        space={50}
-                        w="100%"
-                        maxW="100%">
-                        <Radio value="one" size="sm" my={1}>
-                           Female
-                        </Radio>
-                        <Radio value="two" size="sm" my={1}>
-                           Male
-                        </Radio>
-                     </Stack>
-                  </Radio.Group>
-               </View>
-               <View style={addStyles.layoutInput}>
-                  <NBInputLabel
-                     placeholder={'Email Address'}
-                     classVariant="profile"
-                     label="Email Address"
-                  />
-               </View>
-               <View style={addStyles.layoutInput}>
-                  <NBInputLabel
-                     placeholder={'Phone Number'}
-                     classVariant="profile"
-                     label="Phone Number"
-                  />
-               </View>
-               <View style={addStyles.layoutInput}>
-                  <Box w="100%">
-                     <Text style={addStyles.label}>Delivery Address</Text>
-                     <TextArea
-                        h={20}
-                        placeholder="Delivery Address"
-                        variant="profile"
+               <View style={addStyles.layoutForm}>
+                  <View style={addStyles.layoutInput}>
+                     <NBInputLabel
+                        placeholder={'Name'}
+                        classVariant="profile"
+                        label="Name"
+                        value={name}
+                        change={setName}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.fullName
+                        }
                      />
-                  </Box>
+                  </View>
+                  <View style={addStyles.layoutRadio}>
+                     <Radio.Group
+                        name="myRadioGroup"
+                        accessibilityLabel="favorite number"
+                        value={gender}
+                        onChange={nextValue => {
+                           setGender(nextValue);
+                        }}>
+                        <Stack
+                           direction={{
+                              base: 'row',
+                           }}
+                           alignItems="center"
+                           space={50}
+                           w="100%"
+                           maxW="100%">
+                           <Radio value="Female" size="sm" my={1}>
+                              Female
+                           </Radio>
+                           <Radio value="Male" size="sm" my={1}>
+                              Male
+                           </Radio>
+                        </Stack>
+                     </Radio.Group>
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <NBInputLabel
+                        placeholder={'Email Address'}
+                        classVariant="profile"
+                        label="Email Address"
+                        value={email}
+                        change={setEmail}
+                        disabled={true}
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <NBInputLabel
+                        placeholder={'Phone Number'}
+                        classVariant="profile"
+                        label="Phone Number"
+                        value={mobileNumber}
+                        change={setMobileNumber}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.mobileNumber
+                        }
+                     />
+                  </View>
+                  <View style={[addStyles.layoutInput, {position: 'relative'}]}>
+                     <NBInputLabel
+                        classInput={addStyles.inputDate}
+                        placeholder="Birthdate"
+                        classVariant="profile"
+                        label="Birth date"
+                        value={moment(birthDate.toLocaleString()).format(
+                           'YYYY-MM-DD',
+                        )}
+                        change={setBirthDate}
+                        isValidate={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.birthdate
+                        }
+                     />
+                     <TouchableOpacity onPress={showDatePicker}>
+                        <IconDate name="date" style={addStyles.iconDate} />
+                     </TouchableOpacity>
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <Box w="100%">
+                        <Text style={addStyles.label}>Delivery Address</Text>
+                        <TextArea
+                           h={20}
+                           placeholder="Delivery Address"
+                           variant="profile"
+                           value={address}
+                           onChangeText={setAddress}
+                        />
+                     </Box>
+                  </View>
+                  <View style={addStyles.layoutButton}>
+                     <TouchableOpacity onPress={updateProfileHandle}>
+                        <CButton
+                           classButton={styles.buttonPayment}
+                           textButton={styles.fontButtonPayment}>
+                           Save Change
+                        </CButton>
+                     </TouchableOpacity>
+                  </View>
                </View>
-               <View style={addStyles.layoutButton}>
-                  <CButton
-                     classButton={styles.buttonPayment}
-                     press={() => navigation.navigate('PaymentDetail')}
-                     textButton={styles.fontButtonPayment}>
-                     Send Order Details
-                  </CButton>
-               </View>
-            </View>
+            </ScrollView>
          </Container>
       </View>
    );
@@ -120,6 +288,15 @@ const UpdateProfile = ({navigation}) => {
 const addStyles = StyleSheet.create({
    layoutForm: {
       marginTop: 100,
+   },
+   layoutLoading: {
+      backgroundColor: 'gray',
+      width: 100,
+      height: 100,
+      borderRadius: 100,
+   },
+   spinner: {
+      marginTop: 30,
    },
    layoutRadio: {
       flexDirection: 'row',

@@ -1,20 +1,84 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
+import {
+   Text,
+   View,
+   StyleSheet,
+   ImageBackground,
+   Image,
+   TouchableOpacity,
+} from 'react-native';
 import Container from '../../components/Container';
 import CButton from '../../components/Button';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import IconInfo from 'react-native-vector-icons/Ionicons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ScrollView} from 'native-base';
+import {useSelector, useDispatch} from 'react-redux';
+import {getDetailPayment} from '../../redux/actions/payment';
+import {useEffect, useState} from 'react';
+import moment from 'moment';
+import {getDetailHistory, historyUpdate} from '../../redux/actions/history';
+import {styles} from '../../assets/styles/styles';
+import StepperPayment from '../../components/StepperPayment';
 
-const FinishPayment = ({navigation}) => {
+const FinishPayment = ({route, navigation}) => {
+   const {payment, reservation, auth, history} = useSelector(state => state);
+   const dispatch = useDispatch();
+   const [control, setControl] = useState(false);
+   const {idHistory} = route.params;
+   const [hour, setHour] = useState();
+   const [minutes, setMinutes] = useState();
+   const [second, setSecond] = useState();
+   let interval;
+
+   useEffect(() => {
+      dispatch(getDetailHistory(idHistory));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+   useEffect(() => {
+      if (history.dataHistory !== null && control) {
+         navigation.navigate('SuccessPayment', {idHistory: idHistory});
+      }
+      setControl(false);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [history.dataHistory]);
+
+   // const startTime = () => {
+   //    const countDownDate = new Date(history.dataHistory.createdAt).getTime();
+   //    interval = setInterval(() => {
+   //       const now = new Date().getTime();
+   //       const diffrent = countDownDate - now;
+   //       const hours = Math.floor(
+   //          (diffrent % (24 * 60 * 60 * 1000)) / (1000 * 60 * 60),
+   //       );
+   //       const minutes = Math.floor(
+   //          (diffrent % (60 * 60 * 1000)) / (1000 * 60),
+   //       );
+
+   //       const seconds = Math.floor()
+   //    });
+   // };
+
+   const finishPaymentHandle = () => {
+      dispatch(
+         historyUpdate(auth.token, history.dataHistory.totalPayment, idHistory),
+      );
+      setControl(true);
+   };
+
    return (
-      <SafeAreaView>
+      <View style={styles.background}>
          <ScrollView>
             <Container>
+               <View style={addStyles.layoutStepper}>
+                  <StepperPayment active={3} count={3} />
+               </View>
                <View style={addStyles.layoutPaymentCode}>
                   <Text style={addStyles.textPaymentCode}>Payment Code</Text>
-                  <Text style={addStyles.paymentCode}>90887620</Text>
+                  <Text style={addStyles.paymentCode}>
+                     {history.dataHistory.paymentCode}
+                  </Text>
                   <Text style={addStyles.textDetail}>
                      Insert your payment code while you transfer booking order
                   </Text>
@@ -32,7 +96,9 @@ const FinishPayment = ({navigation}) => {
                <View style={addStyles.layoutBookingCode}>
                   <View style={addStyles.layoutCode}>
                      <Text style={addStyles.text}>Booking code :</Text>
-                     <Text style={addStyles.textCode}>VSP09875</Text>
+                     <Text style={addStyles.textCode}>
+                        {history.dataHistory.bookingCode}
+                     </Text>
                   </View>
                   <Text style={addStyles.textDetail}>
                      Use booking code to pick up your vespa
@@ -47,34 +113,50 @@ const FinishPayment = ({navigation}) => {
                   <Text style={addStyles.fontDescription}>
                      Order Details :{' '}
                   </Text>
-                  <Text style={addStyles.fontDescription}>2 Vespa</Text>
                   <Text style={addStyles.fontDescription}>
-                     Prepayement (no tax)
+                     {history.dataHistory.qty} {history.dataHistory.brand}
                   </Text>
-                  <Text style={addStyles.fontDescription}>4 days </Text>
                   <Text style={addStyles.fontDescription}>
-                     Jan 18 2021 to Jan 22 2021
+                     {history.dataHistory.payment_type}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {history.dataHistory.day} days{' '}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {moment(history.dataHistory.rentStartDate).format(
+                        'DD MMM YYYY',
+                     )}{' '}
+                     to{' '}
+                     {moment(history.dataHistory.rentEndDate).format(
+                        'DD MMM YYYY',
+                     )}
                   </Text>
                </View>
                <View style={addStyles.line} />
                <View style={addStyles.layoutPrice}>
-                  <Text style={addStyles.price}>Rp. 245.000</Text>
+                  <Text style={addStyles.price}>
+                     Rp.{' '}
+                     {reservation.dataReservation.totalPayment.toLocaleString(
+                        'id-ID',
+                     )}
+                  </Text>
                   <IconInfo
                      name="information-circle-sharp"
                      style={addStyles.iconInfo}
                   />
                </View>
                <View style={addStyles.layoutButton}>
-                  <CButton
-                     classButton={addStyles.buttonPayment}
-                     press={() => navigation.navigate('SuccessPayment')}
-                     textButton={addStyles.fontButtonPayment}>
-                     Finish Payment
-                  </CButton>
+                  <TouchableOpacity onPress={finishPaymentHandle}>
+                     <CButton
+                        classButton={styles.buttonPayment}
+                        textButton={styles.fontButtonPayment}>
+                        Finish Payment
+                     </CButton>
+                  </TouchableOpacity>
                </View>
             </Container>
          </ScrollView>
-      </SafeAreaView>
+      </View>
    );
 };
 
@@ -91,6 +173,9 @@ const addStyles = StyleSheet.create({
    layoutPaymentCode: {
       alignItems: 'center',
       marginTop: 36,
+   },
+   layoutStepper: {
+      marginTop: 50,
    },
    textDetail: {
       fontSize: 13,

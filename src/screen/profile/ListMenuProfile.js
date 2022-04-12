@@ -1,16 +1,14 @@
 import React from 'react';
-import {
-   View,
-   Text,
-   StyleSheet,
-   ScrollView,
-   TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import ListMenu from '../../components/ListMenu';
 import Container from '../../components/Container';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import CButton from '../../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
+import imageProfile from '../../assets/images/profile.png';
+import {Image} from 'native-base';
+import {styles} from '../../assets/styles/styles';
+import {ScrollView} from 'native-base';
 
 const ProfileMenuList = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -27,40 +25,83 @@ const ProfileMenuList = ({navigation}) => {
    };
 
    return (
-      <View style={addStyles.layoutProfileMenu}>
-         <ScrollView>
-            <Container>
-               <ListMenu title="Your Favorite" />
-               <ListMenu title="FAQ" />
-               <ListMenu title="Help" />
-               <ListMenu
-                  title="Update Profile"
-                  press={() => navigation.navigate('UpdateProfile')}
+      <View style={styles.background}>
+         <View style={addStyles.layoutProfileMenu}>
+            <View style={addStyles.layoutProfile}>
+               <Image
+                  size={60}
+                  resizeMode={'contain'}
+                  borderRadius={100}
+                  source={
+                     auth.user !== null && auth.user?.photo !== null
+                        ? {
+                             uri: `${auth.user?.photo}`,
+                          }
+                        : `${imageProfile}`
+                  }
+                  alt="Profile"
                />
-               <View style={addStyles.layoutButton}>
-                  <TouchableOpacity onPress={logoutHandle}>
-                     <CButton
-                        classButton={addStyles.buttonProfile}
-                        textButton={addStyles.fontButtonProfile}>
-                        Logout
-                     </CButton>
-                  </TouchableOpacity>
-               </View>
-            </Container>
-         </ScrollView>
+               <Text style={addStyles.textProfile}>{auth.user?.fullName}</Text>
+            </View>
+            <ScrollView h="70%" style={addStyles.scrollMenu}>
+               <Container>
+                  <ListMenu
+                     title="Your Favorite"
+                     press={() => navigation.navigate('Favorite')}
+                  />
+                  <ListMenu title="FAQ" />
+                  <ListMenu title="Help" />
+                  <ListMenu
+                     title="Update Profile"
+                     press={() => navigation.navigate('UpdateProfile')}
+                  />
+                  <ListMenu
+                     title="Verify User"
+                     press={() => navigation.navigate('VerifyUserEmail')}
+                  />
+                  <View style={addStyles.layoutButton}>
+                     <TouchableOpacity onPress={logoutHandle}>
+                        <CButton
+                           classButton={addStyles.buttonProfile}
+                           textButton={addStyles.fontButtonProfile}>
+                           Logout
+                        </CButton>
+                     </TouchableOpacity>
+                  </View>
+               </Container>
+            </ScrollView>
+         </View>
       </View>
    );
 };
 
 const addStyles = StyleSheet.create({
    layoutProfileMenu: {
-      marginTop: 100,
+      marginTop: 0,
+   },
+   layoutProfile: {
+      flexDirection: 'row',
+      height: 135,
+      backgroundColor: stylePrimary.secondaryColor,
+      width: '100%',
+      paddingTop: 30,
+      alignItems: 'center',
+      paddingHorizontal: 18,
+   },
+   textProfile: {
+      marginLeft: 27,
+      color: stylePrimary.mainColor,
+      fontWeight: stylePrimary.bold,
+      fontSize: 22,
    },
    flexRow: {
       flexDirection: 'row',
    },
+   scrollMenu: {
+      marginTop: 36,
+   },
    layoutButton: {
-      marginTop: 299,
+      marginTop: 100,
       marginBottom: 20,
    },
    buttonProfile: {

@@ -1,29 +1,46 @@
 import {combineReducers} from 'redux';
 import auth from './auth';
 import category from './category';
-import storage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistReducer} from 'redux-persist';
 import vehicle from './vehicle';
+import counter from './counter';
+import reservation from './reservation';
+import payment from './payment';
+import history from './history';
+import search from './search';
+import favorite from './favorite';
 
 const persistForAuth = {
    key: 'auth',
-   storage,
+   storage: AsyncStorage,
 };
 
 const persistForCategory = {
    key: 'category',
-   storage,
+   storage: AsyncStorage,
 };
 
-const persistForVehicle = {
-   key: 'vehicle',
-   storage,
+// const persistForVehicle = {
+//    key: 'vehicle',
+//    storage: AsyncStorage,
+// };
+
+const persistForHistory = {
+   key: 'history',
+   storage: AsyncStorage,
 };
 
 const rootReducers = combineReducers({
    auth: persistReducer(persistForAuth, auth),
+   vehicle,
    category: persistReducer(persistForCategory, category),
-   vehicle: persistReducer(persistForVehicle, vehicle),
+   // vehicle: persistReducer(persistForVehicle, vehicle),
+   reservation,
+   payment,
+   history: persistReducer(persistForHistory, history),
+   search,
+   favorite,
 });
 
 export default rootReducers;

@@ -18,6 +18,8 @@ import {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {forgotPasswordProcess} from '../../redux/actions/auth';
 import {NBAlert} from '../../components/NBAlert';
+import {ScrollView} from 'native-base';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const ForgotPassowrd = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -38,54 +40,56 @@ const ForgotPassowrd = ({navigation}) => {
    };
 
    return (
-      <View style={styles.background}>
-         <ImageBackground
-            source={image}
-            resizeMode="cover"
-            style={styles.image}>
-            <Container>
-               <TouchableOpacity
-                  onPress={() => navigation.navigate('Login')}
-                  style={addStyles.layoutBack}>
-                  <Icon name="chevron-left" style={addStyles.iconBack} />
-                  <Text style={addStyles.textBack}>Back</Text>
-               </TouchableOpacity>
-               <Text style={addStyles.textTitle}>
-                  THAT’S OKAY, WE GOT YOUR BACK
-               </Text>
-               <View style={addStyles.layoutLinkForgotPassword}>
-                  <Text style={addStyles.text}>
-                     Enter your email to get reset password code.
+      <SafeAreaView style={styles.background}>
+         <ScrollView>
+            <ImageBackground
+               source={image}
+               resizeMode="cover"
+               style={styles.image}>
+               <Container>
+                  <TouchableOpacity
+                     onPress={() => navigation.navigate('Login')}
+                     style={addStyles.layoutBack}>
+                     <Icon name="chevron-left" style={addStyles.iconBack} />
+                     <Text style={addStyles.textBack}>Back</Text>
+                  </TouchableOpacity>
+                  <Text style={addStyles.textTitle}>
+                     THAT’S OKAY, WE GOT YOUR BACK
                   </Text>
-               </View>
-               <View>
-                  {auth.isError && (
-                     <NBAlert status="error" message={auth.errMessage} />
-                  )}
-                  <Input
-                     classInput={addStyles.input}
-                     placeholder="Enter your email address"
-                     value={email}
-                     change={setEmail}
-                  />
-                  <TouchableOpacity onPress={forgotPasswordHandle}>
-                     <CButton
-                        classButton={addStyles.buttonForgotPassword}
-                        textButton={addStyles.textForgotPassword}>
-                        Send Code
-                     </CButton>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={forgotPasswordHandle}>
-                     <CButton
-                        classButton={addStyles.buttonResendCode}
-                        textButton={addStyles.textResendCode}>
-                        Resend Code
-                     </CButton>
-                  </TouchableOpacity>
-               </View>
-            </Container>
-         </ImageBackground>
-      </View>
+                  <View style={addStyles.layoutLinkForgotPassword}>
+                     <Text style={addStyles.text}>
+                        Enter your email to get reset password code.
+                     </Text>
+                  </View>
+                  <View>
+                     {auth.isError && (
+                        <NBAlert status="error" message={auth.errMessage} />
+                     )}
+                     <Input
+                        classInput={addStyles.input}
+                        placeholder="Enter your email address"
+                        value={email}
+                        change={setEmail}
+                     />
+                     <TouchableOpacity onPress={forgotPasswordHandle}>
+                        <CButton
+                           classButton={addStyles.buttonForgotPassword}
+                           textButton={addStyles.textForgotPassword}>
+                           Send Code
+                        </CButton>
+                     </TouchableOpacity>
+                     <TouchableOpacity onPress={forgotPasswordHandle}>
+                        <CButton
+                           classButton={addStyles.buttonResendCode}
+                           textButton={addStyles.textResendCode}>
+                           Resend Code
+                        </CButton>
+                     </TouchableOpacity>
+                  </View>
+               </Container>
+            </ImageBackground>
+         </ScrollView>
+      </SafeAreaView>
    );
 };
 
@@ -105,7 +109,7 @@ const addStyles = StyleSheet.create({
       ...input,
    },
    layoutLinkForgotPassword: {
-      marginTop: 100,
+      marginTop: 50,
       textAlign: 'center',
       flexDirection: 'row',
    },
@@ -141,6 +145,7 @@ const addStyles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: 10,
+      marginBottom: 10,
       ...button,
    },
    textResendCode: {
@@ -151,11 +156,12 @@ const addStyles = StyleSheet.create({
    layoutBack: {
       flexDirection: 'row',
       alignItems: 'center',
+      marginTop: 40,
    },
    iconBack: {
       color: '#FFFFFF',
       fontSize: 22,
-      marginRight: 30,
+      marginRight: 20,
    },
    textBack: {
       color: 'white',

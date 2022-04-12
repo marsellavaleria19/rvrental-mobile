@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
    },
    background: {
       flex: 1,
+      backgroundColor: stylePrimary.backgrorund,
    },
    image: {
       flex: 1,
@@ -44,6 +45,10 @@ const styles = StyleSheet.create({
    statusAvailable: {
       fontSize: 14,
       color: 'green',
+   },
+   statusNotAvailable: {
+      fontSize: 14,
+      color: 'red',
    },
    priceDetail: {
       fontSize: 16,

@@ -1,5 +1,12 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
+import {
+   Text,
+   View,
+   StyleSheet,
+   ImageBackground,
+   Image,
+   TouchableOpacity,
+} from 'react-native';
 import {styles} from '../../assets/styles/styles';
 import Container from '../../components/Container';
 import CButton from '../../components/Button';
@@ -9,12 +16,38 @@ import imageBackground from '../../assets/images/background-reservation.png';
 import Rate from '../../components/Rate';
 import {ScrollView} from 'native-base';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {getDetailPayment} from '../../redux/actions/payment';
+import {useSelector, useDispatch} from 'react-redux';
+import moment from 'moment';
+import {useEffect, useState} from 'react';
+import {getDetailHistory} from '../../redux/actions/history';
 
-const SuccessPayment = ({navigation}) => {
+const SuccessPayment = ({route, navigation}) => {
+   const {history, auth} = useSelector(state => state);
+   const dispatch = useDispatch();
+   const {idHistory} = route.params;
+   const [control, setControl] = useState(false);
+
+   // useEffect(() => {
+   //    if (history.listHistory.length > 0 && control) {
+   //       navigation.navigate('HistoryNav');
+   //    }
+   //    // eslint-disable-next-line react-hooks/exhaustive-deps
+   // }, [history.listHistory]);
+
+   const successPaymentHandle = () => {
+      dispatch({
+         type: 'HISTORY_SET_SUCCESS',
+      });
+      setControl(true);
+      navigation.navigate('HistoryNav');
+   };
+
    return (
-      <SafeAreaView>
+      <View style={styles.background}>
          <ScrollView>
             <Container>
+               <Text style={addStyles.statusPayment}>Payment Success!</Text>
                <View style={addStyles.positionRate}>
                   <Image
                      source={imageBackground}
@@ -25,38 +58,60 @@ const SuccessPayment = ({navigation}) => {
                   </View>
                </View>
                <View style={addStyles.layoutDescription}>
-                  <Text style={addStyles.fontDescription}>2 Vespa</Text>
                   <Text style={addStyles.fontDescription}>
-                     Prepayement (no tax)
+                     {history.dataHistory.qty} {history.dataHistory.brand}
                   </Text>
-                  <Text style={addStyles.fontDescription}>4 days </Text>
                   <Text style={addStyles.fontDescription}>
-                     Jan 18 2021 to Jan 22 2021
+                     {history.dataHistory.payment_type}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {history.dataHistory.day} days{' '}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {moment(history.dataHistory.rentStartDate).format(
+                        'DD MMM YYYY',
+                     )}{' '}
+                     to{' '}
+                     {moment(history.dataHistory.rentEndDate).format(
+                        'DD MMM YYYY',
+                     )}
                   </Text>
                </View>
                <View style={addStyles.line} />
                <View style={addStyles.layoutFontUser}>
-                  <Text style={addStyles.fontUser}>ID : 9087627392624</Text>
                   <Text style={addStyles.fontUser}>
-                     Jessica Jane (jjane@mail.com)
+                     ID :{' '}
+                     {history.dataHistory.idCard !== null
+                        ? history.dataHistory.idCard
+                        : ''}
+                  </Text>
+                  <Text style={addStyles.fontUser}>
+                     {history.dataHistory.fullname} (
+                     {history.dataHistory.emailAddress})
                   </Text>
                   <View style={addStyles.layoutPhoneStatus}>
-                     <Text style={addStyles.fontUser}>0890876789 </Text>
+                     <Text style={addStyles.fontUser}>
+                        {history.dataHistory.mobilePhone}{' '}
+                     </Text>
                      <Text style={addStyles.fontActive}>(active)</Text>
                   </View>
-                  <Text style={addStyles.fontUser}>Jakarta, Indonesia</Text>
+                  <Text style={addStyles.fontUser}>
+                     {history.dataHistory.location}
+                  </Text>
                </View>
                <View style={addStyles.layoutButton}>
-                  <CButton
-                     classButton={addStyles.buttonPayment}
-                     press={() => navigation.navigate('History')}
-                     textButton={addStyles.fontButtonPayment}>
-                     Total : 245.000
-                  </CButton>
+                  <TouchableOpacity onPress={successPaymentHandle}>
+                     <CButton
+                        classButton={addStyles.buttonPayment}
+                        textButton={addStyles.fontButtonPayment}>
+                        Total :{' '}
+                        {history.dataHistory.prepayment.toLocaleString('id-ID')}
+                     </CButton>
+                  </TouchableOpacity>
                </View>
             </Container>
          </ScrollView>
-      </SafeAreaView>
+      </View>
    );
 };
 
@@ -123,6 +178,13 @@ const addStyles = StyleSheet.create({
       fontSize: 24,
       fontWeight: stylePrimary.bold,
       color: stylePrimary.mainColor,
+   },
+   statusPayment: {
+      fontSize: 24,
+      fontWeight: stylePrimary.bold,
+      marginTop: 35,
+      color: 'green',
+      textAlign: 'center',
    },
 });
 

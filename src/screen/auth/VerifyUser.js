@@ -17,7 +17,11 @@ import {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {registrationProcess} from '../../redux/actions/auth';
 import {NBAlert} from '../../components/NBAlert';
-import {verifyProcess} from '../../redux/actions/auth';
+import {confirmVerifyProcess} from '../../redux/actions/auth';
+import NBInputLabel from '../../components/NBInputLabel';
+import {validation} from '../../helpers/validation';
+import {ScrollView} from 'native-base';
+import NBModal from '../../components/NBModal';
 
 const VerifyUser = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -26,20 +30,113 @@ const VerifyUser = ({navigation}) => {
    const [code, setCode] = useState('');
    const dispatch = useDispatch();
    const [success, setSuccess] = useState(false);
+   const [errValidation, setErrValidation] = useState({});
+   const [show, setShow] = useState(false);
+   const handleShow = () => setShow(true);
+   const handleClose = () => setShow(false);
 
    useEffect(() => {
-      if (success) {
-         navigation.navigate('Login');
+      setEmail(auth?.user.email);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+   useEffect(() => {
+      if (auth !== null && success == true) {
+         navigation.navigate('Profile');
       }
-   }, [navigation, success]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [auth]);
 
    const verifyUserHandle = () => {
-      dispatch(verifyProcess(email, password, code));
-      setSuccess(true);
+      var dataSend = {
+         email,
+         code,
+         password,
+      };
+      let requirement = {
+         email: 'required',
+         code: 'required',
+         password: 'required',
+      };
+
+      var validate = validation(dataSend, requirement);
+      if (Object.keys(validate).length == 0) {
+         dispatch(
+            confirmVerifyProcess(
+               dataSend.email,
+               dataSend.password,
+               dataSend.code,
+            ),
+         );
+         setSuccess(true);
+      } else {
+         setErrValidation(validate);
+      }
    };
    return (
       <View style={styles.background}>
-         <ImageBackground
+         <Container>
+            <ScrollView style={addStyles.layoutForm}>
+               {auth.isError && <NBAlert>{auth.errorMessage}</NBAlert>}
+               <NBInputLabel
+                  placeholder={'Enter your email address'}
+                  classVariant="verifyUser"
+                  label="Email"
+                  value={email}
+                  change={setEmail}
+                  isValidate={Object.keys(errValidation).length > 0 && true}
+                  errorMessage={
+                     Object.keys(errValidation).length > 0 &&
+                     errValidation.email
+                  }
+               />
+               <NBInputLabel
+                  placeholder={'Password'}
+                  classVariant="verifyUser"
+                  label="Password"
+                  value={password}
+                  change={setPassword}
+                  secure={true}
+                  isValidate={Object.keys(errValidation).length > 0 && true}
+                  errorMessage={
+                     Object.keys(errValidation).length > 0 &&
+                     errValidation.password
+                  }
+               />
+               <NBInputLabel
+                  placeholder={'Code'}
+                  classVariant="verifyUser"
+                  label="Code"
+                  value={code}
+                  change={setCode}
+                  isValidate={Object.keys(errValidation).length > 0 && true}
+                  errorMessage={
+                     Object.keys(errValidation).length > 0 && errValidation.code
+                  }
+               />
+               <TouchableOpacity onPress={verifyUserHandle}>
+                  <CButton
+                     classButton={addStyles.buttonVerifyUser}
+                     textButton={addStyles.textVerifyUser}>
+                     Verify Code
+                  </CButton>
+               </TouchableOpacity>
+               <NBModal
+                  title="Verified User"
+                  show={show}
+                  functionShow={handleShow}
+                  functionClose={handleClose}
+                  functionHandle={() => navigation.navigate('Profile')}
+                  isButton={auth !== null && (auth.isError ? false : true)}
+                  buttonTitile="Go to profile">
+                  <Text>
+                     {auth !== null &&
+                        (auth.isError ? auth.errorMessage : auth.message)}
+                  </Text>
+               </NBModal>
+            </ScrollView>
+         </Container>
+         {/* <ImageBackground
             source={image}
             resizeMode="cover"
             style={styles.image}>
@@ -80,7 +177,7 @@ const VerifyUser = ({navigation}) => {
                   </TouchableOpacity>
                </View>
             </Container>
-         </ImageBackground>
+         </ImageBackground> */}
       </View>
    );
 };
@@ -101,27 +198,17 @@ const addStyles = StyleSheet.create({
       fontSize: stylePrimary.baseFontSize,
       ...input,
    },
-   layoutLinkLogin: {
-      marginTop: 40,
-      justifyContent: 'center',
-      flexDirection: 'row',
-   },
    text: {
       color: stylePrimary.baseFontColor,
       fontSize: 14,
       marginTop: 10,
       marginBottom: 30,
    },
-   textLink: {
-      fontWeight: '700',
-      color: stylePrimary.baseFontColor,
-      fontSize: 14,
-      marginTop: 10,
-      marginBottom: 30,
-      marginLeft: 5,
-   },
    layoutForm: {
       marginTop: 50,
+   },
+   layoutInput: {
+      marginTop: 18,
    },
    buttonVerifyUser: {
       backgroundColor: stylePrimary.secondaryColor,
@@ -129,11 +216,6 @@ const addStyles = StyleSheet.create({
       alignItems: 'center',
       marginTop: 50,
       ...button,
-   },
-   textVerifyUser: {
-      color: stylePrimary.mainColor,
-      fontWeight: '900',
-      fontSize: 18,
    },
 });
 

@@ -37,10 +37,21 @@ export const registrationProcess = (
    };
 };
 
-export const verifyProcess = (email, password, code) => {
+export const verifyEmailProcess = email => {
+   const data = {email: email};
+   return {
+      type: 'VERIFY_EMAIL_USER',
+      payload: AxiosCostum().post(
+         '/auth/emailverification',
+         qs.stringify(data),
+      ),
+   };
+};
+
+export const confirmVerifyProcess = (email, password, code) => {
    const data = {email: email, password: password, code: code};
    return {
-      type: 'VERIFY_USER',
+      type: 'CONFIRM_VERIFY_USER',
       payload: AxiosCostum().post(
          '/auth/emailverification',
          qs.stringify(data),

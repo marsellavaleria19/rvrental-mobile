@@ -12,20 +12,33 @@ const NBInputLabel = ({
    placeholder,
    classVariant,
    label,
+   change,
+   value,
+   isValidate,
+   disabled,
    errorMessage,
+   secure,
    children,
 }) => {
    return (
       <Box>
-         <FormControl>
+         <FormControl isInvalid={isValidate} isDisabled={disabled}>
             <FormControl.Label variant={classVariant}>
                {label}
             </FormControl.Label>
-            <Input placeholder={placeholder} variant={classVariant} />
-            {/* <FormControl.ErrorMessage
-               leftIcon={<WarningOutlineIcon size="xs" />}>
-               {errorMessage}
-            </FormControl.ErrorMessage> */}
+            <Input
+               placeholder={placeholder}
+               variant={classVariant}
+               value={value}
+               onChangeText={change}
+               secureTextEntry={secure}
+            />
+            {isValidate && (
+               <FormControl.ErrorMessage
+                  leftIcon={<WarningOutlineIcon size="xs" />}>
+                  {errorMessage}
+               </FormControl.ErrorMessage>
+            )}
          </FormControl>
       </Box>
    );

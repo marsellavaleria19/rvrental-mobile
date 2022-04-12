@@ -15,22 +15,78 @@ import Input from '../components/Input';
 import CButton from '../components/Button';
 import stylePrimary from '../assets/styles/stylePrimary';
 import IconRun from 'react-native-vector-icons/FontAwesome5';
-import imageBackground from '../assets/images/background-reservation.png';
+import imageBackground from '../assets/images/image-item.png';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons';
 import BSelect from '../components/BSelect';
 import Rate from '../components/Rate';
 import LinearGradient from 'react-native-linear-gradient';
 import IconLeft from 'react-native-vector-icons/FontAwesome';
 import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import IconDate from 'react-native-vector-icons/Fontisto';
 import IconChat from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
+import {useDispatch, useSelector} from 'react-redux';
+import {getDetailVehicle} from '../redux/actions/vehicle';
+import {Select} from 'native-base';
+import {reservationProcess} from '../redux/actions/reservation';
+import {
+   addFavorite,
+   getListFavorite,
+   deleteFavorite,
+} from '../redux/actions/favorite';
 
-const Reservation = ({navigation}) => {
+const Reservation = ({route, navigation}) => {
+   const {vehicle, counter, auth, reservation, favorite} = useSelector(
+      state => state,
+   );
+   const {vehicleId} = route.params;
    const [date, setDate] = useState(new Date());
-   const [mode, setMode] = useState('date');
-   const [show, setShow] = useState(false);
+   const [qty, setQty] = useState(0);
+   const dispatch = useDispatch();
+   const [day, setDay] = useState(0);
+   const [control, setControl] = useState(false);
+   const [picture, setPicture] = useState();
+   const [isAddvorite, setAddFavorite] = useState(false);
+
+   useEffect(() => {
+      dispatch(getDetailVehicle(vehicleId));
+      setQty(0);
+      setPicture(
+         vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
+            ? {uri: `${vehicle.dataVehicle.photo}`}
+            : imageBackground,
+      );
+      dispatch(getListFavorite());
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+   useEffect(() => {
+      if (vehicle.dataVehicle !== null) {
+         setPicture(
+            vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
+               ? {uri: `${vehicle.dataVehicle.photo}`}
+               : imageBackground,
+         );
+      }
+   }, [vehicle.dataVehicle]);
+
+   useEffect(() => {
+      if (reservation.dataReservation !== null && control) {
+         navigation.navigate('Payment');
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [reservation.dataReservation]);
+
+   const countIncrement = () => {
+      setQty(qty + 1);
+   };
+
+   const countDecrement = () => {
+      if (qty > 0) {
+         setQty(qty - 1);
+      }
+   };
 
    const onChange = (event, selectedDate) => {
       setDate(selectedDate);
@@ -45,12 +101,35 @@ const Reservation = ({navigation}) => {
       });
    };
 
+   const reservationHandle = () => {
+      dispatch(reservationProcess(vehicle.dataVehicle, qty, day, date));
+      setControl(true);
+   };
+
+   const favoriteHandle = itemFavorite => {
+      if (favorite.listFavorite.length > 0) {
+         const listFavorite = favorite.listFavorite.filter(
+            item => item.id == itemFavorite.id,
+         );
+         if (listFavorite.length > 0) {
+            dispatch(deleteFavorite(itemFavorite));
+            setAddFavorite(false);
+         } else {
+            dispatch(addFavorite(itemFavorite));
+            setAddFavorite(true);
+         }
+      } else {
+         dispatch(addFavorite(itemFavorite));
+         setAddFavorite(true);
+      }
+   };
+
    return (
       <SafeAreaView style={styles.background}>
          <ScrollView>
             <View>
                <ImageBackground
-                  source={imageBackground}
+                  source={picture}
                   resizeMode="cover"
                   style={addStyles.imageBackground}>
                   <Container>
@@ -64,11 +143,31 @@ const Reservation = ({navigation}) => {
                            />
                         </TouchableOpacity>
                         <View style={addStyles.flexRow}>
-                           <Rate rate={4.5} />
-                           <IconMaterial
-                              name="favorite-outline"
-                              style={addStyles.iconHeart}
+                           <Rate
+                              rate={
+                                 vehicle.dataVehicle !== null &&
+                                 vehicle.dataVehicle.rate
+                              }
                            />
+                           <TouchableOpacity
+                              onPress={() =>
+                                 favoriteHandle(vehicle.dataVehicle)
+                              }>
+                              {isAddvorite ||
+                              favorite.listFavorite.filter(
+                                 item => item.id == vehicle.dataVehicle.id,
+                              ).length > 0 ? (
+                                 <IconMaterial
+                                    name="favorite"
+                                    style={addStyles.iconHeartFill}
+                                 />
+                              ) : (
+                                 <IconMaterial
+                                    name="favorite-outline"
+                                    style={addStyles.iconHeart}
+                                 />
+                              )}
+                           </TouchableOpacity>
                         </View>
                      </View>
                   </Container>
@@ -78,8 +177,15 @@ const Reservation = ({navigation}) => {
                <View style={addStyles.marginLayout}>
                   <View style={addStyles.layoutDescriptionRate}>
                      <View>
-                        <Text style={addStyles.title}>Vespa Matic</Text>
-                        <Text style={addStyles.price}>Rp. 120.000/day</Text>
+                        <Text style={addStyles.title}>
+                           {vehicle.dataVehicle !== null &&
+                              vehicle.dataVehicle.name}
+                        </Text>
+                        <Text style={addStyles.price}>
+                           {vehicle.dataVehicle !== null
+                              ? `Rp. ${vehicle.dataVehicle.price.toLocaleString()}/day`
+                              : 'Rp.0'}
+                        </Text>
                      </View>
                      <View>
                         <View
@@ -100,7 +206,7 @@ const Reservation = ({navigation}) => {
                      <Text style={styles.statusAvailable}>Available</Text>
                      <View style={addStyles.layoutLocation}>
                         <LinearGradient
-                           colors={['#FFC7A733', '#FFD57933']}
+                           colors={[stylePrimary.secondaryColor, '#7796b6']}
                            style={[addStyles.layoutIconLocation]}>
                            <IconMaterial
                               name="location-on"
@@ -108,12 +214,13 @@ const Reservation = ({navigation}) => {
                            />
                         </LinearGradient>
                         <Text style={addStyles.fontLocation}>
-                           Jalan Maliboboro, No. 21, Yogyakarta
+                           {vehicle.dataVehicle !== null &&
+                              vehicle.dataVehicle.location}
                         </Text>
                      </View>
                      <View style={addStyles.layoutDistance}>
                         <LinearGradient
-                           colors={['#FFC7A733', '#FFD57933']}
+                           colors={[stylePrimary.secondaryColor, '#7796b6']}
                            style={[addStyles.layoutIconLocation]}>
                            <IconRun
                               name="running"
@@ -127,17 +234,21 @@ const Reservation = ({navigation}) => {
                      <View style={addStyles.layoutQtyBikes}>
                         <Text style={addStyles.fontLabel}>Select bikes</Text>
                         <View style={addStyles.layoutQty}>
-                           <CButton
-                              classButton={addStyles.button}
-                              textButton={addStyles.text}>
-                              -
-                           </CButton>
-                           <Input classInput={addStyles.inputQty} value={0} />
-                           <CButton
-                              classButton={addStyles.button}
-                              textButton={addStyles.text}>
-                              +
-                           </CButton>
+                           <TouchableOpacity onPress={countDecrement}>
+                              <CButton
+                                 classButton={addStyles.button}
+                                 textButton={addStyles.text}>
+                                 -
+                              </CButton>
+                           </TouchableOpacity>
+                           <Text style={addStyles.inputQty}>{qty}</Text>
+                           <TouchableOpacity onPress={countIncrement}>
+                              <CButton
+                                 classButton={addStyles.button}
+                                 textButton={addStyles.text}>
+                                 +
+                              </CButton>
+                           </TouchableOpacity>
                         </View>
                      </View>
                   </View>
@@ -154,17 +265,28 @@ const Reservation = ({navigation}) => {
                            <IconDate name="date" style={addStyles.iconDate} />
                         </TouchableOpacity>
                      </View>
-                     <BSelect placeholder="Day" />
+                     <BSelect
+                        width="40%"
+                        placeholder="Day"
+                        variantSelect="reservation"
+                        select={day}
+                        change={itemValue => setDay(itemValue)}>
+                        <Select.Item label="1" value={1} />
+                        <Select.Item label="2" value={2} />
+                        <Select.Item label="3" value={3} />
+                     </BSelect>
                      {/* <Input classInput={addStyles.inputDay} placeholder="Day" /> */}
                   </View>
                </View>
                <View style={addStyles.layoutButton}>
-                  <CButton
-                     classButton={addStyles.buttonReservation}
-                     press={() => navigation.navigate('Payment')}
-                     textButton={addStyles.fontButtonReservation}>
-                     Reservation
-                  </CButton>
+                  <TouchableOpacity onPress={reservationHandle}>
+                     <CButton
+                        classButton={addStyles.buttonReservation}
+                        press={() => navigation.navigate('Payment')}
+                        textButton={addStyles.fontButtonReservation}>
+                        Reservation
+                     </CButton>
+                  </TouchableOpacity>
                </View>
             </Container>
          </ScrollView>
@@ -182,19 +304,25 @@ const addStyles = StyleSheet.create({
       marginTop: 40,
    },
    iconDate: {
-      color: 'FFFFFF',
+      color: stylePrimary.mainColor,
       fontSize: 22,
       position: 'absolute',
       bottom: 15,
       right: 20,
    },
    iconBack: {
-      color: '#FFFFFF',
+      color: stylePrimary.mainColor,
       fontSize: 22,
       marginLeft: 20,
    },
    iconHeart: {
-      color: 'white',
+      color: stylePrimary.mainColor,
+      fontWeight: '700',
+      fontSize: 30,
+      marginLeft: 10,
+   },
+   iconHeartFill: {
+      color: 'red',
       fontWeight: '700',
       fontSize: 30,
       marginLeft: 10,
@@ -210,7 +338,7 @@ const addStyles = StyleSheet.create({
       justifyContent: 'space-between',
    },
    iconLocation: {
-      color: 'orange',
+      color: stylePrimary.mainColor,
       fontSize: 20,
    },
    flexRow: {
@@ -292,12 +420,15 @@ const addStyles = StyleSheet.create({
    layoutForm: {
       marginTop: 28,
       flexDirection: 'row',
+      width: '100%',
    },
    inputDate: {
-      backgroundColor: 'rgba(57, 57, 57, 0.3)',
+      backgroundColor: stylePrimary.backgrorund,
+      borderColor: stylePrimary.mainColor,
+      borderWidth: 1,
       // opacity: 0.1,
       borderRadius: 10,
-      width: 200,
+      minWidth: '60%',
       height: 50,
       paddingLeft: 10,
       marginRight: 10,

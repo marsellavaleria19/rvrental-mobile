@@ -1,5 +1,13 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
+import {
+   Text,
+   View,
+   StyleSheet,
+   ImageBackground,
+   Image,
+   TouchableOpacity,
+   ScrollView,
+} from 'react-native';
 import {styles} from '../../assets/styles/styles';
 import Container from '../../components/Container';
 import CButton from '../../components/Button';
@@ -8,47 +16,102 @@ import {button, rateLayout, rateText} from '../../assets/styles/styleComponent';
 import imageBackground from '../../assets/images/background-reservation.png';
 import Rate from '../../components/Rate';
 import IconInfo from 'react-native-vector-icons/Ionicons';
+import {historyInput} from '../../redux/actions/history';
+import {useDispatch, useSelector} from 'react-redux';
+import moment from 'moment';
+import {useEffect, useState} from 'react';
+import StepperPayment from '../../components/StepperPayment';
 
 const PaymentDetail = ({navigation}) => {
+   const {payment, history, reservation, auth} = useSelector(state => state);
+   const dispatch = useDispatch();
+   const [control, setControl] = useState(false);
+   // React.useEffect(() => {
+   //    dispatch(getDetailPayment(idHistory));
+   // }, []);
+
+   useEffect(() => {
+      if (history.dataHistory !== null && control) {
+         navigation.navigate('FinishPayment', {
+            idHistory: history.dataHistory.id,
+         });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [history.dataHistory]);
+
+   const paymentHandle = () => {
+      dispatch(
+         historyInput(
+            reservation.dataReservation,
+            auth.user.id,
+            payment.dataPayment,
+            auth.token,
+         ),
+      );
+      setControl(true);
+   };
+
    return (
-      <View>
-         <Container>
-            <View style={addStyles.positionRate}>
-               <Image
-                  source={imageBackground}
-                  style={addStyles.imageBackground}
-               />
-               <View style={addStyles.rateLayout}>
-                  <Rate rate={3.5} />
+      <View style={styles.background}>
+         <ScrollView>
+            <Container>
+               <View style={addStyles.layoutStepper}>
+                  <StepperPayment active={2} count={3} />
                </View>
-            </View>
-            <View style={addStyles.layoutDescription}>
-               <Text style={addStyles.fontDescription}>2 Vespa</Text>
-               <Text style={addStyles.fontDescription}>
-                  Prepayement (no tax)
-               </Text>
-               <Text style={addStyles.fontDescription}>4 days </Text>
-               <Text style={addStyles.fontDescription}>
-                  Jan 18 2021 to Jan 22 2021
-               </Text>
-            </View>
-            <View style={addStyles.line} />
-            <View style={addStyles.layoutPrice}>
-               <Text style={addStyles.price}>Rp. 245.000</Text>
-               <IconInfo
-                  name="information-circle-sharp"
-                  style={addStyles.iconInfo}
-               />
-            </View>
-            <View style={addStyles.layoutButton}>
-               <CButton
-                  classButton={styles.buttonPayment}
-                  textButton={styles.fontButtonPayment}
-                  press={() => navigation.navigate('FinishPayment')}>
-                  Get Payment Code
-               </CButton>
-            </View>
-         </Container>
+               <View style={addStyles.positionRate}>
+                  <Image
+                     source={{uri: `${reservation.dataReservation.photo}`}}
+                     style={addStyles.imageBackground}
+                  />
+                  <View style={addStyles.rateLayout}>
+                     <Rate rate={3.5} />
+                  </View>
+               </View>
+               <View style={addStyles.layoutDescription}>
+                  <Text style={addStyles.fontDescription}>
+                     {reservation.dataReservation.qty}{' '}
+                     {reservation.dataReservation.brand}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {payment.dataPayment.payment_type}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {reservation.dataReservation.day} days{' '}
+                  </Text>
+                  <Text style={addStyles.fontDescription}>
+                     {moment(reservation.dataReservation.rentStartDate).format(
+                        'DD MMM YYYY',
+                     )}{' '}
+                     to{' '}
+                     {moment(reservation.dataReservation.rentEndDate).format(
+                        'DD MMM YYYY',
+                     )}
+                  </Text>
+               </View>
+               <View style={addStyles.line} />
+               <View style={addStyles.layoutPrice}>
+                  <Text style={addStyles.price}>
+                     Rp.{' '}
+                     {reservation.dataReservation.totalPayment.toLocaleString(
+                        'id-ID',
+                     )}
+                  </Text>
+                  <IconInfo
+                     name="information-circle-sharp"
+                     style={addStyles.iconInfo}
+                  />
+               </View>
+               <View style={addStyles.layoutButton}>
+                  <TouchableOpacity onPress={paymentHandle}>
+                     <CButton
+                        classButton={styles.buttonPayment}
+                        textButton={styles.fontButtonPayment}>
+                        Get Payment Code
+                     </CButton>
+                  </TouchableOpacity>
+               </View>
+            </Container>
+         </ScrollView>
       </View>
    );
 };
@@ -58,6 +121,9 @@ const addStyles = StyleSheet.create({
       width: '100%',
       height: 300,
       borderRadius: 20,
+   },
+   layoutStepper: {
+      marginTop: 50,
    },
    positionRate: {
       position: 'relative',
@@ -96,7 +162,7 @@ const addStyles = StyleSheet.create({
    },
    iconInfo: {
       fontSize: 36,
-      color: '#DFDEDE',
+      color: stylePrimary.mainColor,
    },
    layoutButton: {
       marginTop: 30,

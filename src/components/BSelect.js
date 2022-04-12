@@ -11,26 +11,31 @@ import {
 import {StyleSheet} from 'react-native';
 import {color} from 'native-base/lib/typescript/theme/styled-system';
 
-const BSelect = ({classInput, placeholder, option, children}) => {
-   let [service, setService] = React.useState('');
+const BSelect = ({
+   width,
+   placeholder,
+   selected,
+   change,
+   color,
+   backgroud,
+   variantSelect,
+   children,
+}) => {
    return (
-      <Box w="3/4" maxW="300">
+      <Box w={width}>
          <Select
-            selectedValue={service}
-            minWidth="200"
-            accessibilityLabel="Choose Service"
-            placeholder="Choose Service"
+            selectedValue={selected}
+            minWidth="20"
+            bgColor={backgroud}
+            color={color}
+            placeholder={placeholder}
             _selectedItem={{
-               bg: 'teal.600',
+               bg: {color},
                endIcon: <CheckIcon size="5" />,
             }}
-            mt={1}
-            onValueChange={itemValue => setService(itemValue)}>
-            <Select.Item label="UX Research" value="ux" />
-            <Select.Item label="Web Development" value="web" />
-            <Select.Item label="Cross Platform Development" value="cross" />
-            <Select.Item label="UI Designing" value="ui" />
-            <Select.Item label="Backend Development" value="backend" />
+            variant={variantSelect}
+            onValueChange={change}>
+            {children}
          </Select>
       </Box>
       // <NativeBaseProvider extendTheme>

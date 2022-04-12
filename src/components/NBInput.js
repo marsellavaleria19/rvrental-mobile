@@ -11,17 +11,29 @@ const NBInput = ({
    classInput,
    placeholder,
    classVariant,
+   value,
+   change,
+   secure,
    errorMessage,
+   isValidate,
    children,
 }) => {
    return (
       <Box>
-         <FormControl>
-            <Input placeholder={placeholder} mt="4" variant={classVariant} />
-            {/* <FormControl.ErrorMessage
-               leftIcon={<WarningOutlineIcon size="xs" />}>
-               {errorMessage}
-            </FormControl.ErrorMessage> */}
+         <FormControl isInvalid={isValidate}>
+            <Input
+               placeholder={placeholder}
+               variant={classVariant}
+               value={value}
+               onChangeText={change}
+               secureTextEntry={secure}
+            />
+            {isValidate && (
+               <FormControl.ErrorMessage
+                  leftIcon={<WarningOutlineIcon size="xs" />}>
+                  {errorMessage}
+               </FormControl.ErrorMessage>
+            )}
          </FormControl>
       </Box>
    );
