@@ -1,14 +1,10 @@
 import React from 'react';
 import {NativeBaseProvider, extendTheme} from 'native-base';
-import {input, button} from '../assets/styles/styleComponent';
-import stylePrimary from '../assets/styles/stylePrimary';
 import {NavigationContainer} from '@react-navigation/native';
-import NavMainStack from '../components/MainStack';
-import AuthNavigator from '../components/AuthNavigator';
-import ChangePassword from './auth/ChangePassword';
+import AuthNavigator from '../router/AuthNavigator';
 import {theme} from '../assets/styles/themeNativeBase';
 import {useDispatch, useSelector} from 'react-redux';
-import MainStackNav from '../components/MainStack';
+import MainStackNav from '../router/MainStack';
 import {useEffect} from 'react';
 import {getDataUser} from '../redux/actions/auth';
 

@@ -55,6 +55,10 @@ const ProfileMenuList = ({navigation}) => {
                      title="Update Profile"
                      press={() => navigation.navigate('UpdateProfile')}
                   />
+                  <ListMenu
+                     title="Verify User"
+                     press={() => navigation.navigate('VerifyUserEmail')}
+                  />
                   <View style={addStyles.layoutButton}>
                      <TouchableOpacity onPress={logoutHandle}>
                         <CButton

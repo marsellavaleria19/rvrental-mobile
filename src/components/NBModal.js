@@ -11,6 +11,7 @@ const NBModal = ({
    children,
    title,
    functionHandle,
+   isButton,
    buttonTitile,
 }) => {
    return (
@@ -19,15 +20,16 @@ const NBModal = ({
             <Modal.CloseButton />
             <Modal.Header>{title}</Modal.Header>
             <Modal.Body>{children}</Modal.Body>
-            <Modal.Footer>
-               <TouchableOpacity onPress={functionHandle}>
-                  <CButton
-                     classButton={addStyles.button}
-                     textButton={addStyles.fontButton}>
-                     {buttonTitile}
-                  </CButton>
-               </TouchableOpacity>
-               {/* <Button.Group space={2}>
+            {isButton == true && (
+               <Modal.Footer>
+                  <TouchableOpacity onPress={functionHandle}>
+                     <CButton
+                        classButton={addStyles.button}
+                        textButton={addStyles.fontButton}>
+                        {buttonTitile}
+                     </CButton>
+                  </TouchableOpacity>
+                  {/* <Button.Group space={2}>
                   <Button
                      variant="ghost"
                      colorScheme="blueGray"
@@ -43,7 +45,8 @@ const NBModal = ({
                      Save
                   </Button>
                </Button.Group> */}
-            </Modal.Footer>
+               </Modal.Footer>
+            )}
          </Modal.Content>
       </Modal>
    );

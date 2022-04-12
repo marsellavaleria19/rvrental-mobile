@@ -23,6 +23,14 @@ export const theme = extendTheme({
                   color: stylePrimary.mainColor,
                },
             },
+            verifyUser: {
+               backgroundColor: 'rgba(52, 52, 52, 0.0)',
+               borderBottomWidth: 1,
+               borderBottomColor: '#9F9F9F',
+               _text: {
+                  color: stylePrimary.mainColor,
+               },
+            },
             loginSignup: {
                marginTop: 18,
                backgroundColor: 'rgba(180, 180, 180, 0.5)',
