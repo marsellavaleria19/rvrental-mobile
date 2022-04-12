@@ -76,7 +76,7 @@ const UpdateItem = ({route, navigation}) => {
    };
 
    useEffect(() => {
-      if (control==true) {
+      if (control == true) {
          navigation.navigate('Home');
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
