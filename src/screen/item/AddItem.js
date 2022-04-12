@@ -228,6 +228,7 @@ const AddItem = ({navigation}) => {
                               functionShow={handleShow}
                               functionClose={handleClose}
                               functionHandle={addCategoryHandle}
+                              isButton={true}
                               buttonTitile="Save">
                               <NBInput
                                  placeholder={'Type Category'}

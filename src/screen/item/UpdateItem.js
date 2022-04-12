@@ -75,6 +75,13 @@ const UpdateItem = ({route, navigation}) => {
       }
    };
 
+   useEffect(() => {
+      if (control==true) {
+         navigation.navigate('Home');
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [control]);
+
    const updateItemHandle = () => {
       var data = {
          name,
@@ -171,6 +178,7 @@ const UpdateItem = ({route, navigation}) => {
                            functionShow={handleShow}
                            functionClose={handleClose}
                            functionHandle={deleteItemHandle}
+                           isButton={true}
                            buttonTitile="Delete">
                            <Text>
                               Are you sure want to delete this product?
