@@ -3,7 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from '../screen/Home';
 import DetailCategory from '../screen/DetailCategory';
-import Filter from '../screen/Filter';
+import Filter from '../screen/filter/Filter';
+import AddItem from '../screen/item/AddItem';
 
 const NavHomeStack = createNativeStackNavigator();
 // const NavHomeStack = createNativeStackNavigator();
@@ -28,6 +29,13 @@ const HomeNavigator = () => {
             }}
             name="Filter"
             component={Filter}
+         />
+         <NavHomeStack.Screen
+            options={{
+               title: 'Add new item',
+            }}
+            name="AddItem"
+            component={AddItem}
          />
       </NavHomeStack.Navigator>
    );

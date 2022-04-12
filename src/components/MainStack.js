@@ -8,6 +8,11 @@ import PaymentDetail from '../screen/payment/PaymentDetail';
 import FinishPayment from '../screen/payment/FinishPayment';
 import SuccessPayment from '../screen/payment/SuccessPayment';
 import UpdateProfile from '../screen/profile/UpdateProfile';
+import Favorite from '../screen/Favorite';
+import AddItem from '../screen/item/AddItem';
+import EditItem from '../screen/item/EditItem';
+import UpdateItem from '../screen/item/UpdateItem';
+import FilterMenu from '../screen/filter/FilterMenu';
 
 const NavMainStack = createNativeStackNavigator();
 
@@ -48,10 +53,38 @@ const MainStackNav = () => {
          />
          <NavMainStack.Screen
             options={{
+               title: 'Favorite',
+            }}
+            name="Favorite"
+            component={Favorite}
+         />
+         <NavMainStack.Screen
+            options={{
                title: 'Update Profile',
             }}
             name="UpdateProfile"
             component={UpdateProfile}
+         />
+         <NavMainStack.Screen
+            options={{
+               headerShown: false,
+            }}
+            name="EditItem"
+            component={EditItem}
+         />
+         <NavMainStack.Screen
+            options={{
+               headerShown: false,
+            }}
+            name="UpdateItem"
+            component={UpdateItem}
+         />
+         <NavMainStack.Screen
+            options={{
+               title: 'Filter',
+            }}
+            name="FilterMenu"
+            component={FilterMenu}
          />
          {/* <NavMainStack.Screen name="Reservation" component={Reservation} />
          <NavMainStack.Screen name="PaymentDetail" component={PaymentDetail} />
