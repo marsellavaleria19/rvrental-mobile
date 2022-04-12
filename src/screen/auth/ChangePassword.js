@@ -18,6 +18,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useState, useEffect} from 'react';
 import {confirmForgotPasswordProcess} from '../../redux/actions/auth';
 import {NBAlert} from '../../components/NBAlert';
+import {ScrollView} from 'native-base';
 
 const ChangePassowrd = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -44,72 +45,74 @@ const ChangePassowrd = ({navigation}) => {
 
    return (
       <View style={styles.background}>
-         <ImageBackground
-            source={image}
-            resizeMode="cover"
-            style={styles.image}>
-            <Container>
-               <TouchableOpacity
-                  onPress={() => navigation.navigate('Login')}
-                  style={addStyles.layoutBack}>
-                  <Icon name="chevron-left" style={addStyles.iconBack} />
-                  <Text style={addStyles.textBack}>Back</Text>
-               </TouchableOpacity>
-               <Text style={addStyles.textTitle}>
-                  THAT’S OKAY, WE GOT YOUR BACK
-               </Text>
-               <View>
-                  {auth.isError && (
-                     <NBAlert status="error" message={auth.errMessage} />
-                  )}
-                  {auth.isSubmitEmail && (
-                     <NBAlert status="success" message={auth.message} />
-                  )}
-                  <View style={addStyles.layoutInput}>
-                     <Input
-                        classInput={addStyles.input}
-                        value={email}
-                        change={setEmail}
-                        placeholder="Email"
-                     />
-                  </View>
-                  <View style={addStyles.layoutInput}>
-                     <Input
-                        classInput={addStyles.input}
-                        value={code}
-                        change={setCode}
-                        placeholder="Code"
-                     />
-                  </View>
-                  <View style={addStyles.layoutInput}>
-                     <Input
-                        classInput={addStyles.input}
-                        value={password}
-                        change={setPassword}
-                        secure={true}
-                        placeholder="Password"
-                     />
-                  </View>
-                  <View style={addStyles.layoutInput}>
-                     <Input
-                        classInput={addStyles.input}
-                        value={confirmPassword}
-                        change={setConfirmPassword}
-                        secure={true}
-                        placeholder="Confirm Password"
-                     />
-                  </View>
-
-                  <TouchableOpacity onPress={changePasswordHandle}>
-                     <CButton
-                        classButton={addStyles.buttonForgotPassword}
-                        textButton={addStyles.textForgotPassword}>
-                        Change Passowrd
-                     </CButton>
+         <ScrollView>
+            <ImageBackground
+               source={image}
+               resizeMode="cover"
+               style={styles.image}>
+               <Container>
+                  <TouchableOpacity
+                     onPress={() => navigation.navigate('Login')}
+                     style={addStyles.layoutBack}>
+                     <Icon name="chevron-left" style={addStyles.iconBack} />
+                     <Text style={addStyles.textBack}>Back</Text>
                   </TouchableOpacity>
-               </View>
-            </Container>
-         </ImageBackground>
+                  <Text style={addStyles.textTitle}>
+                     THAT’S OKAY, WE GOT YOUR BACK
+                  </Text>
+                  <View>
+                     {auth.isError && (
+                        <NBAlert status="error" message={auth.errMessage} />
+                     )}
+                     {auth.isSubmitEmail && (
+                        <NBAlert status="success" message={auth.message} />
+                     )}
+                     <View style={addStyles.layoutInput}>
+                        <Input
+                           classInput={addStyles.input}
+                           value={email}
+                           change={setEmail}
+                           placeholder="Email"
+                        />
+                     </View>
+                     <View style={addStyles.layoutInput}>
+                        <Input
+                           classInput={addStyles.input}
+                           value={code}
+                           change={setCode}
+                           placeholder="Code"
+                        />
+                     </View>
+                     <View style={addStyles.layoutInput}>
+                        <Input
+                           classInput={addStyles.input}
+                           value={password}
+                           change={setPassword}
+                           secure={true}
+                           placeholder="Password"
+                        />
+                     </View>
+                     <View style={addStyles.layoutInput}>
+                        <Input
+                           classInput={addStyles.input}
+                           value={confirmPassword}
+                           change={setConfirmPassword}
+                           secure={true}
+                           placeholder="Confirm Password"
+                        />
+                     </View>
+
+                     <TouchableOpacity onPress={changePasswordHandle}>
+                        <CButton
+                           classButton={addStyles.buttonForgotPassword}
+                           textButton={addStyles.textForgotPassword}>
+                           Change Passowrd
+                        </CButton>
+                     </TouchableOpacity>
+                  </View>
+               </Container>
+            </ImageBackground>
+         </ScrollView>
       </View>
    );
 };

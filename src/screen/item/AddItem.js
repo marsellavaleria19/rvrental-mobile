@@ -139,6 +139,11 @@ const AddItem = ({navigation}) => {
                   </TouchableOpacity>
                </View>
                <View style={addStyles.layoutForm}>
+                  <Text style={addStyles.textErrorImage}>
+                     {Object.keys(image).length > 0 &&
+                        image.assets[0].fileSize > 2000000 &&
+                        'Photo max 2 MB'}
+                  </Text>
                   <View style={addStyles.layoutInput}>
                      <NBInput
                         placeholder={'Type product name min 30 Characters'}

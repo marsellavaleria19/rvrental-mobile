@@ -25,6 +25,7 @@ import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {validation} from '../../helpers/validation';
 import {getDataUser} from '../../redux/actions/auth';
+import NBModal from '../../components/NBModal';
 
 const UpdateProfile = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -40,6 +41,9 @@ const UpdateProfile = ({navigation}) => {
    const [control, setControl] = useState(false);
    const [image, setImage] = useState({});
    const [errValidation, setErrValidation] = useState({});
+   const [show, setShow] = useState(false);
+   const handleShow = () => setShow(true);
+   const handleClose = () => setShow(false);
 
    useEffect(() => {
       setName(auth.user?.fullName);
@@ -86,7 +90,6 @@ const UpdateProfile = ({navigation}) => {
 
    const browseImage = async () => {
       const imagePicker = await launchImageLibrary({}, async image => {
-         console.log(image);
          setPicture({uri: image.assets[0].uri});
       });
       setImage(imagePicker);
@@ -143,31 +146,38 @@ const UpdateProfile = ({navigation}) => {
                      </View>
                   )}
                </View> */}
-               <View style={addStyles.layoutImageEdit}>
-                  <Image
-                     size={100}
-                     resizeMode={'contain'}
-                     borderRadius={100}
-                     source={picture}
-                     alt="Profile"
-                  />
-                  <View style={addStyles.layoutButtonImage}>
-                     <CButton
-                        classButton={addStyles.buttonImage}
-                        press={() => navigation.navigate('PaymentDetail')}
-                        textButton={addStyles.fontButtonImage}>
-                        Take Picture
-                     </CButton>
-                     <TouchableOpacity onPress={browseImage}>
+               <View>
+                  <View style={addStyles.layoutImageEdit}>
+                     <Image
+                        size={100}
+                        resizeMode={'contain'}
+                        borderRadius={100}
+                        source={picture}
+                        alt="Profile"
+                     />
+                     <View style={addStyles.layoutButtonImage}>
                         <CButton
-                           classButton={addStyles.buttonGallery}
-                           textButton={addStyles.fontButtonGallery}>
-                           Browse From Gallery
+                           classButton={addStyles.buttonImage}
+                           press={() => navigation.navigate('PaymentDetail')}
+                           textButton={addStyles.fontButtonImage}>
+                           Take Picture
                         </CButton>
-                     </TouchableOpacity>
+                        <TouchableOpacity onPress={browseImage}>
+                           <CButton
+                              classButton={addStyles.buttonGallery}
+                              textButton={addStyles.fontButtonGallery}>
+                              Browse From Gallery
+                           </CButton>
+                        </TouchableOpacity>
+                     </View>
                   </View>
                </View>
                <View style={addStyles.layoutForm}>
+                  <Text style={addStyles.textErrorImage}>
+                     {Object.keys(image).length > 0 &&
+                        image.assets[0].fileSize > 2000000 &&
+                        'Photo max 2 MB'}
+                  </Text>
                   <View style={addStyles.layoutInput}>
                      <NBInputLabel
                         placeholder={'Name'}
@@ -379,6 +389,10 @@ const addStyles = StyleSheet.create({
    fontButtonGallery: {
       fontSize: 13,
       color: stylePrimary.mainColor,
+   },
+   textErrorImage: {
+      color: 'red',
+      marginBottom: 20,
    },
 });
 

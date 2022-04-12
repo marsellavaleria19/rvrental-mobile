@@ -38,19 +38,19 @@ const Filter = ({navigation}) => {
       }
    };
 
-   const filterSearchHandle = () => {
-      let result = '';
-      Object.keys(filter).forEach(key => {
-         if (key !== 'name' && filter[key] !== '') {
-            if (result == '') {
-               result += filter[key];
-            } else {
-               result += filter[key] + ',';
-            }
-         }
-      });
-      return result;
-   };
+   // const filterSearchHandle = () => {
+   //    let result = '';
+   //    Object.keys(filter).forEach(key => {
+   //       if (key !== 'name' && filter[key] !== '') {
+   //          if (result == '') {
+   //             result += filter[key];
+   //          } else {
+   //             result += filter[key] + ',';
+   //          }
+   //       }
+   //    });
+   //    return result;
+   // };
 
    return (
       <View style={styles.background}>
@@ -63,20 +63,7 @@ const Filter = ({navigation}) => {
                   style={addStyles.layoutFilter}
                   onPress={() => navigation.navigate('FilterMenu')}>
                   <IconFilter name="filter" style={addStyles.icon} />
-                  {
-                     filterSearchHandle() == '' ? (
-                        <Text>Filter Search</Text>
-                     ) : (
-                        <Text>{filterSearchHandle()}</Text>
-                     )
-                     /* {Object.keys(filter)
-                        .filter(item => item !== 'name')
-                        .filter(item => filter[item] !== '')
-                        ? filterSearchHandle() == ''
-                           ? 'Filter Search'
-                           : filterSearchHandle()
-                        : 'Filter Search'} */
-                  }
+                  <Text>Filter Search</Text>
                </TouchableOpacity>
             </View>
             <View>
