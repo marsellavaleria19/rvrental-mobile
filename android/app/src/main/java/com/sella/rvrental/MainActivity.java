@@ -1,4 +1,4 @@
-package com.fw5reactnative;
+package com.sella.rvrental;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -19,7 +19,7 @@ public class MainActivity extends ReactActivity {
 
   @Override
   protected String getMainComponentName() {
-    return "fw5ReactNative";
+    return "RVRental";
   }
 
   /**

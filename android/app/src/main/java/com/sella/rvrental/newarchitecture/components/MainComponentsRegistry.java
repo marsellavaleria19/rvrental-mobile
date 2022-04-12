@@ -1,4 +1,4 @@
-package com.fw5reactnative.newarchitecture.components;
+package com.sella.rvrental.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

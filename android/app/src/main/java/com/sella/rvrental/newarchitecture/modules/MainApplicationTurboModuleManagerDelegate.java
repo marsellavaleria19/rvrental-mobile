@@ -1,4 +1,4 @@
-package com.fw5reactnative.newarchitecture.modules;
+package com.sella.rvrental.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.fw5reactnative">
+  package="com.sella.rvrental">
 
     <uses-permission android:name="android.permission.INTERNET" />
 

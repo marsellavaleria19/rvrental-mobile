@@ -1,4 +1,4 @@
-package com.fw5reactnative.newarchitecture;
+package com.sella.rvrental.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.fw5reactnative.BuildConfig;
-import com.fw5reactnative.newarchitecture.components.MainComponentsRegistry;
-import com.fw5reactnative.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.sella.rvrental.BuildConfig;
+import com.sella.rvrental.newarchitecture.components.MainComponentsRegistry;
+import com.sella.rvrental.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

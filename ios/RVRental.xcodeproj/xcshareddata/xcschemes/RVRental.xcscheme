@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "fw5ReactNative.app"
-               BlueprintName = "fw5ReactNative"
-               ReferencedContainer = "container:fw5ReactNative.xcodeproj">
+               BuildableName = "RVRental.app"
+               BlueprintName = "RVRental"
+               ReferencedContainer = "container:RVRental.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "fw5ReactNativeTests.xctest"
-               BlueprintName = "fw5ReactNativeTests"
-               ReferencedContainer = "container:fw5ReactNative.xcodeproj">
+               BuildableName = "RVRentalTests.xctest"
+               BlueprintName = "RVRentalTests"
+               ReferencedContainer = "container:RVRental.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "fw5ReactNative.app"
-            BlueprintName = "fw5ReactNative"
-            ReferencedContainer = "container:fw5ReactNative.xcodeproj">
+            BuildableName = "RVRental.app"
+            BlueprintName = "RVRental"
+            ReferencedContainer = "container:RVRental.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "fw5ReactNative.app"
-            BlueprintName = "fw5ReactNative"
-            ReferencedContainer = "container:fw5ReactNative.xcodeproj">
+            BuildableName = "RVRental.app"
+            BlueprintName = "RVRental"
+            ReferencedContainer = "container:RVRental.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
