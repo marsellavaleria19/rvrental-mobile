@@ -20,9 +20,9 @@ const App = () => {
       console.log(token);
    };
 
-   useEffect(() => {
-      getToken();
-   }, []);
+   // useEffect(() => {
+
+   // }, []);
    return (
       <>
          <Provider store={store}>

@@ -20,6 +20,7 @@ import {ScrollView} from 'native-base';
 import NBInput from '../../components/NBInput';
 import {NBAlert} from '../../components/NBAlert';
 import {validation} from '../../helpers/validation';
+import NBModal from '../../components/NBModal';
 
 const Signup = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -31,12 +32,23 @@ const Signup = ({navigation}) => {
    const dispatch = useDispatch();
    const [success, setSuccess] = useState(false);
    const [errValidation, setErrValidation] = useState({});
+   const [show, setShow] = useState(false);
+   const handleShow = () => setShow(true);
+   const handleClose = () => setShow(false);
 
    useEffect(() => {
-      if (success) {
-         navigation.navigate('Login');
-      }
-   }, [navigation, success]);
+      dispatch({
+         type: 'CLEAR_AUTH',
+      });
+      setErrValidation({});
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+   // useEffect(() => {
+   //    if (success) {
+   //       navigation.navigate('Login');
+   //    }
+   // }, [navigation, success]);
 
    const signupHandle = () => {
       let requirement = {
@@ -63,104 +75,125 @@ const Signup = ({navigation}) => {
          setErrValidation(validate);
       }
    };
+
+   const showModalHandle = () => {
+      console.log('masuk!!');
+      return (
+         <Text style={addStyles.textLink}>AAaaa</Text>
+         // <NBModal
+         //    title="Verified User"
+         //    show={true}
+         //    functionClose={handleClose}
+         //    isButton={true}
+         //    isButtonCancel={true}
+         //    buttonTitile="Save">
+         //    <Text>Are you sure want to save this data?</Text>
+         // </NBModal>
+      );
+   };
+
    return (
       <View style={styles.background}>
          <ImageBackground
             source={image}
             resizeMode="cover"
             style={styles.image}>
-            <Container>
-               <ScrollView>
-                  <Text style={addStyles.textTitle}>LET’S HAVE SOME RIDE</Text>
-                  <View style={addStyles.layoutForm}>
-                     {auth.isError && (
-                        <NBAlert status="error" message={auth.errMessage} />
-                     )}
-                     <NBInput
-                        classVariant="loginSignup"
-                        placeholder="Name"
-                        value={name}
-                        change={setName}
-                        isValidate={
-                           Object.keys(errValidation).length > 0 && true
-                        }
-                        errorMessage={
-                           Object.keys(errValidation).length > 0 &&
-                           errValidation.name
-                        }
-                     />
-                     <NBInput
-                        classVariant="loginSignup"
-                        placeholder="Email"
-                        value={email}
-                        change={setEmail}
-                        isValidate={
-                           Object.keys(errValidation).length > 0 && true
-                        }
-                        errorMessage={
-                           Object.keys(errValidation).length > 0 &&
-                           errValidation.email
-                        }
-                     />
-                     <NBInput
-                        classVariant="loginSignup"
-                        placeholder="Username"
-                        value={username}
-                        change={setUsername}
-                        isValidate={
-                           Object.keys(errValidation).length > 0 && true
-                        }
-                        errorMessage={
-                           Object.keys(errValidation).length > 0 &&
-                           errValidation.username
-                        }
-                     />
-                     <NBInput
-                        classVariant="loginSignup"
-                        placeholder="Mobile phone"
-                        value={mobileNumber}
-                        change={setMobileNumber}
-                        isValidate={
-                           Object.keys(errValidation).length > 0 && true
-                        }
-                        errorMessage={
-                           Object.keys(errValidation).length > 0 &&
-                           errValidation.mobileNumber
-                        }
-                     />
-                     <NBInput
-                        classVariant="loginSignup"
-                        placeholder="Password"
-                        value={password}
-                        change={setPassword}
-                        secure={true}
-                        isValidate={
-                           Object.keys(errValidation).length > 0 && true
-                        }
-                        errorMessage={
-                           Object.keys(errValidation).length > 0 &&
-                           errValidation.password
-                        }
-                     />
-                     <TouchableOpacity onPress={signupHandle}>
-                        <CButton
-                           classButton={addStyles.buttonSignup}
-                           textButton={addStyles.textSignup}>
-                           Signup
-                        </CButton>
-                     </TouchableOpacity>
-                     <View style={addStyles.layoutLinkLogin}>
-                        <Text style={addStyles.text}>
-                           Already have account?
-                        </Text>
-                        <TouchableOpacity
-                           onPress={() => navigation.navigate('Login')}>
-                           <Text style={addStyles.textLink}>Login now</Text>
+            <View style={styles.containerScreen}>
+               <Container>
+                  <ScrollView>
+                     <Text style={addStyles.textTitle}>
+                        LET’S HAVE SOME RIDE
+                     </Text>
+                     <View style={addStyles.layoutForm}>
+                        {auth.isError && (
+                           <NBAlert status="error" message={auth.errMessage} />
+                        )}
+                        <NBInput
+                           classVariant="loginSignup"
+                           placeholder="Name"
+                           value={name}
+                           change={setName}
+                           isValidate={
+                              Object.keys(errValidation).length > 0 && true
+                           }
+                           errorMessage={
+                              Object.keys(errValidation).length > 0 &&
+                              errValidation.name
+                           }
+                        />
+                        <NBInput
+                           classVariant="loginSignup"
+                           placeholder="Email"
+                           value={email}
+                           change={setEmail}
+                           isValidate={
+                              Object.keys(errValidation).length > 0 && true
+                           }
+                           errorMessage={
+                              Object.keys(errValidation).length > 0 &&
+                              errValidation.email
+                           }
+                        />
+                        <NBInput
+                           classVariant="loginSignup"
+                           placeholder="Username"
+                           value={username}
+                           change={setUsername}
+                           isValidate={
+                              Object.keys(errValidation).length > 0 && true
+                           }
+                           errorMessage={
+                              Object.keys(errValidation).length > 0 &&
+                              errValidation.username
+                           }
+                        />
+                        <NBInput
+                           classVariant="loginSignup"
+                           placeholder="Mobile phone"
+                           value={mobileNumber}
+                           change={setMobileNumber}
+                           isValidate={
+                              Object.keys(errValidation).length > 0 && true
+                           }
+                           errorMessage={
+                              Object.keys(errValidation).length > 0 &&
+                              errValidation.mobileNumber
+                           }
+                        />
+                        <NBInput
+                           classVariant="loginSignup"
+                           placeholder="Password"
+                           value={password}
+                           change={setPassword}
+                           secure={true}
+                           isValidate={
+                              Object.keys(errValidation).length > 0 && true
+                           }
+                           errorMessage={
+                              Object.keys(errValidation).length > 0 &&
+                              errValidation.password
+                           }
+                        />
+                        <TouchableOpacity onPress={signupHandle}>
+                           <CButton
+                              classButton={addStyles.buttonSignup}
+                              textButton={addStyles.textSignup}>
+                              Signup
+                           </CButton>
                         </TouchableOpacity>
+                        <View style={addStyles.layoutLinkLogin}>
+                           <Text style={addStyles.text}>
+                              Already have account?
+                           </Text>
+                           <TouchableOpacity
+                              onPress={() => navigation.navigate('Login')}>
+                              <Text style={addStyles.textLink}>Login now</Text>
+                           </TouchableOpacity>
+                        </View>
                      </View>
-                  </View>
-               </ScrollView>
-            </Container>
+                  </ScrollView>
+               </Container>
+            </View>
          </ImageBackground>
       </View>
    );

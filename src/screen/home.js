@@ -88,6 +88,8 @@ const Home = ({navigation}) => {
             </View>
             <View>
                <FlatList
+                  keyExtractor={item => item.id}
+                  contentContainerStyle={addStyles.layoutCategory}
                   data={category.listCategory}
                   renderItem={({item}) => {
                      return (
@@ -217,6 +219,9 @@ const addStyles = StyleSheet.create({
       fontSize: 24,
       color: stylePrimary.mainColor,
       fontWeight: '700',
+   },
+   layoutCategory: {
+      marginBottom: 20,
    },
 });
 

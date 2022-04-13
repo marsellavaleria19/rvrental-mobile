@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import MainStackNav from '../router/MainStack';
 import {useEffect} from 'react';
 import {getDataUser} from '../redux/actions/auth';
+import RNBootSplash from 'react-native-bootsplash';
 
 const Main = () => {
    const {auth} = useSelector(state => state);
@@ -20,7 +21,7 @@ const Main = () => {
 
    return (
       <NativeBaseProvider theme={theme}>
-         <NavigationContainer>
+         <NavigationContainer onReady={() => RNBootSplash.hide()}>
             {auth.token == null ? <AuthNavigator /> : <MainStackNav />}
          </NavigationContainer>
       </NativeBaseProvider>
