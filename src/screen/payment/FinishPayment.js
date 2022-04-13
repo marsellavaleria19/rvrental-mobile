@@ -20,6 +20,7 @@ import moment from 'moment';
 import {getDetailHistory, historyUpdate} from '../../redux/actions/history';
 import {styles} from '../../assets/styles/styles';
 import StepperPayment from '../../components/StepperPayment';
+import PushNotificationHandler from '../../helpers/PushNotificationHelper';
 
 const FinishPayment = ({route, navigation}) => {
    const {payment, reservation, auth, history} = useSelector(state => state);
@@ -38,6 +39,12 @@ const FinishPayment = ({route, navigation}) => {
 
    useEffect(() => {
       if (history.dataHistory !== null && control) {
+         PushNotificationHandler(
+            'finish-payment',
+            'finish-payment',
+            'Finish Payment',
+            "Your order has successfully. Don't forget to do payment.",
+         );
          navigation.navigate('SuccessPayment', {idHistory: idHistory});
       }
       setControl(false);
