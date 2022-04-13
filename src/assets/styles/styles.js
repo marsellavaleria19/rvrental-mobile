@@ -5,9 +5,13 @@ const styles = StyleSheet.create({
    container: {
       marginHorizontal: 30,
    },
+   containerScreen: {
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      flex: 1,
+   },
    background: {
       flex: 1,
-      backgroundColor: stylePrimary.backgrorund,
+      backgroundColor: stylePrimary.background,
    },
    image: {
       flex: 1,

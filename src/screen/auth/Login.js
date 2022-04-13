@@ -67,73 +67,81 @@ const Login = ({navigation}) => {
    };
 
    return (
-      <SafeAreaView style={styles.background}>
+      <View style={styles.background}>
          <ScrollView>
             <ImageBackground
                source={image}
                resizeMode="cover"
                style={styles.image}>
-               <Container>
-                  <Text style={addStyles.textTitle}>
-                     LET’S EXPLORE THE WORLD
-                  </Text>
-                  <View style={addStyles.layoutForm}>
-                     {auth.isRegister && (
-                        <NBAlert status="success" message={auth.message} />
-                     )}
-                     {auth.isError && (
-                        <NBAlert status="error" message={auth.errMessage} />
-                     )}
-                     <NBInput
-                        classVariant="loginSignup"
-                        placeholder="Email"
-                        value={email}
-                        change={setEmail}
-                        isValidate={
-                           Object.keys(errValidation).length > 0 && true
-                        }
-                        errorMessage={
-                           Object.keys(errValidation).length > 0 &&
-                           errValidation.email
-                        }
-                     />
-                     <NBInput
-                        classVariant="loginSignup"
-                        placeholder="password"
-                        secure={true}
-                        value={password}
-                        change={setPassword}
-                        isValidate={
-                           Object.keys(errValidation).length > 0 && true
-                        }
-                        errorMessage={
-                           Object.keys(errValidation).length > 0 &&
-                           errValidation.password
-                        }
-                     />
-                     <TouchableOpacity
-                        onPress={() => navigation.navigate('ForgotPassword')}>
-                        <Text style={addStyles.text}>Forgot Password?</Text>
-                     </TouchableOpacity>
-                     <TouchableOpacity onPress={loginHandle}>
-                        <CButton
-                           classButton={addStyles.buttonLogin}
-                           textButton={addStyles.textLogin}>
-                           Login
-                        </CButton>
-                     </TouchableOpacity>
-                     <View style={addStyles.layoutLinkSignup}>
-                        <Text style={addStyles.text}>Don’t have account?</Text>
+               <View style={styles.containerScreen}>
+                  <Container>
+                     <Text style={addStyles.textTitle}>
+                        LET’S EXPLORE THE WORLD
+                     </Text>
+                     <View style={addStyles.layoutForm}>
+                        {auth.isRegister && (
+                           <NBAlert status="success" message={auth.message} />
+                        )}
+                        {auth.isError && (
+                           <NBAlert status="error" message={auth.errMessage} />
+                        )}
+                        <NBInput
+                           classVariant="loginSignup"
+                           placeholder="Email"
+                           value={email}
+                           change={setEmail}
+                           isValidate={
+                              Object.keys(errValidation).length > 0 && true
+                           }
+                           errorMessage={
+                              Object.keys(errValidation).length > 0 &&
+                              errValidation.email
+                           }
+                        />
+                        <NBInput
+                           classVariant="loginSignup"
+                           placeholder="password"
+                           secure={true}
+                           value={password}
+                           change={setPassword}
+                           isValidate={
+                              Object.keys(errValidation).length > 0 && true
+                           }
+                           errorMessage={
+                              Object.keys(errValidation).length > 0 &&
+                              errValidation.password
+                           }
+                        />
                         <TouchableOpacity
-                           onPress={() => navigation.navigate('Signup')}>
-                           <Text style={addStyles.textLink}>Sign up now</Text>
+                           onPress={() =>
+                              navigation.navigate('ForgotPassword')
+                           }>
+                           <Text style={addStyles.text}>Forgot Password?</Text>
                         </TouchableOpacity>
+                        <TouchableOpacity onPress={loginHandle}>
+                           <CButton
+                              classButton={addStyles.buttonLogin}
+                              textButton={addStyles.textLogin}>
+                              Login
+                           </CButton>
+                        </TouchableOpacity>
+                        <View style={addStyles.layoutLinkSignup}>
+                           <Text style={addStyles.text}>
+                              Don’t have account?
+                           </Text>
+                           <TouchableOpacity
+                              onPress={() => navigation.navigate('Signup')}>
+                              <Text style={addStyles.textLink}>
+                                 Sign up now
+                              </Text>
+                           </TouchableOpacity>
+                        </View>
                      </View>
-                  </View>
-               </Container>
+                  </Container>
+               </View>
             </ImageBackground>
          </ScrollView>
-      </SafeAreaView>
+      </View>
    );
 };
 

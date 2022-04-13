@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "289258980980",
+    "project_id": "vehiclerent-378b8",
+    "storage_bucket": "vehiclerent-378b8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289258980980:android:e4fe79be8823cb719cf321",
+        "android_client_info": {
+          "package_name": "com.sella.rvrental"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289258980980-vjjealqksq1pcjm1cv44ivimgdduu4k6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sella.rvrental",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "289258980980-p491hdc4j287fc2bnqgh952c71h9r9r1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi6qcgBn3inzZvacpN1QPvGKYZKWfHfWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289258980980-p491hdc4j287fc2bnqgh952c71h9r9r1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

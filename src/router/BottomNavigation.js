@@ -5,21 +5,48 @@ import HomeNavigator from './HomeNav';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HistoryTabNav from './HistoryTabNav';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
-import IconHistory from 'react-native-vector-icons/Ionicons';
+import IconIonIcon from 'react-native-vector-icons/Ionicons';
 import ProfileMenuList from '../screen/profile/ListMenuProfile';
+import stylePrimary from '../assets/styles/stylePrimary';
+import {StyleSheet} from 'react-native';
+import {Center, View} from 'native-base';
 
 const NavBottomTabStack = createBottomTabNavigator();
 
 const BottomTabNav = () => {
+   const Icon = ({iconType, name, active, ...props}) => {
+      let IconFamily;
+      let style;
+      if (iconType == 'FontAwesome') {
+         IconFamily = IconFontAwesome;
+      }
+      if (iconType == 'IonIcon') {
+         IconFamily = IconIonIcon;
+      }
+
+      if (active) {
+         style = addStyles.iconStyleFocused;
+      } else {
+         style = addStyles.iconStyle;
+      }
+      return <IconFamily name={name} style={style} {...props} />;
+   };
+
    return (
       <NavBottomTabStack.Navigator
          screenOptions={{headerShown: false, tabBarShowLabel: false}}>
          <NavBottomTabStack.Screen
             name="HomeNavigation"
             options={{
+               tabBarStyle: addStyles.layoutHeader,
                tabBarIcon: ({focused, color, size}) => {
-                  // You can return any component that you like here!
-                  return <IconFontAwesome name="home" size={24} />;
+                  return (
+                     <Icon
+                        iconType="FontAwesome"
+                        name="home"
+                        active={focused}
+                     />
+                  );
                },
             }}
             component={HomeNavigator}
@@ -27,9 +54,16 @@ const BottomTabNav = () => {
          <NavBottomTabStack.Screen
             name="HistoryNav"
             options={{
+               tabBarStyle: addStyles.layoutHeader,
                tabBarIcon: ({focused, color, size}) => {
                   // You can return any component that you like here!
-                  return <IconHistory name="md-document-text" size={24} />;
+                  return (
+                     <Icon
+                        iconType="IonIcon"
+                        name="md-document-text"
+                        active={focused}
+                     />
+                  );
                },
             }}
             component={HistoryTabNav}
@@ -37,9 +71,16 @@ const BottomTabNav = () => {
          <NavBottomTabStack.Screen
             name="Profile"
             options={{
+               tabBarStyle: addStyles.layoutHeader,
                tabBarIcon: ({focused, color, size}) => {
                   // You can return any component that you like here!
-                  return <IconFontAwesome name="user" size={24} />;
+                  return (
+                     <Icon
+                        iconType="FontAwesome"
+                        name="user"
+                        active={focused}
+                     />
+                  );
                },
             }}
             component={ProfileMenuList}
@@ -47,5 +88,26 @@ const BottomTabNav = () => {
       </NavBottomTabStack.Navigator>
    );
 };
+
+const addStyles = StyleSheet.create({
+   layoutHeader: {
+      backgroundColor: stylePrimary.mainColor,
+      height: 60,
+   },
+   iconStyle: {
+      color: stylePrimary.background,
+      fontSize: 30,
+   },
+   iconStyleFocused: {
+      backgroundColor: stylePrimary.background,
+      color: stylePrimary.mainColor,
+      fontSize: 30,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderRadius: 5,
+   },
+});
+
+export {addStyles};
 
 export default BottomTabNav;

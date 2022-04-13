@@ -9,6 +9,7 @@ import imageProfile from '../../assets/images/profile.png';
 import {Image} from 'native-base';
 import {styles} from '../../assets/styles/styles';
 import {ScrollView} from 'native-base';
+import PushNotificationHandler from '../../helpers/PushNotificationHelper';
 
 const ProfileMenuList = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -58,6 +59,16 @@ const ProfileMenuList = ({navigation}) => {
                   <ListMenu
                      title="Verify User"
                      press={() => navigation.navigate('VerifyUserEmail')}
+                  />
+                  <ListMenu
+                     title="Test notif"
+                     press={() =>
+                        PushNotificationHandler(
+                           'test-notif',
+                           'test-notif',
+                           'Test Notification',
+                        )
+                     }
                   />
                   <View style={addStyles.layoutButton}>
                      <TouchableOpacity onPress={logoutHandle}>
