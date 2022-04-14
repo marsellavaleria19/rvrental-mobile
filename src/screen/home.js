@@ -20,8 +20,9 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getListCategory} from '../redux/actions/category';
 import {getListVehicle} from '../redux/actions/vehicle';
 import {useEffect, useState} from 'react';
-import {FlatList, ScrollView} from 'native-base';
+import {FlatList, ScrollView, Modal, FormControl, Bu} from 'native-base';
 import filter from '../helpers/FilterSearch';
+import NBModalLoading from '../components/NBModalLoading';
 import {getListSearchFilter} from '../redux/actions/search';
 // import {image} from '../assets/images/backgroud-image.png'
 
@@ -62,6 +63,15 @@ const Home = ({navigation}) => {
       );
    };
 
+   const navigateToDetailCategory = item => {
+      dispatch({
+         type: 'CLEAR_VEHICLE',
+      });
+      navigation.navigate('DetailCategory', {
+         categoryId: item.id,
+      });
+   };
+
    return (
       <View style={styles.background}>
          <ScrollView>
@@ -87,53 +97,56 @@ const Home = ({navigation}) => {
                </ImageBackground>
             </View>
             <View>
-               <FlatList
-                  keyExtractor={item => item.id}
-                  contentContainerStyle={addStyles.layoutCategory}
-                  data={category.listCategory}
-                  renderItem={({item}) => {
-                     return (
-                        <ListBar
-                           title={item.name}
-                           navigate={() =>
-                              navigation.navigate('DetailCategory', {
-                                 categoryId: item.id,
-                              })
-                           }>
-                           <FlatList
-                              horizontal={true}
-                              data={itemPerCategory(item)}
-                              renderItem={({item}) => {
-                                 return (
-                                    <TouchableOpacity
-                                       onPress={() =>
-                                          navigation.navigate(
-                                             `${
-                                                auth.user !== null &&
-                                                auth.user.role == 'admin'
-                                                   ? 'EditItem'
-                                                   : 'Reservation'
-                                             }`,
-                                             {
-                                                vehicleId: item.id,
-                                             },
-                                          )
-                                       }>
-                                       <Image
-                                          key={item.id}
-                                          source={{
-                                             uri: `${item.photo}`,
-                                          }}
-                                          style={addStyles.imageList}
-                                       />
-                                    </TouchableOpacity>
-                                 );
-                              }}
-                           />
-                        </ListBar>
-                     );
-                  }}
-               />
+               {!category.isLoading && !vehicle.isLoading ? (
+                  <FlatList
+                     keyExtractor={item => item.id}
+                     contentContainerStyle={addStyles.layoutCategory}
+                     data={category.listCategory.filter(
+                        item => itemPerCategory(item).length > 0,
+                     )}
+                     renderItem={({item}) => {
+                        return (
+                           <ListBar
+                              title={item.name}
+                              navigate={() => navigateToDetailCategory(item)}>
+                              <FlatList
+                                 horizontal={true}
+                                 data={itemPerCategory(item)}
+                                 renderItem={({item}) => {
+                                    return (
+                                       <TouchableOpacity
+                                          onPress={() =>
+                                             navigation.navigate(
+                                                `${
+                                                   auth.user !== null &&
+                                                   auth.user.role == 'admin'
+                                                      ? 'EditItem'
+                                                      : 'Reservation'
+                                                }`,
+                                                {
+                                                   vehicleId: item.id,
+                                                },
+                                             )
+                                          }>
+                                          <Image
+                                             key={item.id}
+                                             source={{
+                                                uri: `${item.photo}`,
+                                             }}
+                                             style={addStyles.imageList}
+                                          />
+                                       </TouchableOpacity>
+                                    );
+                                 }}
+                              />
+                           </ListBar>
+                        );
+                     }}
+                  />
+               ) : (
+                  <NBModalLoading />
+               )}
+
                {/* <ScrollView h="65%">
                {category.listCategory.length > 0 &&
                   category.listCategory.map(itemCategory => {
