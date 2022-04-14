@@ -84,7 +84,9 @@ const vehicle = (state = dataVehicle, action) => {
          state.isError = true;
          return {...state};
       }
-
+      case 'CLEAR_VEHICLE': {
+         return dataVehicle;
+      }
       default: {
          return {...state};
       }

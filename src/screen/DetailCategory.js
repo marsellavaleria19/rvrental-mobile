@@ -28,6 +28,10 @@ const DetailCategory = ({route, navigation}) => {
       navigation.navigate('VerifyUserEmail');
    };
 
+   // const detailVehicleHandle = (item) =>{
+
+   // }
+
    return (
       <View style={styles.background}>
          <Container>
