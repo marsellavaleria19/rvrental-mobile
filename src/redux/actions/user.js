@@ -1,12 +1,13 @@
 import AxiosCostum from '../../helpers/AxiosCustom';
 import RNFetchBlob from 'rn-fetch-blob';
+import {API_URL} from '@env';
 
 export const uploadImageUser = (token, image, id) => {
    return {
       type: 'LOGIN_PROFILE',
       payload: RNFetchBlob.fetch(
          'PATCH',
-         `http://192.168.1.2:5000/users/${id}`,
+         `${API_URL}/users/${id}`,
          {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
@@ -44,7 +45,7 @@ export const updateUser = (token, id, dataSend, image = null) => {
       type: 'UPDATE_PROFILE',
       payload: RNFetchBlob.fetch(
          'PATCH',
-         `http://192.168.1.2:5000/users/${id}`,
+         `${API_URL}/users/${id}`,
          {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
