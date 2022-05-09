@@ -9,10 +9,12 @@ export const getListVehicle = () => {
    };
 };
 
-export const getListVehicleByCategory = idCategory => {
+export const getListVehicleByCategory = (idCategory, limit) => {
    return {
       type: 'GET_VEHICLE',
-      payload: AxiosCustom().get(`/vehicles/category/${idCategory}?limit=10`),
+      payload: AxiosCustom().get(
+         `/vehicles/category/${idCategory}?limit=${limit}`,
+      ),
    };
 };
 
