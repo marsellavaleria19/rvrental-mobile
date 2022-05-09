@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const {REACT_APP_URL} = process.env;
+import {API_URL} from '@env';
 
 const AxiosCostum = token => {
    const headers = {};
@@ -9,7 +8,7 @@ const AxiosCostum = token => {
    }
 
    return axios.create({
-      baseURL: 'http://192.168.1.2:5000',
+      baseURL: API_URL,
       headers,
    });
 };

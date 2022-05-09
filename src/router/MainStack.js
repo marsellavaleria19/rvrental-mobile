@@ -102,6 +102,13 @@ const MainStackNav = () => {
             }}
             component={VerifyUser}
          />
+         <NavMainStack.Screen
+            name="NotFound"
+            options={{
+               title: 'Verify User',
+            }}
+            component={VerifyUser}
+         />
          {/* <NavMainStack.Screen name="Reservation" component={Reservation} />
          <NavMainStack.Screen name="PaymentDetail" component={PaymentDetail} />
          <NavMainStack.Screen name="FinishPayment" component={FinishPayment} />
