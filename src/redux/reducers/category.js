@@ -14,7 +14,7 @@ const category = (state = dataCategory, action) => {
       }
       case 'GET_CATEGORY_FULFILLED': {
          const {data} = action.payload;
-         state.listCategory = data.results;
+         state.listCategory = data.result;
          state.pageInfo = data.pageInfo;
          state.isLoading = false;
          return {...state};
@@ -30,7 +30,7 @@ const category = (state = dataCategory, action) => {
       }
       case 'GET_DETAIL_CATEGORY_FULFILLED': {
          const {data} = action.payload;
-         state.dataCategory = data.results;
+         state.dataCategory = data.result;
          state.isLoading = false;
          return {...state};
       }
