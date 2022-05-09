@@ -8,10 +8,15 @@ import MainStackNav from '../router/MainStack';
 import {useEffect} from 'react';
 import {getDataUser} from '../redux/actions/auth';
 import RNBootSplash from 'react-native-bootsplash';
+import {getListCategory} from '../redux/actions/category';
 
 const Main = () => {
    const {auth} = useSelector(state => state);
    const dispatch = useDispatch();
+
+   useEffect(() => {
+      dispatch(getListCategory());
+   }, [dispatch]);
 
    useEffect(() => {
       if (auth.token !== null) {

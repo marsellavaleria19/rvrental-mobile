@@ -30,6 +30,12 @@ export const getDetailVehicle = id => {
    };
 };
 
+export const saveDetailVehicle = item => {
+   return {
+      type: 'SAVE_DETAIL_VEHICLE',
+      payload: item,
+   };
+};
 export const addDataVehicle = (token, dataSend, image) => {
    var dataVehicle = [];
    dataVehicle.push({

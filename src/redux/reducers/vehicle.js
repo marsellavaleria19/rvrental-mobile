@@ -38,6 +38,11 @@ const vehicle = (state = dataVehicle, action) => {
          state.isLoading = true;
          return {...state};
       }
+      case 'SAVE_VEHICLE': {
+         state.dataVehicle = action.payload;
+         state.isLoading = false;
+         return {...state};
+      }
       case 'GET_RESULT_VEHICLE_PENDING': {
          state.isLoading = true;
          return {...state};
