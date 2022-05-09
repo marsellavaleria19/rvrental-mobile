@@ -18,11 +18,12 @@ import IconSearch from 'react-native-vector-icons/FontAwesome';
 import ListBar from '../components/ListBar';
 import {useSelector, useDispatch} from 'react-redux';
 import {getListCategory} from '../redux/actions/category';
-import {getListVehicle} from '../redux/actions/vehicle';
+import {getListVehicleByCategory} from '../redux/actions/vehicle';
 import {useEffect, useState} from 'react';
 import {FlatList, ScrollView, Modal, FormControl, Bu} from 'native-base';
 import filter from '../helpers/FilterSearch';
 import NBModalLoading from '../components/NBModalLoading';
+import {LIMIT_CATEGORY} from '@env';
 import {getListSearchFilter} from '../redux/actions/search';
 // import {image} from '../assets/images/backgroud-image.png'
 
@@ -35,15 +36,20 @@ const Home = ({navigation}) => {
    const [search, setSearch] = useState('');
 
    useEffect(() => {
-      dispatch(getListCategory());
-      dispatch(getListVehicle());
+      dispatch({
+         type: 'CLEAR_VEHICLE',
+      });
+      category.listCategory.length > 0 &&
+         category.listCategory.map(itemCategory => {
+            dispatch(getListVehicleByCategory(itemCategory.id, LIMIT_CATEGORY));
+         });
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
+   }, [category.listCategory]);
 
    const itemPerCategory = category => {
-      return vehicle.listVehicle
-         .filter(item => item.category_id === category.id)
-         .filter((item, index) => index < 5);
+      return vehicle.listAllVehicle.filter(
+         item => item.category_id === category.id,
+      );
    };
 
    const searchHandle = () => {
@@ -101,9 +107,7 @@ const Home = ({navigation}) => {
                   <FlatList
                      keyExtractor={item => item.id}
                      contentContainerStyle={addStyles.layoutCategory}
-                     data={category.listCategory.filter(
-                        item => itemPerCategory(item).length > 0,
-                     )}
+                     data={category.listCategory}
                      renderItem={({item}) => {
                         return (
                            <ListBar

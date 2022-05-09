@@ -30,7 +30,7 @@ const auth = (state = dataLogin, action) => {
       }
       case 'LOGIN_FULFILLED': {
          const {data} = action.payload;
-         state.token = data.results.token;
+         state.token = data.result.token;
          state.isLoading = false;
          state.isError = false;
          state.isAuthenticated = true;
@@ -92,7 +92,7 @@ const auth = (state = dataLogin, action) => {
          const {data} = action.payload;
          console.log(data);
          state.message = data.message;
-         state.user = data.results;
+         state.user = data.result;
          state.isLoading = false;
          state.isError = false;
          state.isVerify = true;
@@ -152,7 +152,7 @@ const auth = (state = dataLogin, action) => {
          const {data} = action.payload;
          console.log(data);
          state.isLoading = false;
-         state.user = data.results;
+         state.user = data.result;
          return {...state};
       }
       case 'LOGIN_PROFILE_REJECTED': {
@@ -172,7 +172,7 @@ const auth = (state = dataLogin, action) => {
          const {data} = action.payload;
          console.log(data);
          state.isLoading = false;
-         state.user = JSON.parse(data).results;
+         state.user = JSON.parse(data).result;
          return {...state};
       }
       case 'UPDATE_PROFILE_REJECTED': {
@@ -186,6 +186,7 @@ const auth = (state = dataLogin, action) => {
          state.token = null;
          state.isAuthenticated = false;
          state.isVerify = false;
+         state.user = null;
          return {...state};
       }
       case 'CLEAR_AUTH': {

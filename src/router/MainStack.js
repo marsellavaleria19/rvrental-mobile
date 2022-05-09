@@ -1,6 +1,7 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {StyleSheet} from 'react-native';
 import Reservation from '../screen/Reservation';
 import Payment from '../screen/payment/Payment';
 import BottomTabNav from './BottomNavigation';
@@ -15,6 +16,7 @@ import UpdateItem from '../screen/item/UpdateItem';
 import FilterMenu from '../screen/filter/FilterMenu';
 import VerifyUserEmail from '../screen/auth/VerifyUserEmail';
 import VerifyUser from '../screen/auth/VerifyUser';
+import stylePrimary from '../assets/styles/stylePrimary';
 
 const NavMainStack = createNativeStackNavigator();
 
@@ -62,6 +64,10 @@ const MainStackNav = () => {
          />
          <NavMainStack.Screen
             options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.thirdColor,
+               headerBackTitleStyle: addStyles.headerBack,
                title: 'Update Profile',
             }}
             name="UpdateProfile"
@@ -119,5 +125,20 @@ const MainStackNav = () => {
       </NavMainStack.Navigator>
    );
 };
+
+const addStyles = StyleSheet.create({
+   layoutHeader: {
+      backgroundColor: stylePrimary.mainColor,
+   },
+   textHeader: {
+      color: stylePrimary.thirdColor,
+   },
+   headerBack: {
+      color: stylePrimary.thirdColor,
+      fontSize: 30,
+   },
+});
+
+export {addStyles};
 
 export default MainStackNav;

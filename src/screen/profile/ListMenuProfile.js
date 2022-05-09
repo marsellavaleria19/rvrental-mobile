@@ -113,7 +113,7 @@ const addStyles = StyleSheet.create({
    },
    layoutButton: {
       marginTop: 100,
-      marginBottom: 20,
+      marginBottom: 30,
    },
    buttonProfile: {
       backgroundColor: stylePrimary.secondaryColor,

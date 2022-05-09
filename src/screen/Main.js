@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import {NativeBaseProvider, extendTheme} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
@@ -15,14 +16,17 @@ const Main = () => {
    const dispatch = useDispatch();
 
    useEffect(() => {
+      dispatch({
+         type: 'CLEAR_AUTH',
+      });
       dispatch(getListCategory());
-   }, [dispatch]);
+   }, []);
 
    useEffect(() => {
       if (auth.token !== null) {
          dispatch(getDataUser(auth.token));
       }
-   }, [auth.token, dispatch]);
+   }, [auth.token]);
 
    return (
       <NativeBaseProvider theme={theme}>

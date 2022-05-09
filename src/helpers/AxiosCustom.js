@@ -8,7 +8,7 @@ const AxiosCostum = token => {
    }
 
    return axios.create({
-      baseURL: API_URL,
+      baseURL: `${API_URL}`,
       headers,
    });
 };

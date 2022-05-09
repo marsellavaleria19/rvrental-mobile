@@ -95,11 +95,11 @@ const addStyles = StyleSheet.create({
       height: 60,
    },
    iconStyle: {
-      color: stylePrimary.background,
+      color: stylePrimary.thirdColor,
       fontSize: 30,
    },
    iconStyleFocused: {
-      backgroundColor: stylePrimary.background,
+      backgroundColor: stylePrimary.thirdColor,
       color: stylePrimary.mainColor,
       fontSize: 30,
       paddingHorizontal: 10,

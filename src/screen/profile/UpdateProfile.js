@@ -16,7 +16,7 @@ import {TextArea, Box, Image, Radio, Stack, Spinner, HStack} from 'native-base';
 import imageProfile from '../../assets/images/profile.png';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import {updateUser, uploadImageUser} from '../../redux/actions/user';
 import {NBAlert} from '../../components/NBAlert';
@@ -88,6 +88,13 @@ const UpdateProfile = ({navigation}) => {
       });
    };
 
+   const takePicture = async () => {
+      const imagePicker = await launchCamera({}, async image => {
+         setPicture({uri: image.assets[0].uri});
+      });
+      setImage(imagePicker);
+   };
+
    const browseImage = async () => {
       const imagePicker = await launchImageLibrary({}, async image => {
          setPicture({uri: image.assets[0].uri});
@@ -156,12 +163,13 @@ const UpdateProfile = ({navigation}) => {
                         alt="Profile"
                      />
                      <View style={addStyles.layoutButtonImage}>
-                        <CButton
-                           classButton={addStyles.buttonImage}
-                           press={() => navigation.navigate('PaymentDetail')}
-                           textButton={addStyles.fontButtonImage}>
-                           Take Picture
-                        </CButton>
+                        <TouchableOpacity onPress={takePicture}>
+                           <CButton
+                              classButton={addStyles.buttonImage}
+                              textButton={addStyles.fontButtonImage}>
+                              Take Picture
+                           </CButton>
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={browseImage}>
                            <CButton
                               classButton={addStyles.buttonGallery}

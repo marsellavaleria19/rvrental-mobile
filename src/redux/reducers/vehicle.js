@@ -1,5 +1,6 @@
 const dataVehicle = {
    listVehicle: [],
+   listAllVehicle: [],
    pageInfo: {},
    isLoading: false,
    error: false,
@@ -14,7 +15,8 @@ const vehicle = (state = dataVehicle, action) => {
       }
       case 'GET_VEHICLE_FULFILLED': {
          const {data} = action.payload;
-         state.listVehicle = data.results;
+         state.listVehicle = data.result;
+         state.listAllVehicle = [...state.listAllVehicle, ...data.result];
          state.pageInfo = data.pageInfo;
          state.isLoading = false;
          return {...state};
