@@ -22,11 +22,13 @@ import imagePhoto from '../../assets/images/image-photo.png';
 import {NBAlert} from '../../components/NBAlert';
 import NBModal from '../../components/NBModal';
 import {validation} from '../../helpers/validation';
+import NBModalLoading from '../../components/NBModalLoading';
+import NBModalError from '../../components/NBModalError';
+import NBModalSuccess from '../../components/NBModalSuccess';
 
 const newLocal = 'required';
 const AddItem = ({navigation}) => {
-   const {category} = useSelector(state => state);
-   const {auth, vehicle} = useSelector(state => state);
+   const {auth, category, vehicle} = useSelector(state => state);
    const [name, setName] = useState('');
    const [price, setPrice] = useState('');
    const [qty, setQty] = useState(0);
@@ -42,19 +44,52 @@ const AddItem = ({navigation}) => {
    const handleClose = () => setShow(false);
    const [dataCategory, setDataCategory] = useState(null);
    const [errValidation, setErrValidation] = useState({});
+   const [showModalSuccess, setShowModalSuccess] = useState(false);
+   const handleCloseModalSuccess = () => setShowModalSuccess(false);
+   const [showModalError, setShowModalError] = useState(false);
+   const handleCloseModalError = () => setShowModalError(false);
+   const [showModalLoading, setShowModalLoading] = useState(false);
+   const [messageError, setMessageError] = useState('');
+   var [messageSuccess, setMessageSuccess] = useState('');
 
    useEffect(() => {
-      dispatch(getListCategory());
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
-
-   useEffect(() => {
-      if (category.dataCategory !== null && control) {
+      if (category.dataCategory !== null && control == true) {
          dispatch(getListCategory());
          setCategoryId(category.dataCategory.id);
+         setControl(false);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [category.dataCategory]);
+
+   useEffect(() => {
+      setShowModalLoading(vehicle.isLoading);
+      if (vehicle.isLoading == false && control == true) {
+         if (vehicle.isError) {
+            setMessageError(vehicle.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(vehicle.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [vehicle.isLoading]);
+
+   useEffect(() => {
+      setShowModalLoading(category.isLoading);
+      if (category.isLoading == false && control == true) {
+         if (category.isError) {
+            setMessageError(category.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(category.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [category.isLoading]);
 
    const countIncrement = () => {
       setQty(qty + 1);
@@ -75,13 +110,12 @@ const AddItem = ({navigation}) => {
 
    const addItemHandle = () => {
       console.log(image);
-      var dataSend = {
+      var data = {
          name,
-         category_id: categoryId.toString(),
+         category: categoryId.toString(),
          location,
          price,
          qty: qty.toString(),
-         isAvailable: '1',
          description: description,
       };
       // console.log(dataSend);
@@ -93,10 +127,22 @@ const AddItem = ({navigation}) => {
       var requirement = {
          name: 'required',
          price: 'required|number',
+         location: 'choose',
+         category: 'çhoose',
+         description: 'required',
       };
 
       const validate = validation(dataSend, requirement);
       if (Object.keys(validate).length == 0) {
+         var dataSend = {
+            name,
+            category_id: categoryId.toString(),
+            location,
+            price,
+            qty: qty.toString(),
+            isAvailable: '1',
+            description: description,
+         };
          dispatch(addDataVehicle(auth.token, dataSend, image.assets[0]));
          setControl(true);
       } else {
@@ -116,11 +162,22 @@ const AddItem = ({navigation}) => {
       <View style={styles.background}>
          <Container>
             <ScrollView>
-               {control && (
-                  <NBAlert status="success" message={vehicle.message} />
+               <NBModalLoading show={showModalLoading} />
+               {messageError !== '' && (
+                  <NBModalError
+                     show={showModalError}
+                     message={messageError}
+                     close={handleCloseModalError}
+                  />
                )}
-               {vehicle.isError && (
-                  <NBAlert status="error" message={vehicle.errMessage} />
+               {messageSuccess !== '' && (
+                  <NBModalSuccess
+                     show={showModalSuccess}
+                     message={messageSuccess}
+                     close={handleCloseModalSuccess}
+                     button={'Go to profile menu'}
+                     functionHandle={() => navigation.navigate('Profile')}
+                  />
                )}
                <View style={addStyles.layoutImageEdit}>
                   <Image
