@@ -17,15 +17,15 @@ import imageProfile from '../../assets/images/profile.png';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import RNFetchBlob from 'rn-fetch-blob';
-import {updateUser, uploadImageUser} from '../../redux/actions/user';
-import {NBAlert} from '../../components/NBAlert';
+import {updateUser} from '../../redux/actions/user';
 import IconDate from 'react-native-vector-icons/Fontisto';
 import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {validation} from '../../helpers/validation';
-import {getDataUser} from '../../redux/actions/auth';
-import NBModal from '../../components/NBModal';
+import NBModalSuccess from '../../components/NBModalSuccess';
+import NBModalLoading from '../../components/NBModalLoading';
+import NBModalError from '../../components/NBModalError';
+import {FormControl, WarningOutlineIcon} from 'native-base';
 
 const UpdateProfile = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -41,9 +41,13 @@ const UpdateProfile = ({navigation}) => {
    const [control, setControl] = useState(false);
    const [image, setImage] = useState({});
    const [errValidation, setErrValidation] = useState({});
-   const [show, setShow] = useState(false);
-   const handleShow = () => setShow(true);
-   const handleClose = () => setShow(false);
+   const [showModalSuccess, setShowModalSuccess] = useState(false);
+   const handleCloseModalSuccess = () => setShowModalSuccess(false);
+   const [showModalError, setShowModalError] = useState(false);
+   const handleCloseModalError = () => setShowModalError(false);
+   const [showModalLoading, setShowModalLoading] = useState(false);
+   const [messageError, setMessageError] = useState('');
+   var [messageSuccess, setMessageSuccess] = useState('');
 
    useEffect(() => {
       setName(auth.user?.fullName);
@@ -57,23 +61,29 @@ const UpdateProfile = ({navigation}) => {
             : imageProfile,
       );
       setUpload(false);
+      setBirthDate(
+         auth.user?.birthDate !== null
+            ? new Date(auth.user?.birthDate)
+            : new Date(),
+      );
+      setErrValidation({});
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    useEffect(() => {
-      if (auth.user !== null && control) {
-         navigation.navigate('Profile');
-         // dispatch(getDataUser(auth.token));
-         // setName(auth.user?.fullName);
-         // setEmail(auth.user?.email);
-         // setMobileNumber(auth.user?.mobileNumber);
-         // setAddress(auth.user?.address);
-         // setPicture({uri: `${auth.user?.photo}`});
-         // setControl(false);
+      setShowModalLoading(auth.isLoading);
+      if (auth.isLoading == false && control == true) {
+         if (auth.isError) {
+            setMessageError(auth.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(auth.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
       }
-
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [auth.user]);
+   }, [auth.isLoading]);
 
    const onChange = (event, selectedDate) => {
       setBirthDate(selectedDate);
@@ -103,22 +113,30 @@ const UpdateProfile = ({navigation}) => {
    };
 
    const updateProfileHandle = () => {
-      var dataSend = {
-         fullName: name,
+      var data = {
+         name: name,
          gender: gender,
-         mobileNumber: mobileNumber,
+         'mobile number': mobileNumber,
          address: address,
-         birthDate: moment(birthDate.toLocaleString()).format('YYYY-MM-DD'),
+         'birth date': moment(birthDate.toLocaleString()).format('YYYY-MM-DD'),
       };
       let requirement = {
-         fullName: 'required',
+         name: 'required',
          gender: 'required',
-         mobileNumber: 'required',
-         birthDate: 'required',
+         address: 'required',
+         'mobile number': 'required',
+         'birth date': 'required|date',
       };
 
-      var validate = validation(dataSend, requirement);
+      var validate = validation(data, requirement);
       if (Object.keys(validate).length == 0) {
+         const dataSend = {
+            fullName: data.name,
+            gender,
+            mobileNumber: data['mobile number'],
+            address,
+            birthDate: data['birth date'],
+         };
          if (Object.keys(image).length > 0) {
             dispatch(
                updateUser(auth.token, auth.user.id, dataSend, image.assets[0]),
@@ -136,23 +154,23 @@ const UpdateProfile = ({navigation}) => {
       <View style={styles.background}>
          <Container>
             <ScrollView>
-               {/* <View style={addStyles.layoutImageEdit}>
-                  {!upload ? (
-                     <Image
-                        size={100}
-                        resizeMode={'contain'}
-                        borderRadius={100}
-                        source={imageProfile}
-                        alt="Profile"
-                     />
-                  ) : (
-                     <View style={addStyles.layoutLoading}>
-                        <View style={addStyles.spinner}>
-                           <Spinner size="lg" color="white" />
-                        </View>
-                     </View>
-                  )}
-               </View> */}
+               <NBModalLoading show={showModalLoading} />
+               {messageError !== '' && (
+                  <NBModalError
+                     show={showModalError}
+                     message={messageError}
+                     close={handleCloseModalError}
+                  />
+               )}
+               {messageSuccess !== '' && (
+                  <NBModalSuccess
+                     show={showModalSuccess}
+                     message={messageSuccess}
+                     close={handleCloseModalSuccess}
+                     button={'Go to profile menu'}
+                     functionHandle={() => navigation.navigate('Profile')}
+                  />
+               )}
                <View>
                   <View style={addStyles.layoutImageEdit}>
                      <Image
@@ -198,34 +216,55 @@ const UpdateProfile = ({navigation}) => {
                         }
                         errorMessage={
                            Object.keys(errValidation).length > 0 &&
-                           errValidation.fullName
+                           errValidation.name
                         }
                      />
                   </View>
                   <View style={addStyles.layoutRadio}>
-                     <Radio.Group
-                        name="myRadioGroup"
-                        accessibilityLabel="favorite number"
-                        value={gender}
-                        onChange={nextValue => {
-                           setGender(nextValue);
-                        }}>
-                        <Stack
-                           direction={{
-                              base: 'row',
-                           }}
-                           alignItems="center"
-                           space={50}
-                           w="100%"
-                           maxW="100%">
-                           <Radio value="Female" size="sm" my={1}>
-                              Female
-                           </Radio>
-                           <Radio value="Male" size="sm" my={1}>
-                              Male
-                           </Radio>
-                        </Stack>
-                     </Radio.Group>
+                     <FormControl
+                        isInvalid={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.gender
+                        }>
+                        <Radio.Group
+                           name="myRadioGroup"
+                           accessibilityLabel="favorite number"
+                           value={gender}
+                           onChange={nextValue => {
+                              setGender(nextValue);
+                           }}>
+                           <Stack
+                              direction={{
+                                 base: 'row',
+                              }}
+                              alignItems="center"
+                              space={50}
+                              w="100%"
+                              maxW="100%">
+                              <Radio value="Female" size="sm" my={1}>
+                                 Female
+                              </Radio>
+                              <Radio value="Male" size="sm" my={1}>
+                                 Male
+                              </Radio>
+                           </Stack>
+                        </Radio.Group>
+                        {Object.keys(errValidation).length > 0 &&
+                           errValidation.gender && (
+                              <FormControl.ErrorMessage
+                                 leftIcon={<WarningOutlineIcon size="xs" />}>
+                                 {errValidation.gender}
+                              </FormControl.ErrorMessage>
+                           )}
+                     </FormControl>
+
+                     {/* {Object.keys(errValidation).length > 0 &&
+                        errValidation.gender && (
+                           <FormControl.ErrorMessage
+                              leftIcon={<WarningOutlineIcon size="xs" />}>
+                              {errValidation.gender}
+                           </FormControl.ErrorMessage>
+                        )} */}
                   </View>
                   <View style={addStyles.layoutInput}>
                      <NBInputLabel
@@ -249,7 +288,7 @@ const UpdateProfile = ({navigation}) => {
                         }
                         errorMessage={
                            Object.keys(errValidation).length > 0 &&
-                           errValidation.mobileNumber
+                           errValidation['mobile number']
                         }
                      />
                   </View>
@@ -268,7 +307,7 @@ const UpdateProfile = ({navigation}) => {
                         }
                         errorMessage={
                            Object.keys(errValidation).length > 0 &&
-                           errValidation.birthdate
+                           errValidation['birth date']
                         }
                      />
                      <TouchableOpacity onPress={showDatePicker}>
@@ -276,8 +315,14 @@ const UpdateProfile = ({navigation}) => {
                      </TouchableOpacity>
                   </View>
                   <View style={addStyles.layoutInput}>
-                     <Box w="100%">
-                        <Text style={addStyles.label}>Delivery Address</Text>
+                     <FormControl
+                        isInvalid={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.address
+                        }>
+                        <FormControl.Label variant="profile">
+                           Delivery Address
+                        </FormControl.Label>
                         <TextArea
                            h={20}
                            placeholder="Delivery Address"
@@ -285,7 +330,14 @@ const UpdateProfile = ({navigation}) => {
                            value={address}
                            onChangeText={setAddress}
                         />
-                     </Box>
+                        {Object.keys(errValidation).length > 0 &&
+                           errValidation.address && (
+                              <FormControl.ErrorMessage
+                                 leftIcon={<WarningOutlineIcon size="xs" />}>
+                                 {errValidation.address}
+                              </FormControl.ErrorMessage>
+                           )}
+                     </FormControl>
                   </View>
                   <View style={addStyles.layoutButton}>
                      <TouchableOpacity onPress={updateProfileHandle}>
@@ -305,7 +357,7 @@ const UpdateProfile = ({navigation}) => {
 
 const addStyles = StyleSheet.create({
    layoutForm: {
-      marginTop: 100,
+      marginTop: 46,
    },
    layoutLoading: {
       backgroundColor: 'gray',
@@ -368,7 +420,7 @@ const addStyles = StyleSheet.create({
       marginRight: 10,
    },
    layoutButton: {
-      marginTop: 34,
+      marginBottom: 20,
    },
    layoutButtonImage: {
       marginLeft: 20,
