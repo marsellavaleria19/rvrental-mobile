@@ -167,12 +167,11 @@ const auth = (state = dataLogin, action) => {
          return {...state};
       }
       case 'UPDATE_PROFILE_FULFILLED': {
-         console.log('Hai!');
-         console.log(action.payload);
          const {data} = action.payload;
-         console.log(data);
+         var dataJson = JSON.parse(data);
          state.isLoading = false;
-         state.user = JSON.parse(data).result;
+         state.user = dataJson.result;
+         state.message = dataJson.message;
          return {...state};
       }
       case 'UPDATE_PROFILE_REJECTED': {
