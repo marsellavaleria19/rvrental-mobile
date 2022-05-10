@@ -5,10 +5,9 @@ import CButton from './Button';
 import {useState} from 'react';
 import stylePrimary from '../assets/styles/stylePrimary';
 
-function NBModalLoading({children}) {
-   const [showModal, setShowModal] = useState(true);
+function NBModalLoading({show, close}) {
    return (
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+      <Modal isOpen={show} onClose={close}>
          <Modal.Content maxWidth="400px">
             <Modal.CloseButton style={addStyles.textHeader} />
             <Modal.Header style={addStyles.layoutModalHeader}>
