@@ -8,7 +8,7 @@ export const theme = extendTheme({
          baseStyle: {
             backgroundColor: 'rgba(128, 128, 128, 0.2)',
             height: 51,
-            px: 5,
+            px: 2,
             _text: {
                color: stylePrimary.mainColor,
                fontSize: 16,
@@ -49,11 +49,12 @@ export const theme = extendTheme({
             item: {
                backgroundColor: 'rgba(52, 52, 52, 0.0)',
                borderBottomWidth: 1,
-               borderBottomColor: '#9F9F9F',
+               borderBottomColor: stylePrimary.secondaryColor,
                _text: {
                   color: stylePrimary.mainColor,
                   textAlign: 'center',
                },
+               placeholderTextColor: stylePrimary.secondaryColor,
             },
             reservation: {
                _text: {
@@ -66,13 +67,13 @@ export const theme = extendTheme({
          baseStyle: {
             _text: {
                fontSize: 12,
-               color: '#B8B8B8',
+               color: stylePrimary.mainColor,
                fontWeight: 700,
             },
          },
          variants: {
             profile: {
-               px: 5,
+               px: 2,
             },
          },
       },
@@ -80,7 +81,7 @@ export const theme = extendTheme({
          variants: {
             profile: {
                backgroundColor: 'rgba(52, 52, 52, 0.0)',
-               border: 'none',
+               borderWidth: 0,
                borderBottomWidth: 1,
                borderBottomColor: '#9F9F9F',
                _text: {
@@ -96,6 +97,7 @@ export const theme = extendTheme({
                _text: {
                   color: stylePrimary.mainColor,
                },
+               placeholderTextColor: stylePrimary.secondaryColor,
             },
          },
       },

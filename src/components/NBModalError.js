@@ -1,26 +1,25 @@
 import React from 'react';
-import {Modal, Spinner} from 'native-base';
+import {Center, Modal, Spinner} from 'native-base';
 import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import CButton from './Button';
 import {useState} from 'react';
 import stylePrimary from '../assets/styles/stylePrimary';
+import IconError from 'react-native-vector-icons/Entypo';
 
-function NBModalLoading({show, close}) {
+function NBModalError({show, message, close}) {
    return (
       <Modal isOpen={show} onClose={close}>
          <Modal.Content maxWidth="400px">
-            <Modal.CloseButton style={addStyles.textHeader} />
-            <Modal.Header style={addStyles.layoutModalHeader}>
-               <Text style={addStyles.textHeader}>Loading</Text>
-            </Modal.Header>
+            <Modal.CloseButton />
+            <Modal.Header style={addStyles.layoutModalHeader} />
             <Modal.Body style={addStyles.layoutModalBody}>
-               <View style={addStyles.wrapSpinnerText}>
-                  <Spinner
-                     accessibilityLabel="Loading posts"
-                     size="lg"
-                     color="cyan.900"
+               <View>
+                  <IconError
+                     name="circle-with-cross"
+                     style={addStyles.IconError}
                   />
-                  <Text style={addStyles.textLoading}>Loading...</Text>
+                  <Text style={addStyles.textTitle}>Error</Text>
+                  <Text style={addStyles.textMessage}>{message}</Text>
                </View>
             </Modal.Body>
          </Modal.Content>
@@ -41,25 +40,35 @@ const addStyles = StyleSheet.create({
    },
    layoutModalHeader: {
       backgroundColor: stylePrimary.mainColor,
+      height: 45,
    },
    textHeader: {
-      color: stylePrimary.secondaryColor,
-      fontWeight: stylePrimary.bold,
-      fontSize: 16,
+      backgroundColor: 'white',
+      color: 'red',
+      fontSize: 10,
    },
    layoutModalBody: {
       backgroundColor: stylePrimary.background,
    },
-   wrapSpinnerText: {
-      flexDirection: 'row',
-      alignItems: 'center',
-   },
-   textLoading: {
+   textTitle: {
       fontSize: 20,
-      marginLeft: 15,
+      marginBottom: 5,
       color: stylePrimary.mainColor,
       fontWeight: stylePrimary.bold,
+      textAlign: 'center',
+   },
+   textMessage: {
+      fontSize: 16,
+      marginLeft: 15,
+      color: stylePrimary.mainColor,
+      textAlign: 'center',
+   },
+   IconError: {
+      color: stylePrimary.mainColor,
+      fontSize: 40,
+      textAlign: 'center',
+      marginBottom: 10,
    },
 });
 
-export default NBModalLoading;
+export default NBModalError;

@@ -16,9 +16,6 @@ const Main = () => {
    const dispatch = useDispatch();
 
    useEffect(() => {
-      dispatch({
-         type: 'CLEAR_AUTH',
-      });
       dispatch(getListCategory());
    }, []);
 

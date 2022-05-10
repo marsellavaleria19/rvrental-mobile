@@ -36,6 +36,10 @@ const MainStackNav = () => {
          <NavMainStack.Screen name="Payment" component={Payment} />
          <NavMainStack.Screen
             options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.thirdColor,
+               headerBackTitleStyle: addStyles.headerBack,
                title: 'Payment',
             }}
             name="PaymentDetail"
@@ -43,6 +47,10 @@ const MainStackNav = () => {
          />
          <NavMainStack.Screen
             options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.thirdColor,
+               headerBackTitleStyle: addStyles.headerBack,
                title: 'Payment',
             }}
             name="FinishPayment"
@@ -50,6 +58,10 @@ const MainStackNav = () => {
          />
          <NavMainStack.Screen
             options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.thirdColor,
+               headerBackTitleStyle: addStyles.headerBack,
                title: 'See history',
             }}
             name="SuccessPayment"
@@ -57,6 +69,10 @@ const MainStackNav = () => {
          />
          <NavMainStack.Screen
             options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.thirdColor,
+               headerBackTitleStyle: addStyles.headerBack,
                title: 'Favorite',
             }}
             name="Favorite"
@@ -89,6 +105,10 @@ const MainStackNav = () => {
          />
          <NavMainStack.Screen
             options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.thirdColor,
+               headerBackTitleStyle: addStyles.headerBack,
                title: 'Filter',
             }}
             name="FilterMenu"
@@ -97,6 +117,10 @@ const MainStackNav = () => {
          <NavMainStack.Screen
             name="VerifyUserEmail"
             options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.thirdColor,
+               headerBackTitleStyle: addStyles.headerBack,
                title: 'Verify User Email',
             }}
             component={VerifyUserEmail}
