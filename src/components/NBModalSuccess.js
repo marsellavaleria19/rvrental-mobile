@@ -1,66 +1,95 @@
 import React from 'react';
-import {Modal, Spinner} from 'native-base';
+import {Center, Modal, Spinner} from 'native-base';
 import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import CButton from './Button';
 import {useState} from 'react';
 import stylePrimary from '../assets/styles/stylePrimary';
+import IconSuccess from 'react-native-vector-icons/FontAwesome';
 
-function NBModalLoading({show, close}) {
-   const [showModal, setShowModal] = useState(true);
+function NBModalSuccess({show, message, button = null, functionHandle, close}) {
    return (
       <Modal isOpen={show} onClose={close}>
          <Modal.Content maxWidth="400px">
-            <Modal.CloseButton style={addStyles.textHeader} />
-            <Modal.Header style={addStyles.layoutModalHeader}>
-               <Text style={addStyles.textHeader}>Loading</Text>
-            </Modal.Header>
+            <Modal.CloseButton />
+            <Modal.Header style={addStyles.layoutModalHeader} />
             <Modal.Body style={addStyles.layoutModalBody}>
-               <View style={addStyles.wrapSpinnerText}>
-                  <Spinner
-                     accessibilityLabel="Loading posts"
-                     size="lg"
-                     color="cyan.900"
+               <View>
+                  <IconSuccess
+                     name="check-circle"
+                     style={addStyles.iconSuccess}
                   />
-                  <Text style={addStyles.textLoading}>Loading...</Text>
+                  <Text style={addStyles.textTitle}>Success</Text>
+                  <Text style={addStyles.textMessage}>{message}</Text>
                </View>
             </Modal.Body>
+            {button !== null && (
+               <Modal.Footer style={addStyles.layoutModalFooter}>
+                  <TouchableOpacity onPress={functionHandle}>
+                     <CButton
+                        classButton={addStyles.button}
+                        textButton={addStyles.fontButton}>
+                        {button}
+                     </CButton>
+                  </TouchableOpacity>
+               </Modal.Footer>
+            )}
          </Modal.Content>
       </Modal>
    );
 }
 
 const addStyles = StyleSheet.create({
-   buttonCancel: {
-      backgroundColor: 'gray',
-      marginTop: 10,
+   button: {
+      backgroundColor: stylePrimary.mainColor,
       marginBottom: 10,
       justifyContent: 'center',
       alignItems: 'center',
-      height: 40,
-      width: 100,
+      height: 35,
+      paddingHorizontal: 10,
       borderRadius: 10,
+   },
+   fontButton: {
+      fontSize: 12,
+      color: stylePrimary.secondaryColor,
+      fontWeight: '700',
    },
    layoutModalHeader: {
       backgroundColor: stylePrimary.mainColor,
+      height: 45,
    },
    textHeader: {
-      color: stylePrimary.secondaryColor,
-      fontWeight: stylePrimary.bold,
-      fontSize: 16,
+      backgroundColor: 'white',
+      color: 'red',
+      fontSize: 10,
    },
    layoutModalBody: {
       backgroundColor: stylePrimary.background,
    },
-   wrapSpinnerText: {
-      flexDirection: 'row',
-      alignItems: 'center',
+   layoutModalFooter: {
+      backgroundColor: stylePrimary.background,
+      borderTopColor: stylePrimary.mainColor,
+      borderTopWidth: 1,
+      height: 55,
    },
-   textLoading: {
+   textTitle: {
       fontSize: 20,
-      marginLeft: 15,
+      marginBottom: 5,
       color: stylePrimary.mainColor,
       fontWeight: stylePrimary.bold,
+      textAlign: 'center',
+   },
+   textMessage: {
+      fontSize: 14,
+      marginLeft: 5,
+      color: stylePrimary.mainColor,
+      textAlign: 'center',
+   },
+   iconSuccess: {
+      color: stylePrimary.mainColor,
+      fontSize: 40,
+      textAlign: 'center',
+      marginBottom: 5,
    },
 });
 
-export default NBModalLoading;
+export default NBModalSuccess;
