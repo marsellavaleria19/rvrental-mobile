@@ -26,6 +26,7 @@ import NBModalSuccess from '../../components/NBModalSuccess';
 import NBModalLoading from '../../components/NBModalLoading';
 import NBModalError from '../../components/NBModalError';
 import {FormControl, WarningOutlineIcon} from 'native-base';
+import NBTextArea from '../../components/NBTextArea';
 
 const UpdateProfile = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -315,29 +316,18 @@ const UpdateProfile = ({navigation}) => {
                      </TouchableOpacity>
                   </View>
                   <View style={addStyles.layoutInput}>
-                     <FormControl
+                     <NBTextArea
+                        label={'Delivery Address'}
+                        value={address}
                         isInvalid={
+                           Object.keys(errValidation).length > 0 && true
+                        }
+                        message={
                            Object.keys(errValidation).length > 0 &&
                            errValidation.address
-                        }>
-                        <FormControl.Label variant="profile">
-                           Delivery Address
-                        </FormControl.Label>
-                        <TextArea
-                           h={20}
-                           placeholder="Delivery Address"
-                           variant="profile"
-                           value={address}
-                           onChangeText={setAddress}
-                        />
-                        {Object.keys(errValidation).length > 0 &&
-                           errValidation.address && (
-                              <FormControl.ErrorMessage
-                                 leftIcon={<WarningOutlineIcon size="xs" />}>
-                                 {errValidation.address}
-                              </FormControl.ErrorMessage>
-                           )}
-                     </FormControl>
+                        }
+                        change={setAddress}
+                     />
                   </View>
                   <View style={addStyles.layoutButton}>
                      <TouchableOpacity onPress={updateProfileHandle}>
