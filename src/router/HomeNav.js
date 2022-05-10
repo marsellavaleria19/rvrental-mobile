@@ -41,6 +41,10 @@ const HomeNavigator = () => {
          />
          <NavHomeStack.Screen
             options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.thirdColor,
+               headerBackTitleStyle: addStyles.headerBack,
                title: 'Add new item',
             }}
             name="AddItem"
