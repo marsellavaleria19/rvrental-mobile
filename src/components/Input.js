@@ -7,18 +7,20 @@ const Input = ({
    value,
    secure,
    change,
-   valurDefault,
+   valueDefault,
    children,
+   keyboardType,
 }) => {
    return (
       <TextInput
          style={classInput}
          placeholder={placeholder}
          placeholderTextColor="white"
-         defaultValue={valurDefault}
+         defaultValue={valueDefault}
          value={value}
          onChangeText={change}
          secureTextEntry={secure}
+         keyboardType={keyboardType}
       />
    );
 };

@@ -38,7 +38,7 @@ const MainStackNav = () => {
             options={{
                headerStyle: addStyles.layoutHeader,
                headerTitleStyle: addStyles.textHeader,
-               headerTintColor: stylePrimary.thirdColor,
+               headerTintColor: stylePrimary.secondaryColor,
                headerBackTitleStyle: addStyles.headerBack,
                title: 'Payment',
             }}
@@ -49,7 +49,7 @@ const MainStackNav = () => {
             options={{
                headerStyle: addStyles.layoutHeader,
                headerTitleStyle: addStyles.textHeader,
-               headerTintColor: stylePrimary.thirdColor,
+               headerTintColor: stylePrimary.secondaryColor,
                headerBackTitleStyle: addStyles.headerBack,
                title: 'Payment',
             }}
@@ -60,7 +60,7 @@ const MainStackNav = () => {
             options={{
                headerStyle: addStyles.layoutHeader,
                headerTitleStyle: addStyles.textHeader,
-               headerTintColor: stylePrimary.thirdColor,
+               headerTintColor: stylePrimary.secondaryColor,
                headerBackTitleStyle: addStyles.headerBack,
                title: 'See history',
             }}
@@ -71,7 +71,7 @@ const MainStackNav = () => {
             options={{
                headerStyle: addStyles.layoutHeader,
                headerTitleStyle: addStyles.textHeader,
-               headerTintColor: stylePrimary.thirdColor,
+               headerTintColor: stylePrimary.secondaryColor,
                headerBackTitleStyle: addStyles.headerBack,
                title: 'Favorite',
             }}
@@ -82,7 +82,7 @@ const MainStackNav = () => {
             options={{
                headerStyle: addStyles.layoutHeader,
                headerTitleStyle: addStyles.textHeader,
-               headerTintColor: stylePrimary.thirdColor,
+               headerTintColor: stylePrimary.secondaryColor,
                headerBackTitleStyle: addStyles.headerBack,
                title: 'Update Profile',
             }}
@@ -107,7 +107,7 @@ const MainStackNav = () => {
             options={{
                headerStyle: addStyles.layoutHeader,
                headerTitleStyle: addStyles.textHeader,
-               headerTintColor: stylePrimary.thirdColor,
+               headerTintColor: stylePrimary.secondaryColor,
                headerBackTitleStyle: addStyles.headerBack,
                title: 'Filter',
             }}
@@ -119,7 +119,7 @@ const MainStackNav = () => {
             options={{
                headerStyle: addStyles.layoutHeader,
                headerTitleStyle: addStyles.textHeader,
-               headerTintColor: stylePrimary.thirdColor,
+               headerTintColor: stylePrimary.secondaryColor,
                headerBackTitleStyle: addStyles.headerBack,
                title: 'Verify User Email',
             }}
@@ -155,10 +155,10 @@ const addStyles = StyleSheet.create({
       backgroundColor: stylePrimary.mainColor,
    },
    textHeader: {
-      color: stylePrimary.thirdColor,
+      color: stylePrimary.secondaryColor,
    },
    headerBack: {
-      color: stylePrimary.thirdColor,
+      color: stylePrimary.secondaryColor,
       fontSize: 30,
    },
 });

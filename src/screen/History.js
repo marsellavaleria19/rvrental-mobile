@@ -23,10 +23,11 @@ const History = ({navigation}) => {
    }, []);
 
    useEffect(() => {
-      // if (history.listHistory > 0 && history.isSuccessPayment) {
-      dispatch(getListHistory(auth.token));
-      // }
-   }, [history.listHistory, auth.token, dispatch]);
+      if (history.listHistory > 0 && history.isSuccessPayment) {
+         dispatch(getListHistory(auth.token));
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [history.listHistory]);
 
    const listHistoryByIdUser = () => {
       return history.listHistory;

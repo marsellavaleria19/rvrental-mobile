@@ -4,6 +4,8 @@ const dataVehicle = {
    pageInfo: {},
    isLoading: false,
    error: false,
+   errMessage: null,
+   message: null,
    dataVehicle: null,
 };
 
@@ -32,12 +34,18 @@ const vehicle = (state = dataVehicle, action) => {
       }
       case 'GET_DETAIL_VEHICLE_FULFILLED': {
          const {data} = action.payload;
-         state.dataVehicle = data.results;
+         // var dataJson = JSON.parse(data);
+         state.dataVehicle = data.result;
+         state.message = dataJson.message;
          state.isLoading = false;
          return {...state};
       }
       case 'GET_DETAIL_VEHICLE_REJECTED': {
-         state.isLoading = true;
+         state.isLoading = false;
+         const {data} = action.payload;
+         state.isError = true;
+         var dataJson = JSON.parse(data);
+         state.errMessage = dataJson.message;
          return {...state};
       }
       case 'SAVE_VEHICLE': {
@@ -51,14 +59,18 @@ const vehicle = (state = dataVehicle, action) => {
       }
       case 'GET_RESULT_VEHICLE_FULFILLED': {
          const {data} = action.payload;
-         const parse = JSON.parse(data);
-         state.dataVehicle = parse.results;
-         state.message = parse.message;
+         state.dataVehicle = data.result;
+         state.message = data.message;
          state.isLoading = false;
+         state.isError = false;
          return {...state};
       }
       case 'GET_RESULT_VEHICLE_REJECTED': {
-         state.isLoading = true;
+         console.log(action.payload);
+         const {data} = action.payload;
+         state.isLoading = false;
+         state.isError = true;
+         state.errMessage = data.message;
          return {...state};
       }
       case 'GET_DELETE_VEHICLE_PENDING': {

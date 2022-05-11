@@ -25,18 +25,21 @@ import {validation} from '../../helpers/validation';
 import NBModalLoading from '../../components/NBModalLoading';
 import NBModalError from '../../components/NBModalError';
 import NBModalSuccess from '../../components/NBModalSuccess';
+import NBTextArea from '../../components/NBTextArea';
+import Input from '../../components/Input';
 
-const newLocal = 'required';
 const AddItem = ({navigation}) => {
-   const {auth, category, vehicle} = useSelector(state => state);
-   const [name, setName] = useState('');
-   const [price, setPrice] = useState('');
-   const [qty, setQty] = useState(0);
-   const [description, setDescription] = useState('');
-   const [location, setLocation] = useState('');
-   const [categoryId, setCategoryId] = useState('');
+   const {auth, category, vehicle, location} = useSelector(state => state);
+   const [inputItem, setInputItem] = useState({
+      name: '',
+      price: '',
+      qty: '0',
+      description: '',
+      location: '',
+      category: '',
+   });
    const dispatch = useDispatch();
-   const [image, setImage] = useState([]);
+   const [image, setImage] = useState({});
    const [picture, setPicture] = useState(imagePhoto);
    const [control, setControl] = useState(false);
    const [show, setShow] = useState(false);
@@ -53,9 +56,18 @@ const AddItem = ({navigation}) => {
    var [messageSuccess, setMessageSuccess] = useState('');
 
    useEffect(() => {
+      setErrValidation({});
+      inputItem.qty = '0';
+      setInputItem(inputItem);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+
+   useEffect(() => {
       if (category.dataCategory !== null && control == true) {
          dispatch(getListCategory());
-         setCategoryId(category.dataCategory.id);
+         inputItem.category = category.dataCategory.id;
+         setInputItem(inputItem);
+         // setCategoryId(category.dataCategory.id);
          setControl(false);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -92,12 +104,15 @@ const AddItem = ({navigation}) => {
    }, [category.isLoading]);
 
    const countIncrement = () => {
-      setQty(qty + 1);
+      inputItem.qty = (parseInt(inputItem.qty) + 1).toString();
+      setInputItem({...inputItem, qty: inputItem.qty});
    };
 
    const countDecrement = () => {
-      if (qty > 0) {
-         setQty(qty - 1);
+      if (parseInt(inputItem.qty) > 0) {
+         inputItem.qty = (parseInt(inputItem.qty) - 1).toString();
+         setInputItem({...inputItem, qty: inputItem.qty});
+         // setQty((parseInt(qty) - 1).toString());
       }
    };
 
@@ -109,54 +124,45 @@ const AddItem = ({navigation}) => {
    };
 
    const addItemHandle = () => {
-      console.log(image);
-      var data = {
-         name,
-         category: categoryId.toString(),
-         location,
-         price,
-         qty: qty.toString(),
-         description: description,
-      };
-      // console.log(dataSend);
-      // var dataVehicle = [];
-      // Object.keys(dataSend).forEach(key => {
-      //    dataVehicle.push({name: `${key}`, data: dataSend[key]});
-      // });
-      // console.log(dataVehicle);
       var requirement = {
          name: 'required',
          price: 'required|number',
          location: 'choose',
-         category: 'çhoose',
+         category: 'choose',
          description: 'required',
       };
-
-      const validate = validation(dataSend, requirement);
+      inputItem.location = inputItem.location.toString();
+      inputItem.category = inputItem.category.toString();
+      const validate = validation(inputItem, requirement);
+      console.log(image);
       if (Object.keys(validate).length == 0) {
          var dataSend = {
-            name,
-            category_id: categoryId.toString(),
-            location,
-            price,
-            qty: qty.toString(),
+            name: inputItem.name,
+            category_id: inputItem.category,
+            location_id: inputItem.location,
+            price: inputItem.price,
+            qty: inputItem.qty,
             isAvailable: '1',
-            description: description,
+            description: inputItem.description,
          };
-         dispatch(addDataVehicle(auth.token, dataSend, image.assets[0]));
+         if (Object.keys(image).length > 0) {
+            dispatch(addDataVehicle(auth.token, dataSend, image.assets[0]));
+         } else {
+            dispatch(addDataVehicle(auth.token, dataSend));
+         }
          setControl(true);
       } else {
          setErrValidation(validate);
       }
    };
 
-   const addCategoryHandle = () => {
-      dispatch(addDataCategory(auth.token, dataCategory));
-      setControl(true);
-      setCategoryId(dataCategory.id);
-      setShow(false);
-      setDataCategory(null);
-   };
+   // const addCategoryHandle = () => {
+   //    dispatch(addDataCategory(auth.token, dataCategory));
+   //    setControl(true);
+   //    setCategoryId(dataCategory.id);
+   //    setShow(false);
+   //    setDataCategory(null);
+   // };
 
    return (
       <View style={styles.background}>
@@ -175,8 +181,8 @@ const AddItem = ({navigation}) => {
                      show={showModalSuccess}
                      message={messageSuccess}
                      close={handleCloseModalSuccess}
-                     button={'Go to profile menu'}
-                     functionHandle={() => navigation.navigate('Profile')}
+                     button={'Go to home'}
+                     functionHandle={() => navigation.navigate('Home')}
                   />
                )}
                <View style={addStyles.layoutImageEdit}>
@@ -196,17 +202,19 @@ const AddItem = ({navigation}) => {
                   </TouchableOpacity>
                </View>
                <View style={addStyles.layoutForm}>
-                  <Text style={addStyles.textErrorImage}>
+                  {/* <Text style={addStyles.textErrorImage}>
                      {Object.keys(image).length > 0 &&
                         image.assets[0].fileSize > 2000000 &&
                         'Photo max 2 MB'}
-                  </Text>
+                  </Text> */}
                   <View style={addStyles.layoutInput}>
                      <NBInput
                         placeholder={'Type product name min 30 Characters'}
                         classVariant="item"
-                        value={name}
-                        change={setName}
+                        value={inputItem.name}
+                        change={newName =>
+                           setInputItem({...inputItem, name: newName})
+                        }
                         isValidate={
                            Object.keys(errValidation).length > 0 && true
                         }
@@ -220,8 +228,10 @@ const AddItem = ({navigation}) => {
                      <NBInput
                         placeholder={'Type product price'}
                         classVariant="item"
-                        value={price}
-                        change={setPrice}
+                        value={inputItem.price}
+                        change={newPrice =>
+                           setInputItem({...inputItem, price: newPrice})
+                        }
                         isValidate={
                            Object.keys(errValidation).length > 0 && true
                         }
@@ -233,15 +243,25 @@ const AddItem = ({navigation}) => {
                   </View>
                   <View style={addStyles.layoutFormDescription}>
                      <View style={addStyles.layoutInput}>
-                        <Box w="100%">
-                           <Text style={addStyles.label}>Description</Text>
-                           <TextArea
-                              placeholder="Describe your product min. 150 characters"
-                              variant="item"
-                              value={description}
-                              onChangeText={setDescription}
-                           />
-                        </Box>
+                        <Text style={addStyles.label}>Description</Text>
+                        <NBTextArea
+                           placeholder={
+                              'Describe your product min. 150 character'
+                           }
+                           variant="item"
+                           value={inputItem.description}
+                           change={newDescription =>
+                              setInputItem({
+                                 ...inputItem,
+                                 description: newDescription,
+                              })
+                           }
+                           valid={Object.keys(errValidation).length > 0 && true}
+                           message={
+                              Object.keys(errValidation).length > 0 &&
+                              errValidation.description
+                           }
+                        />
                      </View>
                      <View style={addStyles.layoutInput}>
                         <Box w="100%">
@@ -250,13 +270,32 @@ const AddItem = ({navigation}) => {
                               width="100%"
                               placeholder="Location"
                               variantSelect="item"
-                              select={location}
-                              change={itemValue => setLocation(itemValue)}>
-                              <Select.Item label="Bandung" value={'Bandung'} />
-                              <Select.Item label="Jakarta" value={'Jakarta'} />
+                              isInvalid={
+                                 Object.keys(errValidation).length > 0 && true
+                              }
+                              errMessage={
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation.location
+                              }
+                              select={inputItem.location}
+                              change={itemValue =>
+                                 setInputItem({
+                                    ...inputItem,
+                                    location: itemValue,
+                                 })
+                              }>
+                              {location.listLocation.length > 0 &&
+                                 location.listLocation.map(item => {
+                                    return (
+                                       <Select.Item
+                                          label={item.location}
+                                          value={item.id}
+                                       />
+                                    );
+                                 })}
                               <Select.Item
-                                 label="Yogyakarta"
-                                 value={'Yogyakarta'}
+                                 label="Add Location"
+                                 value={'Bandung'}
                               />
                            </BSelect>
                         </Box>
@@ -268,11 +307,24 @@ const AddItem = ({navigation}) => {
                               width="100%"
                               placeholder="Category"
                               variantSelect="item"
-                              select={categoryId}
-                              change={itemValue => setCategoryId(itemValue)}>
+                              select={inputItem.category}
+                              isInvalid={
+                                 Object.keys(errValidation).length > 0 && true
+                              }
+                              errMessage={
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation.category
+                              }
+                              change={itemValue =>
+                                 setInputItem({
+                                    ...inputItem,
+                                    category: itemValue,
+                                 })
+                              }>
                               {category.listCategory.map(item => {
                                  return (
                                     <Select.Item
+                                       key={item.id}
                                        label={item.name}
                                        value={item.id}
                                     />
@@ -284,7 +336,7 @@ const AddItem = ({navigation}) => {
                                  onPress={handleShow}
                               />
                            </BSelect>
-                           <NBModal
+                           {/* <NBModal
                               title="Category"
                               show={show}
                               functionShow={handleShow}
@@ -298,7 +350,7 @@ const AddItem = ({navigation}) => {
                                  value={dataCategory}
                                  change={setDataCategory}
                               />
-                           </NBModal>
+                           </NBModal> */}
                         </Box>
                      </View>
                      <View style={addStyles.layoutQtyBikes}>
@@ -311,7 +363,14 @@ const AddItem = ({navigation}) => {
                                  -
                               </CButton>
                            </TouchableOpacity>
-                           <Text style={addStyles.inputQty}>{qty}</Text>
+                           <Input
+                              style={addStyles.inputQty}
+                              value={inputItem.qty}
+                              change={newQty =>
+                                 setInputItem({...inputItem, qty: newQty})
+                              }
+                              keyboardType="numeric"
+                           />
                            <TouchableOpacity onPress={countIncrement}>
                               <CButton
                                  classButton={addStyles.button}
@@ -322,7 +381,6 @@ const AddItem = ({navigation}) => {
                         </View>
                      </View>
                   </View>
-
                   <View style={addStyles.layoutButton}>
                      <TouchableOpacity onPress={addItemHandle}>
                         <CButton
@@ -391,6 +449,7 @@ const addStyles = StyleSheet.create({
       fontWeight: '700',
       fontSize: 16,
       marginRight: 80,
+      color: stylePrimary.mainColor,
    },
    button: {
       backgroundColor: stylePrimary.secondaryColor,
@@ -431,6 +490,11 @@ const addStyles = StyleSheet.create({
    fontButtonAddPicture: {
       fontSize: 13,
       color: stylePrimary.secondaryColor,
+   },
+   textErrorImage: {
+      fontSize: 12,
+      color: 'red',
+      textAlign: 'center',
    },
 });
 

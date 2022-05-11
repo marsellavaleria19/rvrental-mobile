@@ -43,7 +43,7 @@ const addStyles = StyleSheet.create({
       backgroundColor: stylePrimary.mainColor,
    },
    textHeader: {
-      color: stylePrimary.secondaryColor,
+      color: stylePrimary.background,
       fontWeight: stylePrimary.bold,
       fontSize: 16,
    },

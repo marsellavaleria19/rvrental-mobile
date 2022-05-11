@@ -10,6 +10,7 @@ import {useEffect} from 'react';
 import {getDataUser} from '../redux/actions/auth';
 import RNBootSplash from 'react-native-bootsplash';
 import {getListCategory} from '../redux/actions/category';
+import {getListLocation} from '../redux/actions/location';
 
 const Main = () => {
    const {auth} = useSelector(state => state);
@@ -17,6 +18,7 @@ const Main = () => {
 
    useEffect(() => {
       dispatch(getListCategory());
+      dispatch(getListLocation());
    }, []);
 
    useEffect(() => {
