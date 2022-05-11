@@ -10,6 +10,7 @@ import payment from './payment';
 import history from './history';
 import search from './search';
 import favorite from './favorite';
+import location from './location';
 
 const persistForAuth = {
    key: 'auth',
@@ -41,6 +42,7 @@ const rootReducers = combineReducers({
    history: persistReducer(persistForHistory, history),
    search,
    favorite,
+   location,
 });
 
 export default rootReducers;
