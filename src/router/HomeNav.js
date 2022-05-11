@@ -25,7 +25,7 @@ const HomeNavigator = () => {
             options={{
                headerStyle: addStyles.layoutHeader,
                headerTitleStyle: addStyles.textHeader,
-               headerTintColor: stylePrimary.thirdColor,
+               headerTintColor: stylePrimary.secondaryColor,
                title: 'Detail Category',
                headerBackTitleStyle: addStyles.headerBack,
             }}
@@ -43,7 +43,7 @@ const HomeNavigator = () => {
             options={{
                headerStyle: addStyles.layoutHeader,
                headerTitleStyle: addStyles.textHeader,
-               headerTintColor: stylePrimary.thirdColor,
+               headerTintColor: stylePrimary.secondaryColor,
                headerBackTitleStyle: addStyles.headerBack,
                title: 'Add new item',
             }}
@@ -59,10 +59,10 @@ const addStyles = StyleSheet.create({
       backgroundColor: stylePrimary.mainColor,
    },
    textHeader: {
-      color: stylePrimary.thirdColor,
+      color: stylePrimary.secondaryColor,
    },
    headerBack: {
-      color: stylePrimary.thirdColor,
+      color: stylePrimary.secondaryColor,
       fontSize: 30,
    },
 });
