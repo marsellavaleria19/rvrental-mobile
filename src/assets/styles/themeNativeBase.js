@@ -6,9 +6,9 @@ export const theme = extendTheme({
    components: {
       Input: {
          baseStyle: {
-            backgroundColor: 'rgba(128, 128, 128, 0.2)',
+            backgroundColor: stylePrimary.background,
             height: 51,
-            px: 2,
+            px: 5,
             _text: {
                color: stylePrimary.mainColor,
                fontSize: 16,
@@ -16,7 +16,7 @@ export const theme = extendTheme({
          },
          variants: {
             profile: {
-               backgroundColor: 'rgba(52, 52, 52, 0.0)',
+               backgroundColor: stylePrimary.background,
                borderBottomWidth: 1,
                borderBottomColor: '#9F9F9F',
                _text: {
@@ -24,7 +24,7 @@ export const theme = extendTheme({
                },
             },
             verifyUser: {
-               backgroundColor: 'rgba(52, 52, 52, 0.0)',
+               backgroundColor: stylePrimary.background,
                borderBottomWidth: 1,
                borderBottomColor: '#9F9F9F',
                _text: {
@@ -47,9 +47,9 @@ export const theme = extendTheme({
                borderWidth: 1,
             },
             item: {
-               backgroundColor: 'rgba(52, 52, 52, 0.0)',
+               backgroundColor: stylePrimary.background,
                borderBottomWidth: 1,
-               borderBottomColor: stylePrimary.secondaryColor,
+               borderBottomColor: '#9F9F9F',
                _text: {
                   color: stylePrimary.mainColor,
                   textAlign: 'center',
@@ -73,15 +73,15 @@ export const theme = extendTheme({
          },
          variants: {
             profile: {
-               px: 2,
+               px: 5,
             },
          },
       },
       TextArea: {
          variants: {
             profile: {
-               backgroundColor: 'rgba(52, 52, 52, 0.0)',
-               borderWidth: 0,
+               backgroundColor: stylePrimary.background,
+               border: 'none',
                borderBottomWidth: 1,
                borderBottomColor: '#9F9F9F',
                _text: {
@@ -89,7 +89,7 @@ export const theme = extendTheme({
                },
             },
             item: {
-               backgroundColor: 'rgba(52, 52, 52, 0.0)',
+               backgroundColor: stylePrimary.background,
                borderWidth: 0,
                borderBottomWidth: 1,
                borderBottomColor: '#9F9F9F',
@@ -127,17 +127,17 @@ export const theme = extendTheme({
                // opacity: 0.1,
                borderRadius: 10,
             },
-            item: {
-               backgroundColor: 'rgba(52, 52, 52, 0.0)',
-               borderWidth: 0,
-               borderBottomWidth: 1,
-               borderBottomColor: '#9F9F9F',
-               placeholderTextColor: stylePrimary.mainColor,
-               height: 51,
-               _text: {
-                  color: stylePrimary.mainColor,
-               },
-            },
+            // item: {
+            //    backgroundColor: stylePrimary.background,
+            //    borderWidth: 0,
+            //    borderBottomWidth: 1,
+            //    borderBottomColor: '#9F9F9F',
+            //    placeholderTextColor: stylePrimary.mainColor,
+            //    height: 51,
+            //    _text: {
+            //       color: stylePrimary.mainColor,
+            //    },
+            // },
          },
       },
    },
