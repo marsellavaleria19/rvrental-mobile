@@ -3,40 +3,43 @@ import {
    Box,
    Select,
    CheckIcon,
-   NativeBaseProvider,
-   WarningOutlineIcon,
    FormControl,
-   extendTheme,
+   WarningOutlineIcon,
 } from 'native-base';
 import {StyleSheet} from 'react-native';
-import {color} from 'native-base/lib/typescript/theme/styled-system';
 
 const BSelect = ({
    width,
    placeholder,
    selected,
    change,
-   color,
-   backgroud,
    variantSelect,
    children,
+   isInvalid,
+   errMessage,
 }) => {
    return (
       <Box w={width}>
-         <Select
-            selectedValue={selected}
-            minWidth="20"
-            bgColor={backgroud}
-            color={color}
-            placeholder={placeholder}
-            _selectedItem={{
-               bg: {color},
-               endIcon: <CheckIcon size="5" />,
-            }}
-            variant={variantSelect}
-            onValueChange={change}>
-            {children}
-         </Select>
+         <FormControl isInvalid={isInvalid}>
+            <Select
+               selectedValue={selected}
+               minWidth="20"
+               placeholder={placeholder}
+               _selectedItem={{
+                  endIcon: <CheckIcon size="5" />,
+               }}
+               variant={'item'}
+               bg="muted.500"
+               onValueChange={change}>
+               {children}
+            </Select>
+            {errMessage !== null && (
+               <FormControl.ErrorMessage
+                  leftIcon={<WarningOutlineIcon size="xs" />}>
+                  {errMessage}
+               </FormControl.ErrorMessage>
+            )}
+         </FormControl>
       </Box>
       // <NativeBaseProvider extendTheme>
       //    <Select
