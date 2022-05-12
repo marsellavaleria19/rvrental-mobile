@@ -12,7 +12,7 @@ export const getListLocation = () => {
 export const addDataLocation = (token, locationSend) => {
    const data = {location: locationSend};
    return {
-      type: 'GET_DETAIL_LOCATION',
-      payload: AxiosCostum().post('/locations', qs.stringify(data)),
+      type: 'ADD_LOCATION',
+      payload: AxiosCostum(token).post('/locations', qs.stringify(data)),
    };
 };
