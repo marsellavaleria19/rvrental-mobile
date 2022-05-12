@@ -24,9 +24,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getDetailVehicle} from '../../redux/actions/vehicle';
 // import {reservationProcess} from '../redux/actions/reservation';
 
-const EditItem = ({route, navigation}) => {
+const EditItem = ({navigation}) => {
    const {vehicle} = useSelector(state => state);
-   const {vehicleId} = route.params;
+   // const {vehicleId} = route.params;
    const [qty, setQty] = useState(0);
    const [picture, setPicture] = useState();
    const dispatch = useDispatch();
@@ -36,7 +36,7 @@ const EditItem = ({route, navigation}) => {
    const [isAvailable, setIsAvailable] = useState(0);
 
    useEffect(() => {
-      dispatch(getDetailVehicle(vehicleId));
+      // dispatch(getDetailVehicle(vehicleId));
       setQty(vehicle.dataVehicle?.qty);
       // setPicture(
       //    vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
@@ -165,9 +165,10 @@ const EditItem = ({route, navigation}) => {
                </View>
                <View style={addStyles.layoutButton}>
                   <TouchableOpacity
-                     onPress={() =>
-                        navigation.navigate('UpdateItem', {vehicleId})
-                     }>
+                  // onPress={() =>
+                  //    navigation.navigate('UpdateItem', {vehicleId})
+                  // }
+                  >
                      <CButton
                         classButton={addStyles.buttonReservation}
                         textButton={addStyles.fontButtonReservation}>
