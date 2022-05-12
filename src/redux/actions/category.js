@@ -12,7 +12,7 @@ export const getListCategory = () => {
 export const addDataCategory = (token, category) => {
    const data = {name: category};
    return {
-      type: 'GET_DETAIL_CATEGORY',
+      type: 'ADD_CATEGORY',
       payload: AxiosCostum(token).post('/categories', qs.stringify(data)),
    };
 };

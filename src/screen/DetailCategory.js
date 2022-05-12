@@ -17,6 +17,7 @@ import NBModal from '../components/NBModal';
 import NotFound from '../components/NotFound';
 import NBModalLoading from '../components/NBModalLoading';
 import {saveDetailVehicle} from '../redux/actions/vehicle';
+import {LIMIT_VEHICLE} from '@env';
 
 const DetailCategory = ({route, navigation}) => {
    const {categoryId} = route.params;
@@ -27,8 +28,9 @@ const DetailCategory = ({route, navigation}) => {
    const handleClose = () => setShow(false);
 
    useEffect(() => {
-      dispatch(getListVehicleByCategory(categoryId));
-   }, [categoryId, dispatch]);
+      dispatch(getListVehicleByCategory(categoryId, LIMIT_VEHICLE));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [categoryId]);
 
    const verifyHandle = () => {
       navigation.navigate('VerifyUserEmail');

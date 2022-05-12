@@ -127,17 +127,17 @@ export const theme = extendTheme({
                // opacity: 0.1,
                borderRadius: 10,
             },
-            // item: {
-            //    backgroundColor: stylePrimary.background,
-            //    borderWidth: 0,
-            //    borderBottomWidth: 1,
-            //    borderBottomColor: '#9F9F9F',
-            //    placeholderTextColor: stylePrimary.mainColor,
-            //    height: 51,
-            //    _text: {
-            //       color: stylePrimary.mainColor,
-            //    },
-            // },
+            item: {
+               backgroundColor: stylePrimary.background,
+               borderWidth: 1,
+               borderColor: '#9F9F9F',
+               borderRadius: 8,
+               placeholderTextColor: stylePrimary.mainColor,
+               height: 51,
+               _text: {
+                  color: stylePrimary.mainColor,
+               },
+            },
          },
       },
    },

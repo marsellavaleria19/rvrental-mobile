@@ -1,41 +1,40 @@
 import React from 'react';
-import {Modal, FormControl, Button, Input} from 'native-base';
+import {Center, Modal, Spinner, Button} from 'native-base';
 import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import CButton from './Button';
 import {useState} from 'react';
 import stylePrimary from '../assets/styles/stylePrimary';
+import IconSuccess from 'react-native-vector-icons/FontAwesome';
 
-const NBModal = ({
+function NBModal({
    show,
-   functionClose,
-   children,
+   button = null,
    title,
    functionHandle,
-   isButton = false,
+   close,
+   children,
    isButtonCancel = false,
-   buttonTitile,
-}) => {
-   console.log('masuk di komponen modal');
-   console.log(show);
+   functionClose,
+}) {
    return (
-      <Modal isOpen={show} onClose={functionClose}>
-         <Modal.Content maxWidth="400px">
-            <Modal.CloseButton style={addStyles.textHeader} />
+      <Modal isOpen={show} onClose={close}>
+         <Modal.Content>
+            <Modal.CloseButton />
             <Modal.Header style={addStyles.layoutModalHeader}>
                <Text style={addStyles.textHeader}>{title}</Text>
             </Modal.Header>
             <Modal.Body style={addStyles.layoutModalBody}>
                {children}
             </Modal.Body>
-            {isButton == true && (
-               <Modal.Footer style={addStyles.layoutModalBody}>
+            {button !== null && (
+               <Modal.Footer style={addStyles.layoutModalFooter}>
                   {/* <TouchableOpacity onPress={functionHandle}>
-                     <CButton
-                        classButton={addStyles.button}
-                        textButton={addStyles.fontButton}>
-                        {buttonTitile}
-                     </CButton>
-                  </TouchableOpacity> */}
+                    <CButton
+                       classButton={addStyles.button}
+                       textButton={addStyles.fontButton}>
+                       {buttonTitile}
+                    </CButton>
+                 </TouchableOpacity> */}
                   <Button.Group space={2}>
                      <TouchableOpacity />
                      {isButtonCancel == true && (
@@ -47,11 +46,11 @@ const NBModal = ({
                            </CButton>
                         </TouchableOpacity>
                      )}
-                     <TouchableOpacity>
+                     <TouchableOpacity onPress={functionHandle}>
                         <CButton
                            classButton={addStyles.button}
                            textButton={addStyles.fontButton}>
-                           {buttonTitile}
+                           {button}
                         </CButton>
                      </TouchableOpacity>
                   </Button.Group>
@@ -60,7 +59,7 @@ const NBModal = ({
          </Modal.Content>
       </Modal>
    );
-};
+}
 
 const addStyles = StyleSheet.create({
    button: {
@@ -97,12 +96,38 @@ const addStyles = StyleSheet.create({
       backgroundColor: stylePrimary.mainColor,
    },
    textHeader: {
-      color: stylePrimary.secondaryColor,
+      color: stylePrimary.background,
       fontWeight: stylePrimary.bold,
       fontSize: 16,
    },
    layoutModalBody: {
       backgroundColor: stylePrimary.background,
+      paddingBottom: 20,
+   },
+   layoutModalFooter: {
+      backgroundColor: stylePrimary.background,
+      borderTopColor: stylePrimary.mainColor,
+      borderTopWidth: 1,
+      height: 70,
+   },
+   textTitle: {
+      fontSize: 20,
+      marginBottom: 5,
+      color: stylePrimary.mainColor,
+      fontWeight: stylePrimary.bold,
+      textAlign: 'center',
+   },
+   textMessage: {
+      fontSize: 14,
+      marginLeft: 5,
+      color: stylePrimary.mainColor,
+      textAlign: 'center',
+   },
+   iconSuccess: {
+      color: stylePrimary.mainColor,
+      fontSize: 40,
+      textAlign: 'center',
+      marginBottom: 5,
    },
 });
 
