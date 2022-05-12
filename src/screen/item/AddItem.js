@@ -27,10 +27,11 @@ import NBModalError from '../../components/NBModalError';
 import NBModalSuccess from '../../components/NBModalSuccess';
 import NBTextArea from '../../components/NBTextArea';
 import Input from '../../components/Input';
+import {getListLocation, addDataLocation} from '../../redux/actions/location';
 
 const AddItem = ({navigation}) => {
    const {auth, category, vehicle, location} = useSelector(state => state);
-   const [inputItem, setInputItem] = useState({
+   var [inputItem, setInputItem] = useState({
       name: '',
       price: '',
       qty: '0',
@@ -42,10 +43,12 @@ const AddItem = ({navigation}) => {
    const [image, setImage] = useState({});
    const [picture, setPicture] = useState(imagePhoto);
    const [control, setControl] = useState(false);
-   const [show, setShow] = useState(false);
-   const handleShow = () => setShow(true);
-   const handleClose = () => setShow(false);
-   const [dataCategory, setDataCategory] = useState(null);
+   const [showModalCategory, setShowModalCategory] = useState(false);
+   const handleCloseModalCategory = () => setShowModalCategory(false);
+   const [showModalLocation, setShowModalLocation] = useState(false);
+   const handleCloseModalLocation = () => setShowModalLocation(false);
+   const [dataCategory, setDataCategory] = useState('');
+   const [dataLocation, setDataLocation] = useState('');
    const [errValidation, setErrValidation] = useState({});
    const [showModalSuccess, setShowModalSuccess] = useState(false);
    const handleCloseModalSuccess = () => setShowModalSuccess(false);
@@ -53,12 +56,27 @@ const AddItem = ({navigation}) => {
    const handleCloseModalError = () => setShowModalError(false);
    const [showModalLoading, setShowModalLoading] = useState(false);
    const [messageError, setMessageError] = useState('');
-   var [messageSuccess, setMessageSuccess] = useState('');
+   const [messageSuccess, setMessageSuccess] = useState('');
+   const [messageSuccessLocationCategory, setMessageSuccessLocationCategory] =
+      useState('');
+   const [
+      showModalSuccessLocationCategory,
+      setShowModalSuccessLocationCategory,
+   ] = useState(false);
+   const handleCloseModalSuccessLocationCategory = () =>
+      setShowModalSuccessLocationCategory(false);
 
    useEffect(() => {
       setErrValidation({});
-      inputItem.qty = '0';
-      setInputItem(inputItem);
+      setInputItem({
+         name: '',
+         price: '',
+         qty: '0',
+         description: '',
+         location: '',
+         category: '',
+      });
+
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
@@ -90,18 +108,37 @@ const AddItem = ({navigation}) => {
 
    useEffect(() => {
       setShowModalLoading(category.isLoading);
+      setShowModalLocation(false);
       if (category.isLoading == false && control == true) {
          if (category.isError) {
             setMessageError(category.errMessage);
             setShowModalError(true);
          } else {
-            setMessageSuccess(category.message);
-            setShowModalSuccess(true);
+            setMessageSuccessLocationCategory(category.message);
+            setShowModalSuccessLocationCategory(true);
             setControl(false);
          }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [category.isLoading]);
+
+   useEffect(() => {
+      setShowModalLoading(location.isLoading);
+      if (location.isLoading == false && control == true) {
+         if (location.isError) {
+            setMessageError(location.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccessLocationCategory(location.message);
+            setShowModalSuccessLocationCategory(true);
+            dispatch(getListLocation());
+            inputItem.location = location.dataLocation.id;
+            setInputItem(inputItem);
+            setControl(false);
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [location.isLoading]);
 
    const countIncrement = () => {
       inputItem.qty = (parseInt(inputItem.qty) + 1).toString();
@@ -117,7 +154,7 @@ const AddItem = ({navigation}) => {
    };
 
    const browseImage = async () => {
-      const imagePicker = await launchImageLibrary({}, async image => {
+      const imagePicker = await launchImageLibrary({}, image => {
          setPicture({uri: image.assets[0].uri});
       });
       setImage({...imagePicker});
@@ -156,13 +193,75 @@ const AddItem = ({navigation}) => {
       }
    };
 
-   // const addCategoryHandle = () => {
-   //    dispatch(addDataCategory(auth.token, dataCategory));
-   //    setControl(true);
-   //    setCategoryId(dataCategory.id);
-   //    setShow(false);
-   //    setDataCategory(null);
-   // };
+   const addCategoryHandle = () => {
+      const data = {
+         'data category': dataCategory,
+      };
+
+      const requirement = {
+         'data category': 'required',
+      };
+      var validate = validation(data, requirement);
+      console.log(validate);
+      if (Object.keys(validate).length == 0) {
+         const categoryFilter = category.listCategory.filter(item =>
+            item.name.toLowerCase().includes(dataCategory.toLowerCase()),
+         );
+         console.log(categoryFilter);
+         if (categoryFilter.length > 0) {
+            validate = {
+               ...validate,
+               'data category': 'Category has already used',
+            };
+         }
+      }
+
+      if (Object.keys(validate).length == 0) {
+         dispatch(addDataCategory(auth.token, dataCategory));
+         setControl(true);
+         setInputItem({...inputItem, category: dataCategory.id});
+         // setCategoryId(dataCategory.id);
+         setShowModalCategory(false);
+         setDataCategory(null);
+         setErrValidation({});
+      } else {
+         setErrValidation(validate);
+      }
+   };
+
+   const addLocationHandle = () => {
+      const data = {
+         'data location': dataLocation,
+      };
+
+      const requirement = {
+         'data location': 'required',
+      };
+      var validate = validation(data, requirement);
+      if (Object.keys(validate).length == 0) {
+         const locationFilter = location.listLocation.filter(item =>
+            item.location.toLowerCase().includes(dataLocation.toLowerCase()),
+         );
+         if (locationFilter.length > 0) {
+            validate = {
+               ...validate,
+               'data location': 'Location has already used',
+            };
+         }
+      }
+
+      if (Object.keys(validate).length == 0) {
+         dispatch(addDataLocation(auth.token, dataLocation));
+         setControl(true);
+         setInputItem({...inputItem, location: dataLocation.id});
+         // setCategoryId(dataCategory.id);
+         setShowModalLocation(false);
+         setDataLocation(null);
+         setErrValidation({});
+      } else {
+         setErrValidation(validate);
+      }
+   };
 
    return (
       <View style={styles.background}>
@@ -183,6 +282,13 @@ const AddItem = ({navigation}) => {
                      close={handleCloseModalSuccess}
                      button={'Go to home'}
                      functionHandle={() => navigation.navigate('Home')}
+                  />
+               )}
+               {messageSuccessLocationCategory !== '' && (
+                  <NBModalSuccess
+                     show={showModalSuccessLocationCategory}
+                     message={messageSuccessLocationCategory}
+                     close={handleCloseModalSuccessLocationCategory}
                   />
                )}
                <View style={addStyles.layoutImageEdit}>
@@ -290,14 +396,38 @@ const AddItem = ({navigation}) => {
                                        <Select.Item
                                           label={item.location}
                                           value={item.id}
+                                          variant={'item'}
                                        />
                                     );
                                  })}
                               <Select.Item
-                                 label="Add Location"
-                                 value={'Bandung'}
+                                 label="+ Add Location"
+                                 value={0}
+                                 onPress={() => setShowModalLocation(true)}
                               />
                            </BSelect>
+                           <NBModal
+                              title="Location"
+                              show={showModalLocation}
+                              functionClose={handleCloseModalLocation}
+                              functionHandle={addLocationHandle}
+                              isButtonCancel={true}
+                              button="Save">
+                              <NBInput
+                                 placeholder={'Type Location'}
+                                 classVariant="item"
+                                 value={dataLocation}
+                                 isValidate={
+                                    Object.keys(errValidation).length > 0 &&
+                                    true
+                                 }
+                                 errorMessage={
+                                    Object.keys(errValidation).length > 0 &&
+                                    errValidation['data location']
+                                 }
+                                 change={setDataLocation}
+                              />
+                           </NBModal>
                         </Box>
                      </View>
                      <View style={addStyles.layoutInput}>
@@ -327,30 +457,39 @@ const AddItem = ({navigation}) => {
                                        key={item.id}
                                        label={item.name}
                                        value={item.id}
+                                       _text={addStyles.textSelect}
                                     />
                                  );
                               })}
                               <Select.Item
-                                 label="Add Category"
-                                 value={'Yogyakarta'}
-                                 onPress={handleShow}
+                                 label="+ Add Category"
+                                 onPress={() => setShowModalCategory(true)}
+                                 _text={addStyles.textSelect}
+                                 value={0}
                               />
                            </BSelect>
-                           {/* <NBModal
+                           <NBModal
                               title="Category"
-                              show={show}
-                              functionShow={handleShow}
-                              functionClose={handleClose}
+                              show={showModalCategory}
+                              functionClose={handleCloseModalCategory}
                               functionHandle={addCategoryHandle}
-                              isButton={true}
-                              buttonTitile="Save">
+                              isButtonCancel={true}
+                              button="Save">
                               <NBInput
                                  placeholder={'Type Category'}
                                  classVariant="item"
                                  value={dataCategory}
+                                 isValidate={
+                                    Object.keys(errValidation).length > 0 &&
+                                    true
+                                 }
+                                 errorMessage={
+                                    Object.keys(errValidation).length > 0 &&
+                                    errValidation['data category']
+                                 }
                                  change={setDataCategory}
                               />
-                           </NBModal> */}
+                           </NBModal>
                         </Box>
                      </View>
                      <View style={addStyles.layoutQtyBikes}>
@@ -407,10 +546,10 @@ const addStyles = StyleSheet.create({
       paddingHorizontal: 5,
    },
    layoutInput: {
-      marginBottom: 20,
+      marginBottom: 10,
    },
    layoutFormDescription: {
-      marginTop: 38,
+      marginTop: 30,
    },
    layoutImageEdit: {
       alignItems: 'center',
@@ -423,7 +562,7 @@ const addStyles = StyleSheet.create({
       color: stylePrimary.mainColor,
       fontSize: 17,
       fontWeight: stylePrimary.bold,
-      marginBottom: 15,
+      marginBottom: 5,
    },
    layoutDistance: {
       marginTop: 20,
@@ -461,6 +600,11 @@ const addStyles = StyleSheet.create({
       color: stylePrimary.mainColor,
       fontSize: 15,
       fontWeight: '900',
+      textAlign: 'center',
+   },
+   textSelect: {
+      color: stylePrimary.mainColor,
+      fontSize: 14,
       textAlign: 'center',
    },
    inputQty: {
