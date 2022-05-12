@@ -2,7 +2,9 @@ const dataLocation = {
    listLocation: [],
    pageInfo: {},
    isLoading: false,
-   error: false,
+   isError: false,
+   message: null,
+   errMessage: null,
    dataLocation: null,
 };
 
@@ -24,19 +26,23 @@ const location = (state = dataLocation, action) => {
          state.isError = true;
          return {...state};
       }
-      case 'GET_DETAIL_LOCATION_PENDING': {
+      case 'ADD_LOCATION_PENDING': {
          state.isLoading = true;
          return {...state};
       }
-      case 'GET_DETAIL_LOCATION_FULFILLED': {
+      case 'ADD_LOCATION_FULFILLED': {
          const {data} = action.payload;
          state.dataLocation = data.result;
          state.isLoading = false;
+         state.message = data.message;
+         state.isError = false;
          return {...state};
       }
-      case 'GET_DETAIL_LOCATION_REJECTED': {
+      case 'ADD_LOCATION_REJECTED': {
+         const {data} = action.payload.response;
          state.isLoading = false;
          state.isError = true;
+         state.errMessage = data.message;
          return {...state};
       }
       default: {
