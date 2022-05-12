@@ -7,6 +7,7 @@ import {
    WarningOutlineIcon,
 } from 'native-base';
 import {StyleSheet} from 'react-native';
+import stylePrimary from '../assets/styles/stylePrimary';
 
 const BSelect = ({
    width,
@@ -27,10 +28,12 @@ const BSelect = ({
                placeholder={placeholder}
                _selectedItem={{
                   endIcon: <CheckIcon size="5" />,
+                  variant: {variantSelect},
                }}
-               variant={'item'}
-               bg="muted.500"
-               onValueChange={change}>
+               variant={variantSelect}
+               bg="teal.600"
+               onValueChange={change}
+               _actionSheetContent={{bg: stylePrimary.background}}>
                {children}
             </Select>
             {errMessage !== null && (
