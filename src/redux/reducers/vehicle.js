@@ -48,7 +48,7 @@ const vehicle = (state = dataVehicle, action) => {
          state.errMessage = dataJson.message;
          return {...state};
       }
-      case 'SAVE_VEHICLE': {
+      case 'SAVE_DETAIL_VEHICLE': {
          state.dataVehicle = action.payload;
          state.isLoading = false;
          return {...state};
