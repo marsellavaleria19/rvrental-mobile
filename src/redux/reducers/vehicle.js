@@ -73,18 +73,22 @@ const vehicle = (state = dataVehicle, action) => {
          state.errMessage = data.message;
          return {...state};
       }
-      case 'GET_DELETE_VEHICLE_PENDING': {
+      case 'DELETE_VEHICLE_PENDING': {
          state.isLoading = true;
          return {...state};
       }
-      case 'GET_DELETE_VEHICLE_FULFILLED': {
+      case 'DELETE_VEHICLE_FULFILLED': {
          const {data} = action.payload;
          state.message = data.message;
          state.isLoading = false;
+         state.isError = false;
          return {...state};
       }
-      case 'GET_DELETE_VEHICLE_REJECTED': {
+      case 'DELETE_VEHICLE_REJECTED': {
+         const {data} = action.payload.response;
          state.isLoading = true;
+         state.isError = true;
+         state.errMessage = data.message;
          return {...state};
       }
       case 'GET_VEHICLE_NEXT_PENDING': {
