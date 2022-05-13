@@ -40,16 +40,30 @@ export const saveDetailVehicle = item => {
    };
 };
 
-const rnFetchBlobHandle = async (token, dataVehicle) => {
-   const result = await RNFetchBlob.fetch(
-      'POST',
-      `${API_URL}/vehicles`,
-      {
-         'Content-Type': 'multipart/form-data',
-         Authorization: `Bearer ${token}`,
-      },
-      dataVehicle,
-   );
+const rnFetchBlobHandle = async (token, dataVehicle, id = null) => {
+   var result = null;
+   if (id !== null) {
+      result = await RNFetchBlob.fetch(
+         'PATCH',
+         `${API_URL}/vehicles/${id}`,
+         {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+         },
+         dataVehicle,
+      );
+   } else {
+      result = await RNFetchBlob.fetch(
+         'POST',
+         `${API_URL}/vehicles`,
+         {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+         },
+         dataVehicle,
+      );
+   }
+   console.log(result);
    const dataJSON = JSON.parse(result.data);
    console.log(dataJSON);
    if (dataJSON.success == false) {
@@ -97,21 +111,13 @@ export const updateDataVehicle = (token, dataSend, id, image = null) => {
    });
    return {
       type: 'GET_RESULT_VEHICLE',
-      payload: RNFetchBlob.fetch(
-         'PATCH',
-         `${API_URL}/vehicles/${id}`,
-         {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-         },
-         dataVehicle,
-      ),
+      payload: rnFetchBlobHandle(token, dataVehicle, id),
    };
 };
 
 export const deleteDataVehicle = (token, id) => {
    return {
-      type: 'GET_DELETE_VEHICLE',
+      type: 'DELETE_VEHICLE',
       payload: AxiosCustom(token).delete(`/vehicles/${id}`),
    };
 };

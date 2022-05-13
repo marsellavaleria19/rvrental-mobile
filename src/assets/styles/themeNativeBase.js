@@ -7,12 +7,12 @@ export const theme = extendTheme({
       Input: {
          baseStyle: {
             backgroundColor: stylePrimary.background,
-            height: 51,
-            px: 5,
             _text: {
                color: stylePrimary.mainColor,
                fontSize: 16,
             },
+            // height: 51,
+            // px: 5,
          },
          variants: {
             profile: {
@@ -50,10 +50,17 @@ export const theme = extendTheme({
                backgroundColor: stylePrimary.background,
                borderBottomWidth: 1,
                borderBottomColor: '#9F9F9F',
+               color: stylePrimary.mainColor,
                _text: {
-                  color: stylePrimary.mainColor,
                   textAlign: 'center',
                },
+               placeholderTextColor: stylePrimary.secondaryColor,
+            },
+            updateItemTitle: {
+               backgroundColor: stylePrimary.background,
+               borderWidth: 0,
+               color: stylePrimary.mainColor,
+               fontWeight: 700,
                placeholderTextColor: stylePrimary.secondaryColor,
             },
             reservation: {
@@ -121,7 +128,7 @@ export const theme = extendTheme({
                padding: 0,
             },
             reservation: {
-               backgroundColor: stylePrimary.backgrorund,
+               backgroundColor: stylePrimary.background,
                borderColor: stylePrimary.mainColor,
                borderWidth: 1,
                // opacity: 0.1,
@@ -136,6 +143,20 @@ export const theme = extendTheme({
                height: 51,
                _text: {
                   color: stylePrimary.mainColor,
+               },
+            },
+            updateItem: {
+               backgroundColor: stylePrimary.background,
+               borderWidth: 0,
+               fontSize: 16,
+               color: 'gray',
+               placeholderTextColor: stylePrimary.secondaryColor,
+               height: 51,
+               _text: {
+                  color: stylePrimary.mainColor,
+               },
+               customDropdownIconProps: {
+                  display: 'none',
                },
             },
          },

@@ -26,10 +26,11 @@ const BSelect = ({
                selectedValue={selected}
                minWidth="20"
                placeholder={placeholder}
-               _selectedItem={{
-                  endIcon: <CheckIcon size="5" />,
-                  variant: {variantSelect},
-               }}
+               // _selectedItem={{
+               //    endIcon: <CheckIcon size="5" />,
+               //    variant: {variantSelect},
+               // }}
+               arro
                variant={variantSelect}
                bg="teal.600"
                onValueChange={change}

@@ -165,10 +165,7 @@ const EditItem = ({navigation}) => {
                </View>
                <View style={addStyles.layoutButton}>
                   <TouchableOpacity
-                  // onPress={() =>
-                  //    navigation.navigate('UpdateItem', {vehicleId})
-                  // }
-                  >
+                     onPress={() => navigation.navigate('UpdateItem')}>
                      <CButton
                         classButton={addStyles.buttonReservation}
                         textButton={addStyles.fontButtonReservation}>
