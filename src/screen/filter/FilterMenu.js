@@ -15,13 +15,17 @@ import IconDate from 'react-native-vector-icons/Fontisto';
 import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import {getListSearchFilter} from '../../redux/actions/search';
 import filter from '../../helpers/FilterSearch';
+import NBInput from '../../components/NBInput';
 
 const FilterMenu = ({navigation}) => {
    const {search, category} = useSelector(state => state);
    const dispatch = useDispatch();
    const [location, setLocation] = useState('');
    const [rate, setRate] = useState('');
-   const [price, setPrice] = useState('');
+   const [priceStart, setPriceStart] = useState('');
+   const [priceEnd, setPriceEnd] = useState('');
+   const [rateStart, setRateStart] = useState('');
+   const [rateEnd, setRateEnd] = useState('');
    const [categoryId, setCategoryId] = useState('');
    const [noPrepayment, setNoPrepayment] = useState('');
    const [isAvailable, setIsAvailable] = useState('');
@@ -92,11 +96,11 @@ const FilterMenu = ({navigation}) => {
          filter.date = '';
       }
 
-      if (price) {
-         dataFilterPrice = listPrice.filter(item => item.id == price);
-         filter.price_start = dataFilterPrice[0].price_start;
-         filter.price_end = dataFilterPrice[0].price_end;
-      }
+      // if (price) {
+      //    dataFilterPrice = listPrice.filter(item => item.id == price);
+      //    filter.price_start = dataFilterPrice[0].price_start;
+      //    filter.price_end = dataFilterPrice[0].price_end;
+      // }
 
       if (rate) {
          dataFilterRate = listRate.filter(item => item.id == rate);
@@ -151,7 +155,7 @@ const FilterMenu = ({navigation}) => {
                   </BSelect>
                </View>
                <View style={addStyles.layoutInput}>
-                  <BSelect
+                  {/* <BSelect
                      width="100%"
                      placeholder="Star rating"
                      variantSelect="filter"
@@ -162,16 +166,57 @@ const FilterMenu = ({navigation}) => {
                            <Select.Item label={item.name} value={item.id} />
                         );
                      })}
-                  </BSelect>
+                  </BSelect> */}
+                  <Text style={addStyles.filter}>Range Rate</Text>
+                  <NBInput
+                     placeholder={'Range rate start at'}
+                     classVariant="item"
+                     value={rateStart}
+                     change={setRateStart}
+                  />
+                  <NBInput
+                     placeholder={'Range rate end at'}
+                     classVariant="item"
+                     value={rateEnd}
+                     change={setRateEnd}
+                  />
                </View>
                <View style={addStyles.layoutInput}>
-                  <BSelect
+                  {/* <BSelect
                      width="100%"
                      placeholder="Price"
                      variantSelect="filter"
                      value={price}
                      change={setPrice}>
                      {listPrice.map(item => {
+                        return (
+                           <Select.Item label={item.name} value={item.id} />
+                        );
+                     })}
+                  </BSelect> */}
+                  <Text style={addStyles.filter}>Range Price</Text>
+                  <NBInput
+                     placeholder={'Range Price start at'}
+                     classVariant="item"
+                     value={priceStart}
+                     change={setPriceStart}
+                  />
+                  <NBInput
+                     placeholder={'Range Price end at'}
+                     classVariant="item"
+                     value={priceEnd}
+                     change={setPriceEnd}
+                  />
+               </View>
+               <View style={addStyles.layoutInput}>
+                  <BSelect
+                     width="100%"
+                     placeholder="Sort"
+                     color="dark.50"
+                     variantSelect="filter"
+                     value={categoryId}
+                     change={setCategoryId}>
+                     {category?.listCategory.map(item => {
                         return (
                            <Select.Item label={item.name} value={item.id} />
                         );
@@ -262,6 +307,13 @@ const FilterMenu = ({navigation}) => {
 const addStyles = StyleSheet.create({
    layoutFilter: {
       marginTop: 10,
+   },
+   filter: {
+      fontSize: 18,
+      fontWeight: '600',
+      paddingLeft: 5,
+      marginTop: 10,
+      color: stylePrimary.mainColor,
    },
    layoutInput: {
       marginTop: 10,
