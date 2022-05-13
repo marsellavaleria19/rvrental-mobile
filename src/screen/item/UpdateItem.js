@@ -29,34 +29,59 @@ import {Select, Box} from 'native-base';
 import BSelect from '../../components/BSelect';
 import {launchImageLibrary} from 'react-native-image-picker';
 import NBModal from '../../components/NBModal';
-import {NBAlert} from '../../components/NBAlert';
-// import {getDetailVehicle} from '../redux/actions/vehicle';
-// import {reservationProcess} from '../redux/actions/reservation';
+import NBModalError from '../../components/NBModalError';
+import NBModalSuccess from '../../components/NBModalSuccess';
+import NBModalLoading from '../../components/NBModalLoading';
+import {validation} from '../../helpers/validation';
+import NBInput from '../../components/NBInput';
+import {getListLocation} from '../../redux/actions/location';
+import {getListVehicleByCategory} from '../../redux/actions/vehicle';
+import {LIMIT_VEHICLE} from '@env';
+import NBModalConfirmation from '../../components/NBModalConfirmation';
 
-const UpdateItem = ({route, navigation}) => {
-   const {vehicle, auth} = useSelector(state => state);
-   const {vehicleId} = route.params;
-   const [date, setDate] = useState(new Date());
-   const [name, setName] = useState('');
-   const [price, setPrice] = useState('');
-   const [location, setLocation] = useState('');
-   const [isAvailable, setIsAvailable] = useState(0);
-   const [qty, setQty] = useState(0);
+const UpdateItem = ({navigation}) => {
+   const {vehicle, auth, location} = useSelector(state => state);
+   const [inputVehicle, setInputVehicle] = useState({
+      name: '',
+      price: '',
+      location: '',
+      isAvailable: '',
+      qty: '0',
+   });
    const dispatch = useDispatch();
-   const [day, setDay] = useState(0);
    const [control, setControl] = useState(false);
    const [picture, setPicture] = useState(imageBackground);
    const [image, setImage] = useState({});
    const [show, setShow] = useState(false);
    const handleShow = () => setShow(true);
    const handleClose = () => setShow(false);
+   const [showModalSuccess, setShowModalSuccess] = useState(false);
+   const handleCloseModalSuccess = () => setShowModalSuccess(false);
+   const [showModalError, setShowModalError] = useState(false);
+   const handleCloseModalError = () => setShowModalError(false);
+   const [showModalLoading, setShowModalLoading] = useState(false);
+   const [messageError, setMessageError] = useState('');
+   const [messageSuccess, setMessageSuccess] = useState('');
+   const [errorValidate, setErrorValidate] = useState({});
+   const [showModalLocation, setShowModalLocation] = useState(false);
+   const handleCloseModalLocation = () => setShowModalLocation(false);
+   const [dataLocation, setDataLocation] = useState('');
+   const [messageSuccessLocationCategory, setMessageSuccessLocationCategory] =
+      useState('');
+   const [
+      showModalSuccessLocationCategory,
+      setShowModalSuccessLocationCategory,
+   ] = useState(false);
+   const handleCloseModalSuccessLocationCategory = () =>
+      setShowModalSuccessLocationCategory(false);
 
    useEffect(() => {
-      setName(vehicle.dataVehicle.name);
-      setPrice(`${vehicle.dataVehicle.price}`);
-      setLocation(vehicle.dataVehicle.location);
-      setQty(vehicle.dataVehicle.qty);
-      setIsAvailable(vehicle.dataVehicle.isAvailable);
+      inputVehicle.name = vehicle.dataVehicle.name;
+      inputVehicle.price = `${vehicle.dataVehicle.price}`;
+      inputVehicle.location = vehicle.dataVehicle.location_id;
+      inputVehicle.qty = `${vehicle.dataVehicle.qty}`;
+      inputVehicle['is available'] = vehicle.dataVehicle.isAvailable;
+      setInputVehicle(inputVehicle);
       setPicture(
          vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
             ? {uri: `${vehicle.dataVehicle.photo}`}
@@ -65,44 +90,109 @@ const UpdateItem = ({route, navigation}) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
+   useEffect(() => {
+      setShowModalLoading(vehicle.isLoading);
+      if (vehicle.isLoading == false && control == true) {
+         if (vehicle.isError) {
+            setMessageError(vehicle.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(vehicle.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [vehicle.isLoading]);
+
+   useEffect(() => {
+      setShowModalLoading(location.isLoading);
+      if (location.isLoading == false && control == true) {
+         if (location.isError) {
+            setMessageError(location.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccessLocationCategory(location.message);
+            setShowModalSuccessLocationCategory(true);
+            dispatch(getListLocation());
+            inputVehicle.location = location.dataLocation.id;
+            setInputVehicle(inputVehicle);
+            setControl(false);
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [location.isLoading]);
+
    const countIncrement = () => {
-      setQty(qty + 1);
+      inputVehicle.qty = (parseInt(inputVehicle.qty) + 1).toString();
+      setInputVehicle({...inputVehicle, qty: inputVehicle.qty});
    };
 
    const countDecrement = () => {
-      if (qty > 0) {
-         setQty(qty - 1);
+      if (parseInt(inputVehicle.qty) > 0) {
+         inputVehicle.qty = (parseInt(inputVehicle.qty) - 1).toString();
+         setInputVehicle({...inputVehicle, qty: inputVehicle.qty});
       }
    };
 
-   useEffect(() => {
-      if (control == true) {
-         navigation.navigate('Home');
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [control]);
-
    const updateItemHandle = () => {
-      var data = {
-         name,
-         location,
-         price,
-         qty: qty.toString(),
-         isAvailable: isAvailable.toString(),
+      // var data = {
+      //    name,
+      //    location,
+      //    price,
+      //    qty: qty.toString(),
+      //    isAvailable: isAvailable.toString(),
+      // };
+      inputVehicle.location = inputVehicle.location.toString();
+      inputVehicle.qty = inputVehicle.qty.toString();
+      inputVehicle['is available'] = inputVehicle['is available'].toString();
+      const requirement = {
+         name: 'required',
+         location: 'required',
+         price: 'required|number',
+         qty: 'required|number|grather0',
+         'is available': 'choose',
       };
-      if (Object.keys(image).length > 0) {
-         dispatch(
-            updateDataVehicle(auth.token, data, vehicleId, image.assets[0]),
-         );
-      } else {
-         dispatch(updateDataVehicle(auth.token, data, vehicleId));
+      const validate = validation(inputVehicle, requirement);
+      if (Object.keys(validate).length == 0) {
+         if (Object.keys(image).length > 0) {
+            if (image.assets[0].fileSize > 2000000) {
+               validate.image = 'Image size max 2MB';
+            }
+         }
       }
 
-      setControl(true);
+      if (Object.keys(validate).length == 0) {
+         var data = {
+            name: inputVehicle.name,
+            location_id: inputVehicle.location,
+            price: inputVehicle.price,
+            qty: inputVehicle.qty.toString(),
+            isAvailable: inputVehicle['is available'].toString(),
+         };
+         console.log(data);
+         if (Object.keys(image).length > 0) {
+            dispatch(
+               updateDataVehicle(
+                  auth.token,
+                  data,
+                  vehicle.dataVehicle.id,
+                  image.assets[0],
+               ),
+            );
+         } else {
+            dispatch(
+               updateDataVehicle(auth.token, data, vehicle.dataVehicle.id),
+            );
+         }
+         setControl(true);
+      } else {
+         setErrorValidate(validate);
+      }
    };
 
    const deleteItemHandle = () => {
-      dispatch(deleteDataVehicle(auth.token, vehicleId));
+      dispatch(deleteDataVehicle(auth.token, vehicle.dataVehicle.id));
       setControl(true);
       setShow(false);
    };
@@ -113,6 +203,41 @@ const UpdateItem = ({route, navigation}) => {
          setPicture({uri: image.assets[0].uri});
       });
       setImage(imagePicker);
+   };
+
+   const addLocationHandle = () => {
+      const data = {
+         'data location': dataLocation,
+      };
+
+      const requirement = {
+         'data location': 'required',
+      };
+      var validate = validation(data, requirement);
+      if (Object.keys(validate).length == 0) {
+         const locationFilter = location.listLocation.filter(item =>
+            item.location.toLowerCase().includes(dataLocation.toLowerCase()),
+         );
+         if (locationFilter.length > 0) {
+            validate = {
+               ...validate,
+               'data location': 'Location has already used',
+            };
+         }
+      }
+   };
+
+   const goToDetailCategory = () => {
+      console.log(vehicle.dataVehicle.category_id);
+      dispatch(
+         getListVehicleByCategory(
+            vehicle.dataVehicle.category_id,
+            LIMIT_VEHICLE,
+         ),
+      );
+      navigation.navigate('DetailCategory', {
+         categoryId: vehicle.dataVehicle.category_id,
+      });
    };
 
    return (
@@ -144,23 +269,54 @@ const UpdateItem = ({route, navigation}) => {
             </View>
             <Container>
                <View style={addStyles.marginLayout}>
-                  {control && (
-                     <NBAlert status="success" message={vehicle.message} />
+                  <NBModalLoading show={showModalLoading} />
+                  {messageError !== '' && (
+                     <NBModalError
+                        show={showModalError}
+                        message={messageError}
+                        close={handleCloseModalError}
+                     />
                   )}
-                  {vehicle.isError && (
-                     <NBAlert status="error" message={vehicle.errMessage} />
+                  {messageSuccess !== '' && (
+                     <NBModalSuccess
+                        show={showModalSuccess}
+                        message={messageSuccess}
+                        close={handleCloseModalSuccess}
+                        button={'Go to detail category'}
+                        functionHandle={goToDetailCategory}
+                     />
+                  )}
+                  {messageSuccessLocationCategory !== '' && (
+                     <NBModalSuccess
+                        show={showModalSuccessLocationCategory}
+                        message={messageSuccessLocationCategory}
+                        close={handleCloseModalSuccessLocationCategory}
+                     />
                   )}
                   <View style={addStyles.layoutDescriptionRate}>
                      <View>
                         <CInput
                            classInput={addStyles.title}
-                           value={name}
-                           change={setName}
+                           value={inputVehicle.name}
+                           change={newName =>
+                              setInputVehicle({...inputVehicle, name: newName})
+                           }
+                           placeholder="Name"
+                           placeholderTextColor={stylePrimary.secondaryColor}
+                           error={errorValidate.name && errorValidate.name}
                         />
                         <CInput
                            classInput={addStyles.price}
-                           value={price}
-                           change={setPrice}
+                           value={inputVehicle.price}
+                           change={newPrice =>
+                              setInputVehicle({
+                                 ...inputVehicle,
+                                 price: newPrice,
+                              })
+                           }
+                           placeholder="Price"
+                           placeholderTextColor={stylePrimary.secondaryColor}
+                           error={errorValidate.price && errorValidate.price}
                         />
                      </View>
                      <View>
@@ -172,18 +328,17 @@ const UpdateItem = ({route, navigation}) => {
                               />
                            </View>
                         </TouchableOpacity>
-                        <NBModal
-                           title="Delete Product"
+                        <NBModalConfirmation
                            show={show}
-                           functionShow={handleShow}
                            functionClose={handleClose}
+                           close={handleClose}
+                           button={'Delete'}
+                           isButtonCancel={true}
                            functionHandle={deleteItemHandle}
-                           isButton={true}
-                           buttonTitile="Delete">
-                           <Text>
-                              Are you sure want to delete this product?
-                           </Text>
-                        </NBModal>
+                           message={
+                              'Do you really want to delete this data? This data cannot restore.'
+                           }
+                        />
                      </View>
                   </View>
                   <View style={addStyles.layoutDescription}>
@@ -191,11 +346,13 @@ const UpdateItem = ({route, navigation}) => {
                      <Text style={addStyles.description}>No prepayment</Text>
                      <Text
                         style={
-                           isAvailable == 1
+                           inputVehicle.isAvailable == 1
                               ? styles.statusAvailable
                               : styles.statusNotAvailable
                         }>
-                        {isAvailable == 1 ? 'Available ' : 'Full Booked'}
+                        {inputVehicle.isAvailable == 1
+                           ? 'Available '
+                           : 'Full Booked'}
                      </Text>
                      <View style={addStyles.layoutLocation}>
                         <LinearGradient
@@ -206,11 +363,66 @@ const UpdateItem = ({route, navigation}) => {
                               style={addStyles.iconLocation}
                            />
                         </LinearGradient>
-                        <CInput
+                        {/* <CInput
                            classInput={addStyles.fontLocation}
-                           value={location}
+                           value={inputVehicle.location}
                            change={setLocation}
-                        />
+                        /> */}
+                        <BSelect
+                           width="100%"
+                           placeholder="Location"
+                           variantSelect="updateItem"
+                           isInvalid={
+                              Object.keys(errorValidate).length > 0 && true
+                           }
+                           errMessage={
+                              Object.keys(errorValidate).length > 0 &&
+                              errorValidate.location
+                           }
+                           value={inputVehicle.location}
+                           change={itemValue =>
+                              setInputVehicle({
+                                 ...inputVehicle,
+                                 location: itemValue,
+                              })
+                           }>
+                           {location.listLocation.length > 0 &&
+                              location.listLocation.map(item => {
+                                 return (
+                                    <Select.Item
+                                       label={item.location}
+                                       value={item.id}
+                                       variant={'item'}
+                                    />
+                                 );
+                              })}
+                           <Select.Item
+                              label="+ Add Location"
+                              value={0}
+                              onPress={() => setShowModalLocation(true)}
+                           />
+                        </BSelect>
+                        <NBModal
+                           title="Location"
+                           show={showModalLocation}
+                           functionClose={handleCloseModalLocation}
+                           functionHandle={addLocationHandle}
+                           isButtonCancel={true}
+                           button="Save">
+                           <NBInput
+                              placeholder={'Type Location'}
+                              classVariant="item"
+                              value={dataLocation}
+                              isValidate={
+                                 Object.keys(errorValidate).length > 0 && true
+                              }
+                              errorMessage={
+                                 Object.keys(errorValidate).length > 0 &&
+                                 errorValidate['data location']
+                              }
+                              change={setDataLocation}
+                           />
+                        </NBModal>
                      </View>
                      <View style={addStyles.layoutDistance}>
                         <LinearGradient
@@ -235,7 +447,16 @@ const UpdateItem = ({route, navigation}) => {
                                  -
                               </CButton>
                            </TouchableOpacity>
-                           <Text style={addStyles.inputQty}>{qty}</Text>
+                           <CInput
+                              style={addStyles.inputQty}
+                              value={inputVehicle.qty}
+                              change={newQty => {
+                                 setInputVehicle({
+                                    ...inputVehicle,
+                                    qty: newQty,
+                                 });
+                              }}
+                           />
                            <TouchableOpacity onPress={countIncrement}>
                               <CButton
                                  classButton={addStyles.button}
@@ -250,9 +471,13 @@ const UpdateItem = ({route, navigation}) => {
                            <BSelect
                               width="100%"
                               placeholder="Update stock status"
-                              variant="reservation"
-                              select={isAvailable}
-                              change={itemValue => setIsAvailable(itemValue)}>
+                              variantSelect="reservation"
+                              change={itemValue =>
+                                 setInputVehicle({
+                                    ...inputVehicle,
+                                    isAvailable: itemValue,
+                                 })
+                              }>
                               <Select.Item label="Available" value={1} />
                               <Select.Item label="Full Booked" value={0} />
                            </BSelect>
@@ -296,12 +521,13 @@ const addStyles = StyleSheet.create({
       width: 35,
       height: 35,
       borderRadius: 20,
+      marginTop: 10,
       backgroundColor: stylePrimary.secondaryColor,
    },
    iconDelete: {
       fontWeight: '700',
       fontSize: 20,
-      marginTop: 7,
+      marginTop: 10,
       alignSelf: 'center',
       color: stylePrimary.mainColor,
    },
