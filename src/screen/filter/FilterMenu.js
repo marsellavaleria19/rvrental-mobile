@@ -16,69 +16,73 @@ import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import {getListSearchFilter} from '../../redux/actions/search';
 import filter from '../../helpers/FilterSearch';
 import NBInput from '../../components/NBInput';
+import {validation} from '../../helpers/validation';
 
 const FilterMenu = ({navigation}) => {
-   const {search, category} = useSelector(state => state);
+   const {search, category, location} = useSelector(state => state);
    const dispatch = useDispatch();
-   const [location, setLocation] = useState('');
-   const [rate, setRate] = useState('');
-   const [priceStart, setPriceStart] = useState('');
-   const [priceEnd, setPriceEnd] = useState('');
-   const [rateStart, setRateStart] = useState('');
-   const [rateEnd, setRateEnd] = useState('');
-   const [categoryId, setCategoryId] = useState('');
+   var [inputFilter, setInputFilter] = useState({
+      name: '',
+      price_start: '0',
+      price_end: '0',
+      rate_start: '0',
+      rate_end: '0',
+      location_id: '',
+      category_id: '',
+      status_id: '',
+      isAvailable: '',
+      date: '',
+   });
+   const [listSort, setListSort] = useState([
+      {
+         id: 1,
+         name: 'Sort by low price',
+         sort: 'price',
+         order: 'asc',
+      },
+      {id: 2, name: 'Sort by high price', sort: 'price', order: 'desc'},
+   ]);
+   const [sortOrder, setSortOrder] = useState(null);
+   // const [rate, setRate] = useState('');
+   // const [locationId, setLocationId] = useState('');
+   // const [priceStart, setPriceStart] = useState('');
+   // const [priceEnd, setPriceEnd] = useState('');
+   // const [rateStart, setRateStart] = useState('');
+   // const [rateEnd, setRateEnd] = useState('');
+   // const [categoryId, setCategoryId] = useState('');
    const [noPrepayment, setNoPrepayment] = useState('');
    const [isAvailable, setIsAvailable] = useState('');
-   const [listLocation, seListtLocation] = useState([
-      'Bandung',
-      'Jakarta',
-      'Yogyakarta',
-   ]);
-   const [listRate, seListRate] = useState([
-      {
-         id: 1,
-         name: '1-3',
-         rate_start: '1',
-         rate_end: '3',
-      },
-      {
-         id: 2,
-         name: '3-5',
-         rate_start: '3',
-         rate_end: '5',
-      },
-   ]);
-   const [listPrice, seListPrice] = useState([
-      {
-         id: 1,
-         name: 'Rp.100.000-Rp.200.000',
-         price_start: '100000',
-         price_end: '200000',
-      },
-      {
-         id: 2,
-         name: 'Rp.200.000-Rp.500.000',
-         price_start: '200000',
-         price_end: '500000',
-      },
-   ]);
-   const [date, setDate] = useState(new Date());
+   // const [date, setDate] = useState(new Date());
    const [isDateChange, setIsDateChange] = useState(false);
    const [availableChange, setAvaliableChange] = useState(false);
    const [prepaymentChange, setPrepaymentChange] = useState(false);
+   const [errorValidate, setErrorValidate] = useState({});
 
    useEffect(() => {
+      setInputFilter({
+         name: filter.name,
+         location_id: '',
+         price_start: '',
+         price_end: '',
+         rate_start: '',
+         rate_end: '',
+         date: new Date(),
+         category_id: '',
+         status_id: '',
+         isAvailable: '',
+      });
       setIsDateChange(false);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    const onChange = (event, selectedDate) => {
       setIsDateChange(true);
-      setDate(selectedDate);
+      setInputFilter({...inputFilter, date: selectedDate});
    };
 
    const showDatePicker = () => {
       DateTimePickerAndroid.open({
-         value: date,
+         value: inputFilter.date,
          onChange,
          mode: 'date',
          is24Hour: true,
@@ -86,44 +90,79 @@ const FilterMenu = ({navigation}) => {
    };
 
    const filterHandle = () => {
-      filter.location = location;
-      filter.rate = rate;
-      var dataFilterPrice = null;
-      var dataFilterRate = null;
       if (isDateChange == true) {
-         filter.date = moment(date.toLocaleString()).format('YYYY-MM-DD');
+         filter.date = moment(inputFilter.date.toLocaleString()).format(
+            'YYYY-MM-DD',
+         );
       } else {
          filter.date = '';
       }
 
-      // if (price) {
-      //    dataFilterPrice = listPrice.filter(item => item.id == price);
-      //    filter.price_start = dataFilterPrice[0].price_start;
-      //    filter.price_end = dataFilterPrice[0].price_end;
-      // }
+      const data = {
+         'rate start': inputFilter.rate_start,
+         'rate end': inputFilter.rate_end,
+         'price start': inputFilter.price_start,
+         'price end': inputFilter.price_end,
+      };
 
-      if (rate) {
-         dataFilterRate = listRate.filter(item => item.id == rate);
-         filter.rate_start = dataFilterRate[0].rate_start;
-         filter.rate_end = dataFilterRate[0].rate_end;
-      }
+      const requirement = {
+         'rate start': 'number',
+         'rate end': 'number',
+         'price start': 'number',
+         'price end': 'number',
+      };
 
-      filter.category_id = categoryId;
-      if (prepaymentChange == true) {
-         filter.no_prepayment = noPrepayment == true ? '1' : '0';
+      const validate = validation(data, requirement);
+
+      if (Object.keys(validate).length == 0) {
+         Object.keys(filter).forEach(item => {
+            if (
+               item !== 'date' &&
+               item !== 'status_id' &&
+               item !== ['isAvailable'] &&
+               item !== 'sort' &&
+               item !== 'order'
+            ) {
+               filter[item] = inputFilter[item];
+            }
+         });
+
+         if (prepaymentChange == true) {
+            if (noPrepayment == true) {
+               filter.status_id = '6';
+            } else {
+               filter.status_id = '';
+            }
+         } else {
+            filter.status_id = '';
+         }
+
+         if (availableChange == true) {
+            if (isAvailable == true) {
+               filter.isAvailable = '1';
+            } else {
+               filter.isAvailable = '0';
+            }
+         } else {
+            filter.isAvailable = '';
+         }
+
+         if (sortOrder !== null) {
+            console.log(sortOrder);
+            const resultSortOrder = listSort.filter(
+               item => item.id == sortOrder,
+            )[0];
+            console.log(resultSortOrder);
+            filter.sort = resultSortOrder.sort;
+            filter.order = resultSortOrder.order;
+         }
+         dispatch(getListSearchFilter(filter));
+         navigation.navigate('Filter');
+         setPrepaymentChange(false);
+         setAvaliableChange(false);
       } else {
-         filter.prepayment = '';
+         setErrorValidate(validate);
       }
-      if (availableChange == true) {
-         filter.isAvailable = isAvailable == true ? '1' : '0';
-      } else {
-         filter.isAvailable = '';
-      }
-
-      dispatch(getListSearchFilter(filter));
-      navigation.navigate('Filter');
-      setPrepaymentChange(false);
-      setAvaliableChange(false);
    };
 
    const toggleSwitch = item => {
@@ -147,10 +186,17 @@ const FilterMenu = ({navigation}) => {
                      placeholder="Your Location"
                      color="dark.50"
                      variantSelect="filter"
-                     value={location}
-                     change={setLocation}>
-                     {listLocation.map(item => {
-                        return <Select.Item label={item} value={item} />;
+                     value={inputFilter.location_id}
+                     change={newLocation =>
+                        setInputFilter({
+                           ...inputFilter,
+                           location_id: newLocation,
+                        })
+                     }>
+                     {location.listLocation.map(item => {
+                        return (
+                           <Select.Item label={item.location} value={item.id} />
+                        );
                      })}
                   </BSelect>
                </View>
@@ -171,14 +217,28 @@ const FilterMenu = ({navigation}) => {
                   <NBInput
                      placeholder={'Range rate start at'}
                      classVariant="item"
-                     value={rateStart}
-                     change={setRateStart}
+                     value={inputFilter.rate_start}
+                     change={newRate =>
+                        setInputFilter({...inputFilter, rate_start: newRate})
+                     }
+                     isValidate={Object.keys(errorValidate).length > 0 && true}
+                     errorMessage={
+                        Object.keys(errorValidate).length > 0 &&
+                        errorValidate['rate start']
+                     }
                   />
                   <NBInput
                      placeholder={'Range rate end at'}
                      classVariant="item"
-                     value={rateEnd}
-                     change={setRateEnd}
+                     value={inputFilter.rate_end}
+                     change={newRate =>
+                        setInputFilter({...inputFilter, rate_end: newRate})
+                     }
+                     isValidate={Object.keys(errorValidate).length > 0 && true}
+                     errorMessage={
+                        Object.keys(errorValidate).length > 0 &&
+                        errorValidate['rate end']
+                     }
                   />
                </View>
                <View style={addStyles.layoutInput}>
@@ -198,14 +258,28 @@ const FilterMenu = ({navigation}) => {
                   <NBInput
                      placeholder={'Range Price start at'}
                      classVariant="item"
-                     value={priceStart}
-                     change={setPriceStart}
+                     value={inputFilter.price_start}
+                     change={newPrice =>
+                        setInputFilter({...inputFilter, price_start: newPrice})
+                     }
+                     isValidate={Object.keys(errorValidate).length > 0 && true}
+                     errorMessage={
+                        Object.keys(errorValidate).length > 0 &&
+                        errorValidate['price start']
+                     }
                   />
                   <NBInput
                      placeholder={'Range Price end at'}
                      classVariant="item"
-                     value={priceEnd}
-                     change={setPriceEnd}
+                     value={inputFilter.price_end}
+                     change={newPrice =>
+                        setInputFilter({...inputFilter, price_end: newPrice})
+                     }
+                     isValidate={Object.keys(errorValidate).length > 0 && true}
+                     errorMessage={
+                        Object.keys(errorValidate).length > 0 &&
+                        errorValidate['price start']
+                     }
                   />
                </View>
                <View style={addStyles.layoutInput}>
@@ -214,9 +288,9 @@ const FilterMenu = ({navigation}) => {
                      placeholder="Sort"
                      color="dark.50"
                      variantSelect="filter"
-                     value={categoryId}
-                     change={setCategoryId}>
-                     {category?.listCategory.map(item => {
+                     value={sortOrder}
+                     change={setSortOrder}>
+                     {listSort.map(item => {
                         return (
                            <Select.Item label={item.name} value={item.id} />
                         );
@@ -229,8 +303,10 @@ const FilterMenu = ({navigation}) => {
                         classInput={addStyles.inputDate}
                         placeholder="Date"
                         value={
-                           date !== null &&
-                           moment(date.toLocaleString()).format('YYYY-MM-DD')
+                           inputFilter.date !== null &&
+                           moment(inputFilter.date.toLocaleString()).format(
+                              'YYYY-MM-DD',
+                           )
                         }
                      />
                      <TouchableOpacity onPress={showDatePicker}>
@@ -244,8 +320,13 @@ const FilterMenu = ({navigation}) => {
                      placeholder="Type"
                      color="dark.50"
                      variantSelect="filter"
-                     value={categoryId}
-                     change={setCategoryId}>
+                     value={inputFilter.category_id}
+                     change={newCategory =>
+                        setInputFilter({
+                           ...inputFilter,
+                           category_id: newCategory,
+                        })
+                     }>
                      {category?.listCategory.map(item => {
                         return (
                            <Select.Item label={item.name} value={item.id} />
@@ -259,31 +340,17 @@ const FilterMenu = ({navigation}) => {
                      button={
                         <Switch
                            size="lg"
-                           value={noPrepayment}
                            onValueChange={() => toggleSwitch('Prepayment')}
                         />
                      }
                   />
                </View>
-               {/* <View style={addStyles.layoutInput}>
-                  <ListMenuFilter
-                     title="Deals"
-                     button={
-                        <Switch
-                           size="lg"
-                           value={prepayment}
-                           onValueChange={setPrepayment}
-                        />
-                     }
-                  />
-               </View> */}
                <View>
                   <ListMenuFilter
                      title="Only show available"
                      button={
                         <Switch
                            size="lg"
-                           value={isAvailable}
                            onValueChange={() => toggleSwitch('Available')}
                         />
                      }

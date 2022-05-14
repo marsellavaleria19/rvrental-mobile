@@ -3,17 +3,15 @@ import AxiosCostum from '../../helpers/AxiosCustom';
 export const getListSearchFilter = dataParams => {
    const filledParams = [
       'category_id',
-      'location',
       'payment_id',
       'name',
       'date',
-      'payment_type',
       'isAvailable',
       'price_start',
       'price_end',
       'rate_start',
       'rate_end',
-      'no_prepayment',
+      'status_id',
    ];
    const url = dataParams => {
       var result = '';
@@ -38,9 +36,10 @@ export const getListSearchFilter = dataParams => {
 
       return `${result}&limit=5`;
    };
+   console.log(url(dataParams));
    return {
       type: 'SEARCH_FILTER',
-      payload: AxiosCostum().get(`/search?${url(dataParams)}&limit=10`),
+      payload: AxiosCostum().get(`/search?${url(dataParams)}`),
    };
 };
 

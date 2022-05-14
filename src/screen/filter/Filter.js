@@ -27,6 +27,7 @@ const Filter = ({navigation}) => {
    const [page, setPage] = useState({});
 
    useEffect(() => {
+      console.log(filter);
       dispatch(getListSearchFilter(filter));
       setPage(search.pageInfo);
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,7 +80,7 @@ const Filter = ({navigation}) => {
                                     ? {uri: `${item.photo}`}
                                     : image
                               }
-                              title={item.name}
+                              title={item.brand}
                               description="Max for 2 person"
                               detail="2.1 km for your location"
                               status={
