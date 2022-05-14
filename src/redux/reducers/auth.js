@@ -181,6 +181,24 @@ const auth = (state = dataLogin, action) => {
          state.errMessage = data.message;
          return {...state};
       }
+      case 'CHANGE_PASSWORD_PENDING': {
+         state.isLoading = true;
+         return {...state};
+      }
+      case 'CHANGE_PASSWORD_FULFILLED': {
+         const {data} = action.payload;
+         state.message = data.message;
+         state.isLoading = false;
+         state.isError = false;
+         return {...state};
+      }
+      case 'CHANGE_PASSWORD_REJECTED': {
+         const {data} = action.payload.response;
+         state.isLoading = false;
+         state.isError = true;
+         state.errMessage = data.message;
+         return {...state};
+      }
       case 'LOGOUT': {
          state.token = null;
          state.isAuthenticated = false;

@@ -85,3 +85,18 @@ export const confirmForgotPasswordProcess = (
       payload: AxiosCostum().post('/auth/forgotpassword', qs.stringify(data)),
    };
 };
+
+export const changePassword = (token, dataSend) => {
+   const data = {
+      password: dataSend.currentPassword,
+      newPassword: dataSend.newPassword,
+      confirmNewPassword: dataSend.confirmNewPassword,
+   };
+   return {
+      type: 'CHANGE_PASSWORD',
+      payload: AxiosCostum(token).post(
+         '/auth/changepassword',
+         qs.stringify(data),
+      ),
+   };
+};
