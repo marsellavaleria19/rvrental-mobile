@@ -17,6 +17,7 @@ import FilterMenu from '../screen/filter/FilterMenu';
 import VerifyUserEmail from '../screen/auth/VerifyUserEmail';
 import VerifyUser from '../screen/auth/VerifyUser';
 import stylePrimary from '../assets/styles/stylePrimary';
+import ChangePassowrd from '../screen/profile/ChangePassword';
 
 const NavMainStack = createNativeStackNavigator();
 
@@ -131,6 +132,17 @@ const MainStackNav = () => {
                title: 'Verify User',
             }}
             component={VerifyUser}
+         />
+         <NavMainStack.Screen
+            name="ChangePassword"
+            options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.secondaryColor,
+               headerBackTitleStyle: addStyles.headerBack,
+               title: 'Change Password',
+            }}
+            component={ChangePassowrd}
          />
          <NavMainStack.Screen
             name="NotFound"
