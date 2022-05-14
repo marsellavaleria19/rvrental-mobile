@@ -1,24 +1,18 @@
 import * as React from 'react';
 import Container from '../../components/Container';
 import NBInputLabel from '../../components/NBInputLabel';
-import {
-   View,
-   StyleSheet,
-   Text,
-   TouchableOpacity,
-   ScrollView,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import CButton from '../../components/Button';
 import {styles} from '../../assets/styles/styles';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import {button} from '../../assets/styles/styleComponent';
-import {TextArea, Box, Image, Radio, Stack, Spinner, HStack} from 'native-base';
-import imageProfile from '../../assets/images/profile.png';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
 import {validation} from '../../helpers/validation';
-import {verifyEmailProcess} from '../../redux/actions/auth';
-import NBModal from '../../components/NBModal';
+import NBModalLoading from '../../components/NBModalLoading';
+import NBModalSuccess from '../../components/NBModalSuccess';
+import NBModalError from '../../components/NBModalError';
+import {changePassword} from '../../redux/actions/auth';
 
 const VerifyUserEmail = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -43,6 +37,21 @@ const VerifyUserEmail = ({navigation}) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
+   useEffect(() => {
+      setShowModalLoading(auth.isLoading);
+      if (auth.isLoading == false && control == true) {
+         if (auth.isError) {
+            setMessageError(auth.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(auth.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [auth.isLoading]);
+
    const verifyUserEmailHandle = () => {
       var dataSend = {
          'current password': inputPassword.currentPassword,
@@ -57,8 +66,13 @@ const VerifyUserEmail = ({navigation}) => {
 
       var validate = validation(dataSend, requirement);
       if (Object.keys(validate).length == 0) {
-         dispatch(verifyEmailProcess(dataSend.email));
-         // handleShow();
+         if (inputPassword.newPassword == inputPassword.confirmNewPassword) {
+            dispatch(changePassword(auth.token, inputPassword));
+            setControl(true);
+         } else {
+            setMessageError('New Password and confirm new password not match');
+            setShowModalError(true);
+         }
       } else {
          setErrValidation(validate);
       }
@@ -69,6 +83,23 @@ const VerifyUserEmail = ({navigation}) => {
          <Container>
             <ScrollView>
                <View style={addStyles.layoutForm}>
+                  <NBModalLoading show={showModalLoading} />
+                  {messageError !== '' && (
+                     <NBModalError
+                        show={showModalError}
+                        message={messageError}
+                        close={handleCloseModalError}
+                     />
+                  )}
+                  {messageSuccess !== '' && (
+                     <NBModalSuccess
+                        show={showModalSuccess}
+                        message={messageSuccess}
+                        close={handleCloseModalSuccess}
+                        button={'Go to profile menu'}
+                        functionHandle={() => navigation.navigate('Profile')}
+                     />
+                  )}
                   <View style={addStyles.layoutInput}>
                      <NBInputLabel
                         placeholder={'Enter your current password'}
@@ -95,7 +126,8 @@ const VerifyUserEmail = ({navigation}) => {
                      <NBInputLabel
                         placeholder={'Enter your new password'}
                         classVariant="verifyUser"
-                        label="New Passwoed"
+                        label="New Password"
+                        secure={true}
                         value={inputPassword.newPassword}
                         change={newInputPassword =>
                            setInputPassword({
@@ -116,7 +148,8 @@ const VerifyUserEmail = ({navigation}) => {
                      <NBInputLabel
                         placeholder={'Enter your confirm new password'}
                         classVariant="verifyUser"
-                        label="Confirm New Passwoed"
+                        label="Confirm New Password"
+                        secure={true}
                         value={inputPassword.confirmNewPassword}
                         change={newConfirmPassword =>
                            setInputPassword({
@@ -129,7 +162,7 @@ const VerifyUserEmail = ({navigation}) => {
                         }
                         errorMessage={
                            Object.keys(errValidation).length > 0 &&
-                           errValidation['Confirm new password']
+                           errValidation['confirm new password']
                         }
                      />
                   </View>
@@ -138,7 +171,7 @@ const VerifyUserEmail = ({navigation}) => {
                         <CButton
                            classButton={addStyles.buttonVerify}
                            textButton={addStyles.textVerify}>
-                           Send Email
+                           Change Password
                         </CButton>
                      </TouchableOpacity>
                   </View>
@@ -151,7 +184,7 @@ const VerifyUserEmail = ({navigation}) => {
 
 const addStyles = StyleSheet.create({
    layoutForm: {
-      marginTop: 100,
+      marginTop: 30,
    },
    layoutInput: {
       marginBottom: 22,
