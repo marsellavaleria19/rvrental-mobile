@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import ListMenu from '../../components/ListMenu';
 import Container from '../../components/Container';
@@ -6,14 +6,31 @@ import stylePrimary from '../../assets/styles/stylePrimary';
 import CButton from '../../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
 import imageProfile from '../../assets/images/profile.png';
-import {Image} from 'native-base';
+import {FlatList, Image} from 'native-base';
 import {styles} from '../../assets/styles/styles';
 import {ScrollView} from 'native-base';
 import PushNotificationHandler from '../../helpers/PushNotificationHelper';
 
 const ProfileMenuList = ({navigation}) => {
    const {auth} = useSelector(state => state);
+   const [listMenu, setListMenu] = useState([
+      {title: 'Your Favorite', navigate: 'Favorite'},
+      {title: 'FAQ', navigate: ''},
+      {title: 'Help', navigate: ''},
+      {title: 'Update Profile', navigate: 'UpdateProfile'},
+      {title: 'Change Password', navigate: 'ChangePassword'},
+   ]);
    const dispatch = useDispatch();
+
+   useEffect(() => {
+      if (auth.user.isVerified == 0) {
+         setListMenu([
+            ...listMenu,
+            ...{title: 'Verify Email', navigate: 'VerifyUserEmail'},
+         ]);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
 
    const logoutHandle = () => {
       dispatch({
@@ -28,7 +45,54 @@ const ProfileMenuList = ({navigation}) => {
    return (
       <View style={styles.background}>
          <View style={addStyles.layoutProfileMenu}>
-            <View style={addStyles.layoutProfile}>
+            <FlatList
+               ListHeaderComponent={
+                  <View style={addStyles.layoutProfile}>
+                     <Image
+                        size={60}
+                        resizeMode={'contain'}
+                        borderRadius={100}
+                        source={
+                           auth.user !== null && auth.user?.photo !== null
+                              ? {
+                                   uri: `${auth.user?.photo}`,
+                                }
+                              : `${imageProfile}`
+                        }
+                        alt="Profile"
+                     />
+                     <Text style={addStyles.textProfile}>
+                        {auth.user?.fullName}
+                     </Text>
+                  </View>
+               }
+               data={listMenu}
+               renderItem={({item}) => {
+                  return (
+                     <Container key={item.title}>
+                        <ListMenu
+                           title={item.title}
+                           press={() => navigation.navigate(item.navigate)}
+                        />
+                     </Container>
+                  );
+               }}
+               ListFooterComponent={
+                  <View style={addStyles.layoutButton}>
+                     <Container>
+                        <TouchableOpacity onPress={logoutHandle}>
+                           <CButton
+                              classButton={addStyles.buttonProfile}
+                              textButton={addStyles.fontButtonProfile}>
+                              Logout
+                           </CButton>
+                        </TouchableOpacity>
+                     </Container>
+                  </View>
+               }
+            />
+
+            {/* <View style={addStyles.layoutProfile}>
                <Image
                   size={60}
                   resizeMode={'contain'}
@@ -80,7 +144,7 @@ const ProfileMenuList = ({navigation}) => {
                      </TouchableOpacity>
                   </View>
                </Container>
-            </ScrollView>
+            </ScrollView> */}
          </View>
       </View>
    );
@@ -92,12 +156,14 @@ const addStyles = StyleSheet.create({
    },
    layoutProfile: {
       flexDirection: 'row',
-      height: 135,
+      height: 90,
       backgroundColor: stylePrimary.secondaryColor,
       width: '100%',
-      paddingTop: 30,
+      paddingTop: 21,
+      paddingBottom: 11,
       alignItems: 'center',
       paddingHorizontal: 18,
+      marginBottom: 36,
    },
    textProfile: {
       marginLeft: 27,
@@ -108,17 +174,12 @@ const addStyles = StyleSheet.create({
    flexRow: {
       flexDirection: 'row',
    },
-   scrollMenu: {
-      marginTop: 36,
-   },
    layoutButton: {
-      marginTop: 100,
-      marginBottom: 30,
+      bottom: 0,
    },
    buttonProfile: {
       backgroundColor: stylePrimary.secondaryColor,
       marginTop: 10,
-      marginBottom: 10,
       justifyContent: 'center',
       alignItems: 'center',
       height: 57,
