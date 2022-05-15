@@ -20,21 +20,29 @@ import {ScrollView} from 'native-base';
 import NBInput from '../../components/NBInput';
 import {NBAlert} from '../../components/NBAlert';
 import {validation} from '../../helpers/validation';
-import NBModal from '../../components/NBModal';
+import NBModalError from '../../components/NBModalError';
+import NBModalSuccess from '../../components/NBModalSuccess';
+import NBModalLoading from '../../components/NBModalLoading';
 
 const Signup = ({navigation}) => {
    const {auth} = useSelector(state => state);
-   const [email, setEmail] = useState('');
-   const [username, setUsername] = useState('');
-   const [name, setName] = useState('');
-   const [mobileNumber, setMobileNumber] = useState('');
-   const [password, setPassword] = useState('');
+   const [inputUser, setInputUser] = useState({
+      email: '',
+      username: '',
+      name: '',
+      'mobile number': '',
+      password: '',
+   });
    const dispatch = useDispatch();
-   const [success, setSuccess] = useState(false);
+   const [control, setControl] = useState(false);
    const [errValidation, setErrValidation] = useState({});
-   const [show, setShow] = useState(false);
-   const handleShow = () => setShow(true);
-   const handleClose = () => setShow(false);
+   const [showModalSuccess, setShowModalSuccess] = useState(false);
+   const handleCloseModalSuccess = () => setShowModalSuccess(false);
+   const [showModalError, setShowModalError] = useState(false);
+   const handleCloseModalError = () => setShowModalError(false);
+   const [showModalLoading, setShowModalLoading] = useState(false);
+   const [messageError, setMessageError] = useState('');
+   const [messageSuccess, setMessageSuccess] = useState('');
 
    useEffect(() => {
       dispatch({
@@ -44,52 +52,36 @@ const Signup = ({navigation}) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
-   // useEffect(() => {
-   //    if (success) {
-   //       navigation.navigate('Login');
-   //    }
-   // }, [navigation, success]);
+   useEffect(() => {
+      setShowModalLoading(auth.isLoading);
+      if (auth.isLoading == false && control == true) {
+         if (auth.isError) {
+            setMessageError(auth.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(auth.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [auth.isLoading]);
 
    const signupHandle = () => {
       let requirement = {
          username: 'required',
          name: 'required',
-         mobileNumber: 'required|number|phone',
+         'mobile number': 'required|number|phone',
          email: 'required',
          password: 'required',
       };
-      let data = {
-         email: email,
-         username: username,
-         name: name,
-         mobileNumber: mobileNumber,
-         password: password,
-      };
-      var validate = validation(data, requirement);
+      var validate = validation(inputUser, requirement);
       if (Object.keys(validate).length == 0) {
-         dispatch(
-            registrationProcess(name, username, email, password, mobileNumber),
-         );
-         setSuccess(true);
+         dispatch(registrationProcess(inputUser));
+         setControl(true);
       } else {
          setErrValidation(validate);
       }
-   };
-
-   const showModalHandle = () => {
-      console.log('masuk!!');
-      return (
-         <Text style={addStyles.textLink}>AAaaa</Text>
-         // <NBModal
-         //    title="Verified User"
-         //    show={true}
-         //    functionClose={handleClose}
-         //    isButton={true}
-         //    isButtonCancel={true}
-         //    buttonTitile="Save">
-         //    <Text>Are you sure want to save this data?</Text>
-         // </NBModal>
-      );
    };
 
    return (
@@ -105,14 +97,32 @@ const Signup = ({navigation}) => {
                         LET’S HAVE SOME RIDE
                      </Text>
                      <View style={addStyles.layoutForm}>
-                        {auth.isError && (
-                           <NBAlert status="error" message={auth.errMessage} />
+                        <NBModalLoading show={showModalLoading} />
+                        {messageError !== '' && (
+                           <NBModalError
+                              show={showModalError}
+                              message={messageError}
+                              close={handleCloseModalError}
+                           />
+                        )}
+                        {messageSuccess !== '' && (
+                           <NBModalSuccess
+                              show={showModalSuccess}
+                              message={messageSuccess}
+                              close={handleCloseModalSuccess}
+                              button={'Go to Login'}
+                              functionHandle={() =>
+                                 navigation.navigate('Login')
+                              }
+                           />
                         )}
                         <NBInput
                            classVariant="loginSignup"
                            placeholder="Name"
-                           value={name}
-                           change={setName}
+                           value={inputUser.name}
+                           change={newName =>
+                              setInputUser({...inputUser, name: newName})
+                           }
                            isValidate={
                               Object.keys(errValidation).length > 0 && true
                            }
@@ -124,8 +134,10 @@ const Signup = ({navigation}) => {
                         <NBInput
                            classVariant="loginSignup"
                            placeholder="Email"
-                           value={email}
-                           change={setEmail}
+                           value={inputUser.email}
+                           change={newEmail =>
+                              setInputUser({...inputUser, email: newEmail})
+                           }
                            isValidate={
                               Object.keys(errValidation).length > 0 && true
                            }
@@ -137,8 +149,13 @@ const Signup = ({navigation}) => {
                         <NBInput
                            classVariant="loginSignup"
                            placeholder="Username"
-                           value={username}
-                           change={setUsername}
+                           value={inputUser.username}
+                           change={newUsername =>
+                              setInputUser({
+                                 ...inputUser,
+                                 username: newUsername,
+                              })
+                           }
                            isValidate={
                               Object.keys(errValidation).length > 0 && true
                            }
@@ -150,21 +167,31 @@ const Signup = ({navigation}) => {
                         <NBInput
                            classVariant="loginSignup"
                            placeholder="Mobile phone"
-                           value={mobileNumber}
-                           change={setMobileNumber}
+                           value={inputUser['mobile number']}
+                           change={newMobileNumber =>
+                              setInputUser({
+                                 ...inputUser,
+                                 'mobile number': newMobileNumber,
+                              })
+                           }
                            isValidate={
                               Object.keys(errValidation).length > 0 && true
                            }
                            errorMessage={
                               Object.keys(errValidation).length > 0 &&
-                              errValidation.mobileNumber
+                              errValidation['mobile number']
                            }
                         />
                         <NBInput
                            classVariant="loginSignup"
                            placeholder="Password"
-                           value={password}
-                           change={setPassword}
+                           value={inputUser.password}
+                           change={newPassword =>
+                              setInputUser({
+                                 ...inputUser,
+                                 password: newPassword,
+                              })
+                           }
                            secure={true}
                            isValidate={
                               Object.keys(errValidation).length > 0 && true

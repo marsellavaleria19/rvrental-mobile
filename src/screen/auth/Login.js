@@ -20,6 +20,9 @@ import {useState, useEffect} from 'react';
 import {loginProcess} from '../../redux/actions/auth';
 import {validation} from '../../helpers/validation';
 import {ScrollView} from 'native-base';
+import NBModalError from '../../components/NBModalError';
+import NBModalSuccess from '../../components/NBModalSuccess';
+import NBModalLoading from '../../components/NBModalLoading';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Login = ({navigation}) => {
@@ -27,9 +30,15 @@ const Login = ({navigation}) => {
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const dispatch = useDispatch();
-   const [errValidation, setErrValidation] = useState({});
    const [control, setControl] = useState(false);
-   const [message, setMessage] = useState('');
+   const [errValidation, setErrValidation] = useState({});
+   const [showModalSuccess, setShowModalSuccess] = useState(false);
+   const handleCloseModalSuccess = () => setShowModalSuccess(false);
+   const [showModalError, setShowModalError] = useState(false);
+   const handleCloseModalError = () => setShowModalError(false);
+   const [showModalLoading, setShowModalLoading] = useState(false);
+   const [messageError, setMessageError] = useState('');
+   const [messageSuccess, setMessageSuccess] = useState('');
 
    useEffect(() => {
       dispatch({
@@ -40,15 +49,23 @@ const Login = ({navigation}) => {
    }, []);
 
    useEffect(() => {
-      if (auth.isRegister) {
-         setMessage(auth.message);
+      setShowModalLoading(auth.isLoading);
+      if (auth.isLoading == false && control == true) {
+         if (auth.isError) {
+            setMessageError(auth.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(auth.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [auth.isRegister]);
+   }, [auth.isLoading]);
 
    const loginHandle = () => {
       let requirement = {
-         email: 'required',
+         email: 'required|email',
          password: 'required',
       };
       let data = {
@@ -58,7 +75,6 @@ const Login = ({navigation}) => {
       var validate = validation(data, requirement);
 
       if (Object.keys(validate).length == 0) {
-         console.log('lolos..');
          dispatch(loginProcess(email, password));
          setControl(true);
       } else {
@@ -79,11 +95,22 @@ const Login = ({navigation}) => {
                         LET’S EXPLORE THE WORLD
                      </Text>
                      <View style={addStyles.layoutForm}>
-                        {auth.isRegister && (
-                           <NBAlert status="success" message={auth.message} />
+                        <NBModalLoading show={showModalLoading} />
+                        {messageError !== '' && (
+                           <NBModalError
+                              show={showModalError}
+                              message={messageError}
+                              close={handleCloseModalError}
+                           />
                         )}
-                        {auth.isError && (
-                           <NBAlert status="error" message={auth.errMessage} />
+                        {messageSuccess !== '' && (
+                           <NBModalSuccess
+                              show={showModalSuccess}
+                              message={messageSuccess}
+                              close={handleCloseModalSuccess}
+                              button={'Go to Home'}
+                              functionHandle={() => navigation.navigate('Home')}
+                           />
                         )}
                         <NBInput
                            classVariant="loginSignup"

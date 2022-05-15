@@ -13,7 +13,7 @@ import PushNotificationHandler from '../../helpers/PushNotificationHelper';
 
 const ProfileMenuList = ({navigation}) => {
    const {auth} = useSelector(state => state);
-   const [listMenu, setListMenu] = useState([
+   var [listMenu, setListMenu] = useState([
       {title: 'Your Favorite', navigate: 'Favorite'},
       {title: 'FAQ', navigate: ''},
       {title: 'Help', navigate: ''},
@@ -23,12 +23,31 @@ const ProfileMenuList = ({navigation}) => {
    const dispatch = useDispatch();
 
    useEffect(() => {
-      if (auth.user.isVerified == 0) {
-         setListMenu([
-            ...listMenu,
-            ...{title: 'Verify Email', navigate: 'VerifyUserEmail'},
-         ]);
+      if (auth.user !== null) {
+         const dataVerifyUser = listMenu.filter(
+            item => item.title == 'Verify Email',
+         );
+         console.log(auth.user.isVerified);
+         if (auth.user.isVerified == 0) {
+            const verifyUserMenu = {
+               title: 'Verify Email',
+               navigate: 'VerifyUserEmail',
+            };
+
+            if (dataVerifyUser.length == 0) {
+               listMenu.push(verifyUserMenu);
+            }
+            setListMenu(listMenu);
+         } else {
+            if (dataVerifyUser.length > 0) {
+               const profileMenu = listMenu.filter(
+                  item => item.title !== 'Verify Email',
+               );
+               setListMenu(profileMenu);
+            }
+         }
       }
+
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 

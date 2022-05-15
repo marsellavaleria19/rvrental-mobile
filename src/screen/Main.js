@@ -10,16 +10,32 @@ import {useEffect} from 'react';
 import {getDataUser} from '../redux/actions/auth';
 import RNBootSplash from 'react-native-bootsplash';
 import {getListCategory} from '../redux/actions/category';
+import {getListVehicleByCategory} from '../redux/actions/vehicle';
 import {getListLocation} from '../redux/actions/location';
+import {LIMIT_CATEGORY} from '@env';
 
 const Main = () => {
-   const {auth} = useSelector(state => state);
+   const {auth, category, vehicle} = useSelector(state => state);
    const dispatch = useDispatch();
 
    useEffect(() => {
+      dispatch({
+         type: 'CLEAR_VEHICLE',
+      });
       dispatch(getListCategory());
       dispatch(getListLocation());
    }, []);
+
+   useEffect(() => {
+      dispatch({
+         type: 'CLEAR_VEHICLE',
+      });
+      category.listCategory.length > 0 &&
+         category.listCategory.forEach(itemCategory => {
+            dispatch(getListVehicleByCategory(itemCategory.id, LIMIT_CATEGORY));
+         });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [category.listCategory]);
 
    useEffect(() => {
       if (auth.token !== null) {
