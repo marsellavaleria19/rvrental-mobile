@@ -1,30 +1,25 @@
 import * as React from 'react';
 import {
-   Text,
    View,
    StyleSheet,
    ImageBackground,
    Image,
    TouchableOpacity,
-   SafeAreaView,
 } from 'react-native';
 import {styles} from '../assets/styles/styles';
 import Container from '../components/Container';
 import Input from '../components/Input';
 import CButton from '../components/Button';
 import stylePrimary from '../assets/styles/stylePrimary';
-import {input, button} from '../assets/styles/styleComponent';
+import {input} from '../assets/styles/styleComponent';
 import IconSearch from 'react-native-vector-icons/FontAwesome';
 import ListBar from '../components/ListBar';
 import {useSelector, useDispatch} from 'react-redux';
-import {getListCategory} from '../redux/actions/category';
-import {getListVehicleByCategory} from '../redux/actions/vehicle';
 import {useEffect, useState} from 'react';
-import {FlatList, ScrollView, Modal, FormControl, Bu} from 'native-base';
+import {FlatList, Skeleton, VStack} from 'native-base';
 import filter from '../helpers/FilterSearch';
+import photoItem from '../assets/images/image-item.png';
 import NBModalLoading from '../components/NBModalLoading';
-import {LIMIT_CATEGORY} from '@env';
-import {getListSearchFilter} from '../redux/actions/search';
 // import {image} from '../assets/images/backgroud-image.png'
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
@@ -34,27 +29,24 @@ const Home = ({navigation}) => {
    const dispatch = useDispatch();
    const [listVehicle, setLisstVehicle] = useState([]);
    const [search, setSearch] = useState('');
+   const [showModalLoading, setShowModalLoading] = useState(false);
 
    useEffect(() => {
-      dispatch({
-         type: 'CLEAR_VEHICLE',
-      });
-      category.listCategory.length > 0 &&
-         category.listCategory.map(itemCategory => {
-            dispatch(getListVehicleByCategory(itemCategory.id, LIMIT_CATEGORY));
-         });
+      setShowModalLoading(vehicle.isLoading);
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [category.listCategory]);
-
-   const itemPerCategory = category => {
-      return vehicle.listAllVehicle.filter(
-         item => item.category_id === category.id,
-      );
-   };
+   }, [vehicle.isLoading]);
 
    const searchHandle = () => {
       filter.name = search;
       navigation.navigate('Filter');
+   };
+
+   const itemPerCategory = category => {
+      var listVehicle = vehicle.listAllVehicle.filter(
+         item => item.category_id === category.id,
+      );
+      listVehicle = [...new Set(listVehicle)];
+      return listVehicle;
    };
 
    const showButtonItem = () => {
@@ -80,114 +72,83 @@ const Home = ({navigation}) => {
 
    return (
       <View style={styles.background}>
-         <ScrollView>
-            <View>
-               <ImageBackground
-                  source={require('../assets/images/background-search.png')}
-                  resizeMode="cover"
-                  style={addStyles.imageBackgroundSearch}>
-                  <Container>
-                     <View style={addStyles.layoutSearch}>
-                        <Input
-                           classInput={addStyles.input}
-                           placeholder="Search vehicle"
-                           value={search}
-                           change={setSearch}
-                        />
-                        <TouchableOpacity onPress={searchHandle}>
-                           <IconSearch name="search" style={addStyles.icon} />
-                        </TouchableOpacity>
-                     </View>
-                     {auth.user?.role == 'admin' && showButtonItem()}
-                  </Container>
-               </ImageBackground>
-            </View>
-            <View>
-               {!category.isLoading && !vehicle.isLoading ? (
-                  <FlatList
-                     keyExtractor={item => item.id}
-                     contentContainerStyle={addStyles.layoutCategory}
-                     data={category.listCategory}
-                     renderItem={({item}) => {
-                        return (
-                           <ListBar
-                              title={item.name}
-                              navigate={() => navigateToDetailCategory(item)}>
-                              <FlatList
-                                 horizontal={true}
-                                 data={itemPerCategory(item)}
-                                 renderItem={({item}) => {
-                                    return (
-                                       <TouchableOpacity
-                                          onPress={() =>
-                                             navigation.navigate(
-                                                `${
-                                                   auth.user !== null &&
-                                                   auth.user.role == 'admin'
-                                                      ? 'EditItem'
-                                                      : 'Reservation'
-                                                }`,
-                                                {
-                                                   vehicleId: item.id,
-                                                },
-                                             )
-                                          }>
-                                          <Image
-                                             key={item.id}
-                                             source={{
-                                                uri: `${item.photo}`,
-                                             }}
-                                             style={addStyles.imageList}
-                                          />
-                                       </TouchableOpacity>
-                                    );
-                                 }}
+         <NBModalLoading show={showModalLoading} />
+         <FlatList
+            ListHeaderComponent={
+               <View>
+                  <ImageBackground
+                     source={require('../assets/images/background-search.png')}
+                     resizeMode="cover"
+                     style={addStyles.imageBackgroundSearch}>
+                     <Container>
+                        <View style={addStyles.layoutSearch}>
+                           <Input
+                              classInput={addStyles.input}
+                              placeholder="Search vehicle"
+                              value={search}
+                              placeholderTextColor="white"
+                              change={setSearch}
+                           />
+                           <TouchableOpacity onPress={searchHandle}>
+                              <IconSearch
+                                 name="search"
+                                 style={addStyles.icon}
                               />
-                           </ListBar>
-                        );
-                     }}
-                  />
-               ) : (
-                  <NBModalLoading />
-               )}
-
-               {/* <ScrollView h="65%">
-               {category.listCategory.length > 0 &&
-                  category.listCategory.map(itemCategory => {
-                     return (
-                        <ListBar
-                           title={itemCategory.name}
-                           navigate={() =>
-                              navigation.navigate('DetailCategory', {
-                                 categoryId: itemCategory.id,
-                              })
-                           }>
-                           <ScrollView horizontal={true}>
-                              {vehicle.listVehicle.length > 0 &&
-                                 vehicle.listVehicle
-                                    .filter(
-                                       item =>
-                                          item.category_id === itemCategory.id,
+                           </TouchableOpacity>
+                        </View>
+                        {auth.user?.role == 'admin' && showButtonItem()}
+                     </Container>
+                  </ImageBackground>
+               </View>
+            }
+            data={category.listCategory}
+            renderItem={({item}) => {
+               return (
+                  <ListBar
+                     title={item.name}
+                     navigate={() => navigateToDetailCategory(item)}>
+                     <FlatList
+                        horizontal={true}
+                        data={itemPerCategory(item)}
+                        renderItem={({item}) => {
+                           return (
+                              <TouchableOpacity
+                                 onPress={() =>
+                                    navigation.navigate(
+                                       `${
+                                          auth.user !== null &&
+                                          auth.user.role == 'admin'
+                                             ? 'EditItem'
+                                             : 'Reservation'
+                                       }`,
+                                       {
+                                          vehicleId: item.id,
+                                       },
                                     )
-                                    .filter((item, index) => index < 5)
-                                    .map(item => {
-                                       return (
-                                          <Image
-                                             key={item.id}
-                                             source={{
-                                                uri: `${item.photo}`,
-                                             }}
-                                             style={addStyles.imageList}
-                                          />
-                                       );
-                                    })}
-                           </ScrollView>
-                        </ListBar>
-                     );
-                  })}
-            </ScrollView> */}
-            </View>
-         </ScrollView>
+                                 }>
+                                 {item.photo !== null ? (
+                                    <Image
+                                       key={item.id}
+                                       source={{
+                                          uri: `${item.photo}`,
+                                       }}
+                                       style={addStyles.imageList}
+                                    />
+                                 ) : (
+                                    <Image
+                                       key={item.id}
+                                       source={photoItem}
+                                       style={addStyles.imageList}
+                                    />
+                                 )}
+                              </TouchableOpacity>
+                           );
+                        }}
+                     />
+                  </ListBar>
+               );
+            }}
+         />
       </View>
    );
 };
@@ -201,7 +162,7 @@ const addStyles = StyleSheet.create({
       ...input,
    },
    imageBackgroundSearch: {
-      height: 280,
+      height: 250,
    },
    icon: {
       position: 'absolute',
