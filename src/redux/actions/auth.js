@@ -16,19 +16,13 @@ export const getDataUser = token => {
    };
 };
 
-export const registrationProcess = (
-   name,
-   username,
-   email,
-   password,
-   mobileNumber,
-) => {
+export const registrationProcess = dataSend => {
    const data = {
-      fullName: name,
-      username: username,
-      email: email,
-      password: password,
-      mobileNumber: mobileNumber,
+      fullName: dataSend.name,
+      username: dataSend.username,
+      email: dataSend.email,
+      password: dataSend.password,
+      mobileNumber: dataSend['mobile number'],
    };
 
    return {
