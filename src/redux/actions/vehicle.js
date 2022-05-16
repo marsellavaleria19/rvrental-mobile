@@ -121,3 +121,10 @@ export const deleteDataVehicle = (token, id) => {
       payload: AxiosCustom(token).delete(`/vehicles/${id}`),
    };
 };
+
+export const getNextListVehicle = url => {
+   return {
+      type: 'VEHICLE_NEXT',
+      payload: AxiosCustom().get(url),
+   };
+};
