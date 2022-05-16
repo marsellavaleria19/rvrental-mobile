@@ -3,7 +3,6 @@ import {
    Text,
    View,
    StyleSheet,
-   ImageBackground,
    Image,
    TouchableOpacity,
    ScrollView,
@@ -12,8 +11,7 @@ import {styles} from '../../assets/styles/styles';
 import Container from '../../components/Container';
 import CButton from '../../components/Button';
 import stylePrimary from '../../assets/styles/stylePrimary';
-import {button, rateLayout, rateText} from '../../assets/styles/styleComponent';
-import imageBackground from '../../assets/images/background-reservation.png';
+import {rateLayout} from '../../assets/styles/styleComponent';
 import Rate from '../../components/Rate';
 import IconInfo from 'react-native-vector-icons/Ionicons';
 import {historyInput} from '../../redux/actions/history';
@@ -21,23 +19,49 @@ import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import {useEffect, useState} from 'react';
 import StepperPayment from '../../components/StepperPayment';
+import NBModalLoading from '../../components/NBModalLoading';
+import NBModalSuccess from '../../components/NBModalSuccess';
+import NBModalError from '../../components/NBModalError';
+import photoItem from '../../assets/images/image-item.png';
 
 const PaymentDetail = ({navigation}) => {
    const {payment, history, reservation, auth} = useSelector(state => state);
    const dispatch = useDispatch();
    const [control, setControl] = useState(false);
+   const [showModalSuccess, setShowModalSuccess] = useState(false);
+   const handleCloseModalSuccess = () => setShowModalSuccess(false);
+   const [showModalError, setShowModalError] = useState(false);
+   const handleCloseModalError = () => setShowModalError(false);
+   const [showModalLoading, setShowModalLoading] = useState(false);
+   const [messageError, setMessageError] = useState('');
+   const [messageSuccess, setMessageSuccess] = useState('');
    // React.useEffect(() => {
    //    dispatch(getDetailPayment(idHistory));
    // }, []);
 
+   // useEffect(() => {
+   //    if (history.dataHistory !== null && control) {
+   //       navigation.navigate('FinishPayment', {
+   //          idHistory: history.dataHistory.id,
+   //       });
+   //    }
+   //    // eslint-disable-next-line react-hooks/exhaustive-deps
+   // }, [history.dataHistory]);
+
    useEffect(() => {
-      if (history.dataHistory !== null && control) {
-         navigation.navigate('FinishPayment', {
-            idHistory: history.dataHistory.id,
-         });
+      setShowModalLoading(history.isLoading);
+      if (history.isLoading == false && control == true) {
+         if (history.isError) {
+            setMessageError(history.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(history.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [history.dataHistory]);
+   }, [history.isLoading]);
 
    const paymentHandle = () => {
       dispatch(
@@ -58,9 +82,34 @@ const PaymentDetail = ({navigation}) => {
                <View style={addStyles.layoutStepper}>
                   <StepperPayment active={2} count={3} />
                </View>
+               <NBModalLoading show={showModalLoading} />
+               {messageError !== '' && (
+                  <NBModalError
+                     show={showModalError}
+                     message={messageError}
+                     close={handleCloseModalError}
+                  />
+               )}
+               {messageSuccess !== '' && (
+                  <NBModalSuccess
+                     show={showModalSuccess}
+                     message={messageSuccess}
+                     close={handleCloseModalSuccess}
+                     button={'Go to finish payment'}
+                     functionHandle={() =>
+                        navigation.navigate('FinishPayment', {
+                           idHistory: history.dataHistory.id,
+                        })
+                     }
+                  />
+               )}
                <View style={addStyles.positionRate}>
                   <Image
-                     source={{uri: `${reservation.dataReservation.photo}`}}
+                     source={
+                        reservation.dataReservation.photo !== null
+                           ? {uri: `${reservation.dataReservation.photo}`}
+                           : photoItem
+                     }
                      style={addStyles.imageBackground}
                   />
                   <View style={addStyles.rateLayout}>
@@ -73,7 +122,7 @@ const PaymentDetail = ({navigation}) => {
                      {reservation.dataReservation.brand}
                   </Text>
                   <Text style={addStyles.fontDescription}>
-                     {payment.dataPayment.payment_type}
+                     {payment.dataPayment.paymentType}
                   </Text>
                   <Text style={addStyles.fontDescription}>
                      {reservation.dataReservation.day} days{' '}
@@ -119,7 +168,7 @@ const PaymentDetail = ({navigation}) => {
 const addStyles = StyleSheet.create({
    imageBackground: {
       width: '100%',
-      height: 300,
+      height: 201,
       borderRadius: 20,
    },
    layoutStepper: {
@@ -127,7 +176,7 @@ const addStyles = StyleSheet.create({
    },
    positionRate: {
       position: 'relative',
-      height: 300,
+      height: 201,
       marginTop: 40,
    },
    rateLayout: {
@@ -166,6 +215,7 @@ const addStyles = StyleSheet.create({
    },
    layoutButton: {
       marginTop: 30,
+      marginBottom: 20,
    },
 });
 
