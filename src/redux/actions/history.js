@@ -1,13 +1,14 @@
 import {default as axios} from 'axios';
 import qs from 'qs';
 import AxiosCostum from '../../helpers/AxiosCustom';
+import moment from 'moment';
 
 export const historyInput = (reservation, idUser, dataPayment, token) => {
    var data = {
       idUser,
-      idVehicle: reservation.idVehicle,
-      startRentDate: reservation.rentStartDate,
-      endRentDate: reservation.rentEndDate,
+      idVehicle: reservation.idVehicle.toString(),
+      startRentDate: moment(reservation.rentStartDate).format('YYYY-MM-DD'),
+      endRentDate: moment(reservation.rentEndDate).format('YYYY-MM-DD'),
       prepayment: 0,
       status: 1,
       qty: reservation.qty,
@@ -16,7 +17,7 @@ export const historyInput = (reservation, idUser, dataPayment, token) => {
       mobilePhone: dataPayment.mobilePhone,
       emailAddress: dataPayment.emailAddress,
       location: dataPayment.location,
-      payment_type: dataPayment.payment_type,
+      payment_id: dataPayment.payment_id,
    };
 
    console.log(data);
@@ -30,6 +31,15 @@ export const getListHistory = token => {
    return {
       type: 'HISTORY',
       payload: AxiosCostum(token).get('/histories'),
+   };
+};
+
+export const getListHistoryByUserId = (token, id) => {
+   return {
+      type: 'HISTORY',
+      payload: AxiosCostum(token).get(
+         `/histories/user/${id}?sort=id&order=desc`,
+      ),
    };
 };
 
