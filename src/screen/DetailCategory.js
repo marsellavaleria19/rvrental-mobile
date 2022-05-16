@@ -1,22 +1,18 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, ImageBackground, Image} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 import Container from '../components/Container';
-import {input, button} from '../assets/styles/styleComponent';
+import {input} from '../assets/styles/styleComponent';
 import ListDetail from '../components/ListDetail';
-import {
-   getListVehicleByCategory,
-   getDetailVehicle,
-} from '../redux/actions/vehicle';
+import {getListVehicleByCategory} from '../redux/actions/vehicle';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
 import {FlatList} from 'native-base';
-import auth from '../redux/reducers/auth';
 import image from '../assets/images/image-item.png';
 import {styles} from '../assets/styles/styles';
 import NBModal from '../components/NBModal';
 import NotFound from '../components/NotFound';
 import NBModalLoading from '../components/NBModalLoading';
-import {saveDetailVehicle} from '../redux/actions/vehicle';
+import {saveDetailVehicle, getNextListVehicle} from '../redux/actions/vehicle';
 import {LIMIT_VEHICLE} from '@env';
 
 const DetailCategory = ({route, navigation}) => {
@@ -65,6 +61,12 @@ const DetailCategory = ({route, navigation}) => {
       // : handleShow
    };
 
+   const nextPageHandle = page => {
+      if (page.next !== null) {
+         dispatch(getNextListVehicle(page.next));
+      }
+   };
+
    return (
       <View style={styles.background}>
          <Container>
@@ -98,6 +100,8 @@ const DetailCategory = ({route, navigation}) => {
                            />
                         );
                      }}
+                     onEndReached={() => nextPageHandle(vehicle.pageInfo)}
+                     onEndReachedThreshold={0.5}
                   />
                ) : (
                   <NotFound />
@@ -106,18 +110,29 @@ const DetailCategory = ({route, navigation}) => {
                <NBModalLoading />
             )}
             <NBModal
-               title="Verified User"
+               title="Verifiy Email"
                show={show}
-               functionShow={handleShow}
                functionClose={handleClose}
                functionHandle={verifyHandle}
-               isButton={true}
-               buttonTitile="Verified">
+               isButtonCancel={false}
+               button="Go to verifiy email">
                <Text>
                   Sorry, your account is not verfied. Please verified your
                   account for enjoy our product..
                </Text>
             </NBModal>
+            {/* <NBModal
+               title="Verified User"
+               show={show}
+               functionShow={handleShow}
+               functionClose={handleClose}
+               functionHandle={verifyHandle}
+               button={'Verified'}>
+               <Text>
+                  Sorry, your account is not verfied. Please verified your
+                  account for enjoy our product..
+               </Text>
+            </NBModal> */}
             {/* <ListDetail
             path={require('../assets/images/list-car1.png')}
             title="Vespa Matic"
