@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {styles} from '../assets/styles/styles';
 import Container from '../components/Container';
-import Input from '../components/Input';
+import CInput from '../components/Input';
 import CButton from '../components/Button';
 import stylePrimary from '../assets/styles/stylePrimary';
 import IconRun from 'react-native-vector-icons/FontAwesome5';
@@ -36,6 +36,7 @@ import {
    deleteFavorite,
 } from '../redux/actions/favorite';
 import {validation} from '../helpers/validation';
+import ErrorMessage from '../components/ErrorMessage';
 
 const Reservation = ({navigation}) => {
    const {vehicle, counter, auth, reservation, favorite} = useSelector(
@@ -50,7 +51,7 @@ const Reservation = ({navigation}) => {
    const [control, setControl] = useState(false);
    const [picture, setPicture] = useState();
    const [isAddFavorite, setAddFavorite] = useState(false);
-   const [setErrValidation, setErrorValidation] = useState({});
+   const [errorValidation, setErrorValidation] = useState({});
 
    useEffect(() => {
       setPicture(
@@ -80,14 +81,20 @@ const Reservation = ({navigation}) => {
    }, [reservation.dataReservation]);
 
    const countIncrement = () => {
-      inputReservation.qty = inputReservation.qty + 1;
-      setInputReservation({...inputReservation, qty: inputReservation.qty});
+      inputReservation.qty = parseInt(inputReservation.qty) + 1;
+      setInputReservation({
+         ...inputReservation,
+         qty: inputReservation.qty.toString(),
+      });
    };
 
    const countDecrement = () => {
       if (inputReservation.qty > 0) {
-         inputReservation.qty = inputReservation.qty - 1;
-         setInputReservation({...inputReservation, qty: inputReservation.qty});
+         inputReservation.qty = parseInt(inputReservation.qty) - 1;
+         setInputReservation({
+            ...inputReservation,
+            qty: inputReservation.qty.toString(),
+         });
       }
    };
 
@@ -110,13 +117,14 @@ const Reservation = ({navigation}) => {
          day: 'required',
          qty: 'required|number|grather0',
       };
-
+      inputReservation.date = inputReservation.date.toString();
+      inputReservation.day = inputReservation.day.toString();
       const validate = validation(inputReservation, requirement);
       if (Object.keys(validate).length == 0) {
          dispatch(reservationProcess(vehicle.dataVehicle, inputReservation));
          setControl(true);
       } else {
-         setErrValidation(validate);
+         setErrorValidation(validate);
       }
    };
 
@@ -255,7 +263,7 @@ const Reservation = ({navigation}) => {
                                  -
                               </CButton>
                            </TouchableOpacity>
-                           <Input
+                           <CInput
                               style={addStyles.inputQty}
                               value={inputReservation.qty}
                               change={newQty =>
@@ -275,15 +283,20 @@ const Reservation = ({navigation}) => {
                            </TouchableOpacity>
                         </View>
                      </View>
+                     {Object.keys(errorValidation).length > 0 &&
+                        errorValidation.qty && (
+                           <ErrorMessage error={errorValidation.qty} />
+                        )}
                   </View>
                   <View style={addStyles.layoutForm}>
                      <View style={{position: 'relative'}}>
-                        <Input
+                        <CInput
                            classInput={addStyles.inputDate}
                            placeholder="Date"
                            value={moment(
                               inputReservation.date.toLocaleString(),
                            ).format('YYYY-MM-DD')}
+                           error={errorValidation.date && errorValidation.date}
                         />
                         <TouchableOpacity onPress={showDatePicker}>
                            <IconDate name="date" style={addStyles.iconDate} />
@@ -299,6 +312,13 @@ const Reservation = ({navigation}) => {
                               ...inputReservation,
                               day: itemValue,
                            })
+                        }
+                        isInvalid={
+                           Object.keys(errorValidation).length > 0 && true
+                        }
+                        errMessage={
+                           Object.keys(errorValidation).length > 0 &&
+                           errorValidation.day
                         }>
                         <Select.Item label="1" value={1} />
                         <Select.Item label="2" value={2} />
@@ -443,8 +463,7 @@ const addStyles = StyleSheet.create({
       width: 30,
       color: stylePrimary.mainColor,
       textAlign: 'center',
-      fontSize: 15,
-      fontWeight: '700',
+      fontWeight: stylePrimary.bold,
    },
    layoutForm: {
       marginTop: 28,

@@ -1,26 +1,16 @@
 import * as React from 'react';
-import {
-   Text,
-   View,
-   StyleSheet,
-   ImageBackground,
-   Image,
-   TouchableOpacity,
-} from 'react-native';
+import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {styles} from '../../assets/styles/styles';
 import Container from '../../components/Container';
 import CButton from '../../components/Button';
 import stylePrimary from '../../assets/styles/stylePrimary';
-import {rateLayout, rateText} from '../../assets/styles/styleComponent';
-import imageBackground from '../../assets/images/background-reservation.png';
+import {rateLayout} from '../../assets/styles/styleComponent';
 import Rate from '../../components/Rate';
 import {ScrollView} from 'native-base';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {getDetailPayment} from '../../redux/actions/payment';
 import {useSelector, useDispatch} from 'react-redux';
 import moment from 'moment';
-import {useEffect, useState} from 'react';
-import {getDetailHistory} from '../../redux/actions/history';
+import {useState} from 'react';
+import photoItem from '../../assets/images/image-item.png';
 
 const SuccessPayment = ({route, navigation}) => {
    const {history, auth} = useSelector(state => state);
@@ -50,7 +40,11 @@ const SuccessPayment = ({route, navigation}) => {
                <Text style={addStyles.statusPayment}>Payment Success!</Text>
                <View style={addStyles.positionRate}>
                   <Image
-                     source={imageBackground}
+                     source={
+                        history.dataHistory.photo !== null
+                           ? {uri: `${history.dataHistory.photo}`}
+                           : photoItem
+                     }
                      style={addStyles.imageBackground}
                   />
                   <View style={addStyles.rateLayout}>
@@ -118,12 +112,12 @@ const SuccessPayment = ({route, navigation}) => {
 const addStyles = StyleSheet.create({
    imageBackground: {
       width: '100%',
-      height: 300,
+      height: 201,
       borderRadius: 20,
    },
    positionRate: {
       position: 'relative',
-      height: 300,
+      height: 201,
       marginTop: 40,
    },
    rateLayout: {
@@ -165,6 +159,7 @@ const addStyles = StyleSheet.create({
    },
    layoutButton: {
       marginTop: 30,
+      marginBottom: 20,
    },
    buttonPayment: {
       backgroundColor: stylePrimary.secondaryColor,

@@ -9,18 +9,26 @@ export const getDetailPayment = id => {
    };
 };
 
-export const saveDataPayment = dataPayment => {
+export const saveDataPayment = (dataPayment, paymentType) => {
    var data = {
-      idCard: dataPayment.idCard,
+      idCard: dataPayment['id card'],
       fullname: `${dataPayment.firstname} ${dataPayment.lastname}`,
-      mobilePhone: dataPayment.mobileNumber,
+      mobilePhone: dataPayment['mobile number'],
       emailAddress: dataPayment.email,
       location: dataPayment.location,
-      payment_type: dataPayment.paymentType,
+      payment_id: dataPayment['payment type'],
+      paymentType: paymentType.payment,
    };
 
    return {
       type: 'SAVE_PAYMENT',
       payload: data,
+   };
+};
+
+export const getListPaymentType = () => {
+   return {
+      type: 'PAYMENT_TYPE',
+      payload: AxiosCostum().get('/payment-types?limit=20'),
    };
 };

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Container from '../../components/Container';
-import Input from '../../components/NBInput';
+import NBInput from '../../components/NBInput';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import CButton from '../../components/Button';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -9,20 +9,22 @@ import {useState, useEffect} from 'react';
 import BSelect from '../../components/BSelect';
 import {useDispatch, useSelector} from 'react-redux';
 import {saveDataPayment} from '../../redux/actions/payment';
-import {ScrollView} from 'native-base';
+import {ScrollView, Select} from 'native-base';
 import {validation} from '../../helpers/validation';
 import StepperPayment from '../../components/StepperPayment';
 
 const Payment = ({navigation}) => {
    const {reservation, payment, auth} = useSelector(state => state);
    const [errValidation, setErrValidation] = useState({});
-   const [idCard, setIdCard] = useState('');
-   const [firstname, setFirstname] = useState('');
-   const [lastname, setLastname] = useState('');
-   const [mobileNumber, setMobileNumber] = useState('');
-   const [email, setEmail] = useState('');
-   const [location, setLocation] = useState('');
-   const [paymentType, setPaymentType] = useState('');
+   const [inputPayment, setInputPayment] = useState({
+      'id card': '',
+      firstname: auth.user.fullName,
+      lastname: '',
+      'mobile number': auth.user.mobileNumber,
+      email: auth.user.email,
+      location: '',
+      'payment type': '',
+   });
    const [control, setControl] = useState(false);
    const dispatch = useDispatch();
 
@@ -39,27 +41,22 @@ const Payment = ({navigation}) => {
    }, [payment.dataPayment]);
 
    const paymentHandle = () => {
-      const data = {
-         idCard: idCard,
-         firstname: firstname,
-         lastname: lastname,
-         mobileNumber: mobileNumber,
-         email: email,
-         location: location,
-         paymentType: paymentType,
-      };
+      inputPayment['payment type'] = inputPayment['payment type'].toString();
       let requirement = {
-         idCard: 'required|number',
+         'id card': 'required|number',
          firstname: 'required',
          lastname: 'required',
-         mobileNumber: 'required',
-         email: 'required',
+         'mobile number': 'required|phone',
+         email: 'required|email',
          location: 'required',
-         paymentType: 'required',
+         'payment type': 'choose',
       };
-      var validate = validation(data, requirement);
+      const paymentResult = payment.listPaymentType.filter(
+         item => item.id == inputPayment['payment type'],
+      );
+      var validate = validation(inputPayment, requirement);
       if (Object.keys(validate).length == 0) {
-         dispatch(saveDataPayment(data));
+         dispatch(saveDataPayment(inputPayment, paymentResult[0]));
          setControl(true);
       } else {
          setErrValidation(validate);
@@ -74,93 +71,165 @@ const Payment = ({navigation}) => {
                   <StepperPayment active={1} count={3} />
                </View>
                <View style={addStyles.layoutForm}>
-                  <Input
-                     classVariant="payment"
-                     placeholder="ID Card number"
-                     value={idCard}
-                     change={setIdCard}
-                     isValidate={Object.keys(errValidation).length > 0 && true}
-                     errorMessage={
-                        Object.keys(errValidation).length > 0 &&
-                        errValidation.idCard
-                     }
-                  />
-                  <Input
-                     placeholder={'First Name'}
-                     size={16}
-                     classVariant="payment"
-                     value={firstname}
-                     change={setFirstname}
-                     isValidate={Object.keys(errValidation).length > 0 && true}
-                     errorMessage={
-                        Object.keys(errValidation).length > 0 &&
-                        errValidation.firstname
-                     }
-                  />
-                  <Input
-                     placeholder={'Last Name'}
-                     size={16}
-                     value={lastname}
-                     change={setLastname}
-                     classVariant="payment"
-                     isValidate={Object.keys(errValidation).length > 0 && true}
-                     errorMessage={
-                        Object.keys(errValidation).length > 0 &&
-                        errValidation.lastname
-                     }
-                  />
-                  <Input
-                     placeholder={'Mobile phone (must be active)'}
-                     size={16}
-                     classVariant="payment"
-                     value={mobileNumber}
-                     change={setMobileNumber}
-                     isValidate={Object.keys(errValidation).length > 0 && true}
-                     errorMessage={
-                        Object.keys(errValidation).length > 0 &&
-                        errValidation.mobileNumber
-                     }
-                  />
-                  <Input
-                     placeholder={'Email address'}
-                     size={16}
-                     value={email}
-                     change={setEmail}
-                     classVariant="payment"
-                     isValidate={Object.keys(errValidation).length > 0 && true}
-                     errorMessage={
-                        Object.keys(errValidation).length > 0 &&
-                        errValidation.email
-                     }
-                  />
-                  <Input
-                     placeholder={'Location (home,office,etc)'}
-                     size={16}
-                     value={location}
-                     change={setLocation}
-                     classVariant="payment"
-                     isValidate={Object.keys(errValidation).length > 0 && true}
-                     errorMessage={
-                        Object.keys(errValidation).length > 0 &&
-                        errValidation.location
-                     }
-                  />
+                  <View style={addStyles.layoutInput}>
+                     <NBInput
+                        classVariant="payment"
+                        placeholder="ID Card number"
+                        value={inputPayment['id card']}
+                        change={newIdCard =>
+                           setInputPayment({
+                              ...inputPayment,
+                              'id card': newIdCard,
+                           })
+                        }
+                        isValidate={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation['id card'] &&
+                           true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation['id card']
+                        }
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <NBInput
+                        placeholder={'First Name'}
+                        classVariant="payment"
+                        value={inputPayment.firstname}
+                        change={newFirstName =>
+                           setInputPayment({
+                              ...inputPayment,
+                              firstname: newFirstName,
+                           })
+                        }
+                        isValidate={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.firstname &&
+                           true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.firstname
+                        }
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <NBInput
+                        placeholder={'Last Name'}
+                        value={inputPayment.lastname}
+                        change={newLastname =>
+                           setInputPayment({
+                              ...inputPayment,
+                              lastname: newLastname,
+                           })
+                        }
+                        classVariant="payment"
+                        isValidate={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.lastname &&
+                           true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.lastname
+                        }
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <NBInput
+                        placeholder={'Mobile phone (must be active)'}
+                        classVariant="payment"
+                        value={inputPayment['mobile number']}
+                        change={newMobileNumber =>
+                           setInputPayment({
+                              ...inputPayment,
+                              'mobile number': newMobileNumber,
+                           })
+                        }
+                        isValidate={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation['mobile number'] &&
+                           true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation['mobile number']
+                        }
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <NBInput
+                        placeholder={'Email address'}
+                        value={inputPayment.email}
+                        change={newEmail =>
+                           setInputPayment({...inputPayment, email: newEmail})
+                        }
+                        classVariant="payment"
+                        isValidate={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.email &&
+                           true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.email
+                        }
+                     />
+                  </View>
+                  <View style={addStyles.layoutInput}>
+                     <NBInput
+                        placeholder={'Location (home,office,etc)'}
+                        value={inputPayment.location}
+                        change={newLocation =>
+                           setInputPayment({
+                              ...inputPayment,
+                              location: newLocation,
+                           })
+                        }
+                        classVariant="payment"
+                        isValidate={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.location &&
+                           true
+                        }
+                        errorMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation.location
+                        }
+                     />
+                  </View>
                   <View style={addStyles.layoutInput}>
                      <BSelect
                         width="100%"
+                        variantSelect={'reservation'}
                         placeholder="Payment Type"
-                        variantSelect="reservation"
-                        select={paymentType}
-                        change={itemValue => setPaymentType(itemValue)}>
-                        <BSelect.Item label="Prepayment" value={'Prepayment'} />
-                        <BSelect.Item
-                           label="Payment at end"
-                           value={'Payment at end'}
-                        />
-                        <BSelect.Item
-                           label="Partial payment"
-                           value={'Partial payment'}
-                        />
+                        value={inputPayment['payment type']}
+                        change={itemValue =>
+                           setInputPayment({
+                              ...inputPayment,
+                              'payment type': itemValue,
+                           })
+                        }
+                        isInvalid={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation['payment type'] &&
+                           true
+                        }
+                        errMessage={
+                           Object.keys(errValidation).length > 0 &&
+                           errValidation['payment type']
+                        }>
+                        {payment.listPaymentType.length > 0 &&
+                           payment.listPaymentType.map(item => {
+                              return (
+                                 <Select.Item
+                                    label={item.payment}
+                                    value={item.id}
+                                 />
+                              );
+                           })}
                      </BSelect>
                   </View>
                   <View style={addStyles.layoutButton}>
@@ -191,6 +260,7 @@ const addStyles = StyleSheet.create({
    },
    layoutButton: {
       marginTop: 34,
+      marginBottom: 20,
    },
 });
 

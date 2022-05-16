@@ -43,7 +43,7 @@ const StepperPayment = ({active, count, weight = DEFAULT_WEIGHT}) => {
       text: {
          fontSize: weight / 2,
          color: 'white',
-         fontWeight: 'bold',
+         fontWeight: stylePrimary.bold,
       },
    });
 

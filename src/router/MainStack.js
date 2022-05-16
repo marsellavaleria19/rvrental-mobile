@@ -34,7 +34,17 @@ const MainStackNav = () => {
             name="Reservation"
             component={Reservation}
          />
-         <NavMainStack.Screen name="Payment" component={Payment} />
+         <NavMainStack.Screen
+            options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.secondaryColor,
+               headerBackTitleStyle: addStyles.headerBack,
+               title: 'Payment',
+            }}
+            name="Payment"
+            component={Payment}
+         />
          <NavMainStack.Screen
             options={{
                headerStyle: addStyles.layoutHeader,

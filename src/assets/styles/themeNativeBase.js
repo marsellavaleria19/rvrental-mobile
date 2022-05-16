@@ -40,10 +40,9 @@ export const theme = extendTheme({
                ...input,
             },
             payment: {
-               marginTop: 18,
-               backgroundColor: stylePrimary.backgrorund,
-               fontSize: stylePrimary.mainColor,
-               placeholderTextColor: stylePrimary.mainColor,
+               backgroundColor: stylePrimary.background,
+               fontSize: 12,
+               placeholderTextColor: stylePrimary.secondaryColor,
                borderColor: stylePrimary.mainColor,
                borderWidth: 1,
             },
@@ -65,6 +64,13 @@ export const theme = extendTheme({
                placeholderTextColor: stylePrimary.secondaryColor,
             },
             reservation: {
+               _text: {
+                  color: stylePrimary.mainColor,
+               },
+            },
+            quantity: {
+               width: 10,
+               border: 0,
                _text: {
                   color: stylePrimary.mainColor,
                },

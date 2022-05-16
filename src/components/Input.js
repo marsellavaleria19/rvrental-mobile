@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Text, View, StyleSheet, TextInput} from 'react-native';
 import AntDesigns from 'react-native-vector-icons/AntDesign';
 
-const Input = ({
+const CInput = ({
    placeholder,
    classInput,
    value,
@@ -57,4 +57,4 @@ const addStyles = StyleSheet.create({
 });
 
 export {addStyles};
-export default Input;
+export default CInput;

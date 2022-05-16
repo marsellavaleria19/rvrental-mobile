@@ -1,36 +1,36 @@
 import * as React from 'react';
-import {
-   Text,
-   View,
-   StyleSheet,
-   ImageBackground,
-   Image,
-   TouchableOpacity,
-} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Container from '../../components/Container';
 import CButton from '../../components/Button';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import IconInfo from 'react-native-vector-icons/Ionicons';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {ScrollView} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
-import {getDetailPayment} from '../../redux/actions/payment';
 import {useEffect, useState} from 'react';
 import moment from 'moment';
 import {getDetailHistory, historyUpdate} from '../../redux/actions/history';
 import {styles} from '../../assets/styles/styles';
 import StepperPayment from '../../components/StepperPayment';
 import PushNotificationHandler from '../../helpers/PushNotificationHelper';
+import NBModalLoading from '../../components/NBModalLoading';
+import NBModalError from '../../components/NBModalError';
+import NBModalSuccess from '../../components/NBModalSuccess';
 
 const FinishPayment = ({route, navigation}) => {
-   const {payment, reservation, auth, history} = useSelector(state => state);
+   const {reservation, auth, history} = useSelector(state => state);
    const dispatch = useDispatch();
    const [control, setControl] = useState(false);
    const {idHistory} = route.params;
+   const [showModalSuccess, setShowModalSuccess] = useState(false);
+   const handleCloseModalSuccess = () => setShowModalSuccess(false);
+   const [showModalError, setShowModalError] = useState(false);
+   const handleCloseModalError = () => setShowModalError(false);
+   const [showModalLoading, setShowModalLoading] = useState(false);
+   const [messageError, setMessageError] = useState('');
+   const [messageSuccess, setMessageSuccess] = useState('');
    const [hour, setHour] = useState();
    const [minutes, setMinutes] = useState();
    const [second, setSecond] = useState();
-   let interval;
 
    useEffect(() => {
       dispatch(getDetailHistory(idHistory));
@@ -45,11 +45,25 @@ const FinishPayment = ({route, navigation}) => {
             'Finish Payment',
             "Your order has successfully. Don't forget to do payment.",
          );
-         navigation.navigate('SuccessPayment', {idHistory: idHistory});
       }
       setControl(false);
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [history.dataHistory]);
+
+   useEffect(() => {
+      setShowModalLoading(history.isLoading);
+      if (history.isLoading == false && control == true) {
+         if (history.isError) {
+            setMessageError(history.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(history.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [history.isLoading]);
 
    // const startTime = () => {
    //    const countDownDate = new Date(history.dataHistory.createdAt).getTime();
@@ -81,6 +95,27 @@ const FinishPayment = ({route, navigation}) => {
                <View style={addStyles.layoutStepper}>
                   <StepperPayment active={3} count={3} />
                </View>
+               <NBModalLoading show={showModalLoading} />
+               {messageError !== '' && (
+                  <NBModalError
+                     show={showModalError}
+                     message={messageError}
+                     close={handleCloseModalError}
+                  />
+               )}
+               {messageSuccess !== '' && (
+                  <NBModalSuccess
+                     show={showModalSuccess}
+                     message={messageSuccess}
+                     close={handleCloseModalSuccess}
+                     button={'Go to success payment'}
+                     functionHandle={() =>
+                        navigation.navigate('SuccessPayment', {
+                           idHistory: idHistory,
+                        })
+                     }
+                  />
+               )}
                <View style={addStyles.layoutPaymentCode}>
                   <Text style={addStyles.textPaymentCode}>Payment Code</Text>
                   <Text style={addStyles.paymentCode}>

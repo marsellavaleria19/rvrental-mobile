@@ -16,7 +16,7 @@ const history = (state = dataHistory, action) => {
       }
       case 'HISTORY_FULFILLED': {
          const {data} = action.payload;
-         state.listHistory = data.results;
+         state.listHistory = data.result;
          state.isLoading = false;
          state.isError = false;
          state.message = data.message;
@@ -38,7 +38,7 @@ const history = (state = dataHistory, action) => {
       }
       case 'HISTORY_DETAIL_FULFILLED': {
          const {data} = action.payload;
-         state.dataHistory = data.results;
+         state.dataHistory = data.result;
          state.isLoading = false;
          state.isError = false;
          state.message = data.message;

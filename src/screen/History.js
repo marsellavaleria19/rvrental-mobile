@@ -8,7 +8,7 @@ import ListHistory from '../components/ListHistoryFavorite';
 import image from '../assets/images/background-reservation.png';
 import {FlatList, ScrollView} from 'native-base';
 import {useDispatch, useSelector} from 'react-redux';
-import {getListHistory} from '../redux/actions/history';
+import {getListHistory, getListHistoryByUserId} from '../redux/actions/history';
 import {useEffect, useState} from 'react';
 
 const History = ({navigation}) => {
@@ -17,21 +17,20 @@ const History = ({navigation}) => {
    const dispatch = useDispatch();
 
    useEffect(() => {
-      dispatch(getListHistory(auth.token));
-      setListHistory(listHistoryByIdUser());
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
-
-   useEffect(() => {
-      if (history.listHistory > 0 && history.isSuccessPayment) {
+      if (auth.token !== 'admin') {
+         dispatch(getListHistoryByUserId(auth.token, auth.user.id));
+      } else {
          dispatch(getListHistory(auth.token));
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [history.listHistory]);
+   }, []);
 
-   const listHistoryByIdUser = () => {
-      return history.listHistory;
-   };
+   // useEffect(() => {
+   //    if (history.listHistory > 0 && history.isSuccessPayment) {
+   //       dispatch(getListHistory(auth.token));
+   //    }
+   //    // eslint-disable-next-line react-hooks/exhaustive-deps
+   // }, [history.listHistory]);
 
    return (
       <View style={styles.background}>
@@ -59,9 +58,7 @@ const History = ({navigation}) => {
                   <Text style={addStyles.title}>A Week Ago</Text>
                </View>
                <FlatList
-                  data={history.listHistory.filter(
-                     item => item.user_id == auth.user.id,
-                  )}
+                  data={history.listHistory}
                   keyExtractor={item => item.id}
                   renderItem={({item}) => {
                      return (
