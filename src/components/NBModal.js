@@ -35,9 +35,9 @@ function NBModal({
                        {buttonTitile}
                     </CButton>
                  </TouchableOpacity> */}
-                  <Button.Group space={2}>
-                     <TouchableOpacity />
-                     {isButtonCancel == true && (
+                  {isButtonCancel == true ? (
+                     <Button.Group space={2}>
+                        <TouchableOpacity />
                         <TouchableOpacity onPress={functionClose}>
                            <CButton
                               classButton={addStyles.buttonCancel}
@@ -45,7 +45,15 @@ function NBModal({
                               Cancel
                            </CButton>
                         </TouchableOpacity>
-                     )}
+                        <TouchableOpacity onPress={functionHandle}>
+                           <CButton
+                              classButton={addStyles.button}
+                              textButton={addStyles.fontButton}>
+                              {button}
+                           </CButton>
+                        </TouchableOpacity>
+                     </Button.Group>
+                  ) : (
                      <TouchableOpacity onPress={functionHandle}>
                         <CButton
                            classButton={addStyles.button}
@@ -53,7 +61,7 @@ function NBModal({
                            {button}
                         </CButton>
                      </TouchableOpacity>
-                  </Button.Group>
+                  )}
                </Modal.Footer>
             )}
          </Modal.Content>
@@ -69,8 +77,9 @@ const addStyles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       height: 40,
-      width: 100,
+      width: '100%',
       borderRadius: 10,
+      paddingHorizontal: 10,
    },
    buttonCancel: {
       backgroundColor: 'gray',
