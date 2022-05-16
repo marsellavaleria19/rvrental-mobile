@@ -27,6 +27,7 @@ export const theme = extendTheme({
                backgroundColor: stylePrimary.background,
                borderBottomWidth: 1,
                borderBottomColor: '#9F9F9F',
+               marginBottom: 5,
                _text: {
                   color: stylePrimary.mainColor,
                },

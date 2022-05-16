@@ -1,39 +1,36 @@
 import * as React from 'react';
-import {
-   Text,
-   View,
-   StyleSheet,
-   ImageBackground,
-   TouchableOpacity,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {styles} from '../../assets/styles/styles';
 import Container from '../../components/Container';
-import Input from '../../components/Input';
 import CButton from '../../components/Button';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import {input, button} from '../../assets/styles/styleComponent';
-import image from '../../assets/images/background-signup.png';
 import {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {registrationProcess} from '../../redux/actions/auth';
-import {NBAlert} from '../../components/NBAlert';
 import {confirmVerifyProcess} from '../../redux/actions/auth';
 import NBInputLabel from '../../components/NBInputLabel';
 import {validation} from '../../helpers/validation';
 import {ScrollView} from 'native-base';
-import NBModal from '../../components/NBModal';
+import NBModalLoading from '../../components/NBModalLoading';
+import NBModalSuccess from '../../components/NBModalSuccess';
+import NBModalError from '../../components/NBModalError';
 
 const VerifyUser = ({navigation}) => {
    const {auth} = useSelector(state => state);
    const [email, setEmail] = useState('');
-   const [password, setPassword] = useState('');
+   // const [password, setPassword] = useState('');
    const [code, setCode] = useState('');
    const dispatch = useDispatch();
+   const [control, setControl] = useState(false);
    const [success, setSuccess] = useState(false);
    const [errValidation, setErrValidation] = useState({});
-   const [show, setShow] = useState(false);
-   const handleShow = () => setShow(true);
-   const handleClose = () => setShow(false);
+   const [showModalSuccess, setShowModalSuccess] = useState(false);
+   const handleCloseModalSuccess = () => setShowModalSuccess(false);
+   const [showModalError, setShowModalError] = useState(false);
+   const handleCloseModalError = () => setShowModalError(false);
+   const [showModalLoading, setShowModalLoading] = useState(false);
+   const [messageError, setMessageError] = useState('');
+   const [messageSuccess, setMessageSuccess] = useState('');
 
    useEffect(() => {
       setEmail(auth?.user.email);
@@ -41,22 +38,30 @@ const VerifyUser = ({navigation}) => {
    }, []);
 
    useEffect(() => {
-      if (auth !== null && success == true) {
-         navigation.navigate('Profile');
+      setShowModalLoading(auth.isLoading);
+      if (auth.isLoading == false && control == true) {
+         if (auth.isError) {
+            setMessageError(auth.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(auth.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [auth]);
+   }, [auth.isLoading]);
 
    const verifyUserHandle = () => {
       var dataSend = {
          email,
          code,
-         password,
+         password: auth.user.password,
       };
       let requirement = {
-         email: 'required',
+         email: 'required|email',
          code: 'required',
-         password: 'required',
+         // password: 'required',
       };
 
       var validate = validation(dataSend, requirement);
@@ -68,7 +73,7 @@ const VerifyUser = ({navigation}) => {
                dataSend.code,
             ),
          );
-         setSuccess(true);
+         setControl(true);
       } else {
          setErrValidation(validate);
       }
@@ -77,7 +82,23 @@ const VerifyUser = ({navigation}) => {
       <View style={styles.background}>
          <Container>
             <ScrollView style={addStyles.layoutForm}>
-               {auth.isError && <NBAlert>{auth.errorMessage}</NBAlert>}
+               <NBModalLoading show={showModalLoading} />
+               {messageError !== '' && (
+                  <NBModalError
+                     show={showModalError}
+                     message={messageError}
+                     close={handleCloseModalError}
+                  />
+               )}
+               {messageSuccess !== '' && (
+                  <NBModalSuccess
+                     show={showModalSuccess}
+                     message={messageSuccess}
+                     close={handleCloseModalSuccess}
+                     button={'Go to profile'}
+                     functionHandle={() => navigation.navigate('Profile')}
+                  />
+               )}
                <NBInputLabel
                   placeholder={'Enter your email address'}
                   classVariant="verifyUser"
@@ -90,7 +111,7 @@ const VerifyUser = ({navigation}) => {
                      errValidation.email
                   }
                />
-               <NBInputLabel
+               {/* <NBInputLabel
                   placeholder={'Password'}
                   classVariant="verifyUser"
                   label="Password"
@@ -102,7 +123,7 @@ const VerifyUser = ({navigation}) => {
                      Object.keys(errValidation).length > 0 &&
                      errValidation.password
                   }
-               />
+               /> */}
                <NBInputLabel
                   placeholder={'Code'}
                   classVariant="verifyUser"
@@ -121,19 +142,6 @@ const VerifyUser = ({navigation}) => {
                      Verify Code
                   </CButton>
                </TouchableOpacity>
-               <NBModal
-                  title="Verified User"
-                  show={show}
-                  functionShow={handleShow}
-                  functionClose={handleClose}
-                  functionHandle={() => navigation.navigate('Profile')}
-                  isButton={auth !== null && (auth.isError ? false : true)}
-                  buttonTitile="Go to profile">
-                  <Text>
-                     {auth !== null &&
-                        (auth.isError ? auth.errorMessage : auth.message)}
-                  </Text>
-               </NBModal>
             </ScrollView>
          </Container>
          {/* <ImageBackground
@@ -216,6 +224,11 @@ const addStyles = StyleSheet.create({
       alignItems: 'center',
       marginTop: 50,
       ...button,
+   },
+   textVerifyUser: {
+      color: stylePrimary.mainColor,
+      fontWeight: '900',
+      fontSize: 18,
    },
 });
 

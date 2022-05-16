@@ -35,23 +35,24 @@ import {
    getListFavorite,
    deleteFavorite,
 } from '../redux/actions/favorite';
+import {validation} from '../helpers/validation';
 
-const Reservation = ({route, navigation}) => {
+const Reservation = ({navigation}) => {
    const {vehicle, counter, auth, reservation, favorite} = useSelector(
       state => state,
    );
-   const {vehicleId} = route.params;
-   const [date, setDate] = useState(new Date());
-   const [qty, setQty] = useState(0);
+   const [inputReservation, setInputReservation] = useState({
+      date: new Date(),
+      qty: '0',
+      day: '',
+   });
    const dispatch = useDispatch();
-   const [day, setDay] = useState(0);
    const [control, setControl] = useState(false);
    const [picture, setPicture] = useState();
-   const [isAddvorite, setAddFavorite] = useState(false);
+   const [isAddFavorite, setAddFavorite] = useState(false);
+   const [setErrValidation, setErrorValidation] = useState({});
 
    useEffect(() => {
-      dispatch(getDetailVehicle(vehicleId));
-      setQty(0);
       setPicture(
          vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
             ? {uri: `${vehicle.dataVehicle.photo}`}
@@ -79,22 +80,24 @@ const Reservation = ({route, navigation}) => {
    }, [reservation.dataReservation]);
 
    const countIncrement = () => {
-      setQty(qty + 1);
+      inputReservation.qty = inputReservation.qty + 1;
+      setInputReservation({...inputReservation, qty: inputReservation.qty});
    };
 
    const countDecrement = () => {
-      if (qty > 0) {
-         setQty(qty - 1);
+      if (inputReservation.qty > 0) {
+         inputReservation.qty = inputReservation.qty - 1;
+         setInputReservation({...inputReservation, qty: inputReservation.qty});
       }
    };
 
    const onChange = (event, selectedDate) => {
-      setDate(selectedDate);
+      setInputReservation({...inputReservation, date: selectedDate});
    };
 
    const showDatePicker = () => {
       DateTimePickerAndroid.open({
-         value: date,
+         value: inputReservation.date,
          onChange,
          mode: 'date',
          is24Hour: true,
@@ -102,8 +105,19 @@ const Reservation = ({route, navigation}) => {
    };
 
    const reservationHandle = () => {
-      dispatch(reservationProcess(vehicle.dataVehicle, qty, day, date));
-      setControl(true);
+      const requirement = {
+         date: 'required',
+         day: 'required',
+         qty: 'required|number|grather0',
+      };
+
+      const validate = validation(inputReservation, requirement);
+      if (Object.keys(validate).length == 0) {
+         dispatch(reservationProcess(vehicle.dataVehicle, inputReservation));
+         setControl(true);
+      } else {
+         setErrValidation(validate);
+      }
    };
 
    const favoriteHandle = itemFavorite => {
@@ -153,7 +167,7 @@ const Reservation = ({route, navigation}) => {
                               onPress={() =>
                                  favoriteHandle(vehicle.dataVehicle)
                               }>
-                              {isAddvorite ||
+                              {isAddFavorite ||
                               favorite.listFavorite.filter(
                                  item => item.id == vehicle.dataVehicle.id,
                               ).length > 0 ? (
@@ -241,7 +255,17 @@ const Reservation = ({route, navigation}) => {
                                  -
                               </CButton>
                            </TouchableOpacity>
-                           <Text style={addStyles.inputQty}>{qty}</Text>
+                           <Input
+                              style={addStyles.inputQty}
+                              value={inputReservation.qty}
+                              change={newQty =>
+                                 setInputReservation({
+                                    ...inputReservation,
+                                    qty: newQty,
+                                 })
+                              }
+                              keyboardType="numeric"
+                           />
                            <TouchableOpacity onPress={countIncrement}>
                               <CButton
                                  classButton={addStyles.button}
@@ -257,9 +281,9 @@ const Reservation = ({route, navigation}) => {
                         <Input
                            classInput={addStyles.inputDate}
                            placeholder="Date"
-                           value={moment(date.toLocaleString()).format(
-                              'YYYY-MM-DD',
-                           )}
+                           value={moment(
+                              inputReservation.date.toLocaleString(),
+                           ).format('YYYY-MM-DD')}
                         />
                         <TouchableOpacity onPress={showDatePicker}>
                            <IconDate name="date" style={addStyles.iconDate} />
@@ -269,8 +293,13 @@ const Reservation = ({route, navigation}) => {
                         width="40%"
                         placeholder="Day"
                         variantSelect="reservation"
-                        select={day}
-                        change={itemValue => setDay(itemValue)}>
+                        select={inputReservation.day}
+                        change={itemValue =>
+                           setInputReservation({
+                              ...inputReservation,
+                              day: itemValue,
+                           })
+                        }>
                         <Select.Item label="1" value={1} />
                         <Select.Item label="2" value={2} />
                         <Select.Item label="3" value={3} />
@@ -331,7 +360,7 @@ const addStyles = StyleSheet.create({
       fontWeight: '700',
       fontSize: 30,
       marginLeft: 10,
-      color: '#FFCD61',
+      color: stylePrimary.mainColor,
    },
    layoutDescriptionRate: {
       flexDirection: 'row',
@@ -411,7 +440,7 @@ const addStyles = StyleSheet.create({
       textAlign: 'center',
    },
    inputQty: {
-      width: 50,
+      width: 30,
       color: stylePrimary.mainColor,
       textAlign: 'center',
       fontSize: 15,

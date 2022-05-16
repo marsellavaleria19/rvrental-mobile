@@ -129,6 +129,10 @@ const MainStackNav = () => {
          <NavMainStack.Screen
             name="VerifyUser"
             options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.secondaryColor,
+               headerBackTitleStyle: addStyles.headerBack,
                title: 'Verify User',
             }}
             component={VerifyUser}

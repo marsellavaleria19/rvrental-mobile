@@ -608,7 +608,7 @@ const addStyles = StyleSheet.create({
       textAlign: 'center',
    },
    inputQty: {
-      width: 50,
+      width: 30,
       color: stylePrimary.mainColor,
       textAlign: 'center',
       fontSize: 15,
