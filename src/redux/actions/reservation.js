@@ -1,25 +1,25 @@
-export const reservationProcess = (vehicle, qty, day, date) => {
-   var rentStartDate = new Date(date);
+export const reservationProcess = (vehicle, dataReservation) => {
+   var rentStartDate = new Date(dataReservation.date);
    var rentEndDate = null;
    var tempDay = 0;
-   if (day == 1) {
+   if (dataReservation.day == 1) {
       rentEndDate = rentStartDate;
    } else {
-      const dayTemp = day - 1;
+      const dayTemp = dataReservation.day - 1;
       tempDay = rentStartDate.getDate() + dayTemp;
       rentEndDate = new Date(new Date().setDate(tempDay));
    }
 
-   const total = qty * vehicle.price * day;
+   const total = dataReservation.qty * vehicle.price * dataReservation.day;
 
    const data = {
       idVehicle: vehicle.id,
       brand: vehicle.name,
       photo: vehicle.photo,
-      qty,
+      qty: dataReservation.qty,
       rentStartDate,
       rentEndDate,
-      day,
+      day: dataReservation.day,
       totalPayment: total,
    };
    console.log(data);
