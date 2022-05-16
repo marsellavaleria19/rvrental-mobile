@@ -95,8 +95,6 @@ const auth = (state = dataLogin, action) => {
          state.user = data.result;
          state.isLoading = false;
          state.isError = false;
-         state.isVerify = true;
-         state.isRegister = false;
          return {...state};
       }
       case 'CONFIRM_VERIFY_USER_REJECTED': {
