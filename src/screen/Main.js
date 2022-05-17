@@ -13,7 +13,7 @@ import {getListCategory} from '../redux/actions/category';
 import {getListVehicleByCategory} from '../redux/actions/vehicle';
 import {getListLocation} from '../redux/actions/location';
 import {getListPaymentType} from '../redux/actions/payment';
-import {LIMIT_CATEGORY} from '@env';
+
 import Payment from './payment/Payment';
 
 const Main = () => {
