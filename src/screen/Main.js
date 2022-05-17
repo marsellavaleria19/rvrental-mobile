@@ -30,17 +30,6 @@ const Main = () => {
    }, []);
 
    useEffect(() => {
-      dispatch({
-         type: 'CLEAR_VEHICLE',
-      });
-      category.listCategory.length > 0 &&
-         category.listCategory.forEach(itemCategory => {
-            dispatch(getListVehicleByCategory(itemCategory.id, LIMIT_CATEGORY));
-         });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [category.listCategory]);
-
-   useEffect(() => {
       if (auth.token !== null) {
          dispatch(getDataUser(auth.token));
       }
