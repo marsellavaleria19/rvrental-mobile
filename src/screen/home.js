@@ -20,6 +20,8 @@ import {FlatList, Skeleton, VStack} from 'native-base';
 import filter from '../helpers/FilterSearch';
 import photoItem from '../assets/images/image-item.png';
 import NBModalLoading from '../components/NBModalLoading';
+import {getListVehicleByCategory} from '../redux/actions/vehicle';
+import {LIMIT_CATEGORY} from '@env';
 // import {image} from '../assets/images/backgroud-image.png'
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
@@ -31,6 +33,16 @@ const Home = ({navigation}) => {
    const [search, setSearch] = useState('');
    const [showModalLoading, setShowModalLoading] = useState(false);
 
+   useEffect(() => {
+      dispatch({
+         type: 'CLEAR_VEHICLE',
+      });
+      category.listCategory.length > 0 &&
+         category.listCategory.forEach(itemCategory => {
+            dispatch(getListVehicleByCategory(itemCategory.id, LIMIT_CATEGORY));
+         });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
    useEffect(() => {
       setShowModalLoading(vehicle.isLoading);
       // eslint-disable-next-line react-hooks/exhaustive-deps
