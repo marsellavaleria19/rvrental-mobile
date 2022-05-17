@@ -4,6 +4,7 @@ import {styles} from '../assets/styles/styles';
 import IconStar from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 import stylePrimary from '../assets/styles/stylePrimary';
+import NumberFormat from 'react-number-format';
 // import { FontAwesome } from '@expo/vector-icons';
 // import {image} from '../assets/images/backgroud-image.png'
 
@@ -35,8 +36,24 @@ const ListDetail = ({
                   <Text style={styles.titleDetail}>{title}</Text>
                   <Text style={styles.descriptionDetail}>{detail}</Text>
                   <Text style={styles.descriptionDetal}>{description}</Text>
-                  <Text style={styles.statusAvailable}>{status}</Text>
-                  <Text style={styles.priceDetail}>{price}</Text>
+                  {status == 'Available' ? (
+                     <Text style={styles.statusAvailable}>{status}</Text>
+                  ) : (
+                     <Text style={styles.statusNotAvailable}>{status}</Text>
+                  )}
+                  <NumberFormat
+                     value={price}
+                     displayType={'text'}
+                     thousandSeparator={true}
+                     decimalSeparator="."
+                     prefix={'Rp.'}
+                     renderText={value => (
+                        <Text style={stylePrimary.priceDatail}>
+                           {value.replace(',', '.')}
+                        </Text>
+                     )}
+                  />
+                  {/* <Text style={styles.priceDetail}>{price}</Text> */}
                </View>
             </View>
          </TouchableOpacity>
