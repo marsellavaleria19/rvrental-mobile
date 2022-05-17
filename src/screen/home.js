@@ -57,7 +57,10 @@ const Home = ({navigation}) => {
       var listVehicle = vehicle.listAllVehicle.filter(
          item => item.category_id === category.id,
       );
-      listVehicle = [...new Set(listVehicle)];
+      if (listVehicle.length > 0) {
+         listVehicle = [...new Set(listVehicle)];
+      }
+
       return listVehicle;
    };
 
@@ -116,48 +119,52 @@ const Home = ({navigation}) => {
             data={category.listCategory}
             renderItem={({item}) => {
                return (
-                  <ListBar
-                     title={item.name}
-                     navigate={() => navigateToDetailCategory(item)}>
-                     <FlatList
-                        horizontal={true}
-                        data={itemPerCategory(item)}
-                        renderItem={({item}) => {
-                           return (
-                              <TouchableOpacity
-                                 onPress={() =>
-                                    navigation.navigate(
-                                       `${
-                                          auth.user !== null &&
-                                          auth.user.role == 'admin'
-                                             ? 'EditItem'
-                                             : 'Reservation'
-                                       }`,
-                                       {
-                                          vehicleId: item.id,
-                                       },
-                                    )
-                                 }>
-                                 {item.photo !== null ? (
-                                    <Image
-                                       key={item.id}
-                                       source={{
-                                          uri: `${item.photo}`,
-                                       }}
-                                       style={addStyles.imageList}
-                                    />
-                                 ) : (
-                                    <Image
-                                       key={item.id}
-                                       source={photoItem}
-                                       style={addStyles.imageList}
-                                    />
-                                 )}
-                              </TouchableOpacity>
-                           );
-                        }}
-                     />
-                  </ListBar>
+                  <View style={addStyles.layoutCategory}>
+                     {itemPerCategory(item).length > 0 && (
+                        <ListBar
+                           title={item.name}
+                           navigate={() => navigateToDetailCategory(item)}>
+                           <FlatList
+                              horizontal={true}
+                              data={itemPerCategory(item)}
+                              renderItem={({item}) => {
+                                 return (
+                                    <TouchableOpacity
+                                       onPress={() =>
+                                          navigation.navigate(
+                                             `${
+                                                auth.user !== null &&
+                                                auth.user.role == 'admin'
+                                                   ? 'EditItem'
+                                                   : 'Reservation'
+                                             }`,
+                                             {
+                                                vehicleId: item.id,
+                                             },
+                                          )
+                                       }>
+                                       {item.photo !== null ? (
+                                          <Image
+                                             key={item.id}
+                                             source={{
+                                                uri: `${item.photo}`,
+                                             }}
+                                             style={addStyles.imageList}
+                                          />
+                                       ) : (
+                                          <Image
+                                             key={item.id}
+                                             source={photoItem}
+                                             style={addStyles.imageList}
+                                          />
+                                       )}
+                                    </TouchableOpacity>
+                                 );
+                              }}
+                           />
+                        </ListBar>
+                     )}
+                  </View>
                );
             }}
          />
@@ -211,7 +218,7 @@ const addStyles = StyleSheet.create({
       fontWeight: '700',
    },
    layoutCategory: {
-      marginBottom: 20,
+      marginBottom: 10,
    },
 });
 
