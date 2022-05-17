@@ -51,6 +51,24 @@ const history = (state = dataHistory, action) => {
          state.errMessage = data.message;
          return {...state};
       }
+      case 'HISTORY_DELETE_PENDING': {
+         state.isLoading = true;
+         return {...state};
+      }
+      case 'HISTORY_DELETE_FULFILLED': {
+         const {data} = action.payload;
+         state.isLoading = false;
+         state.isError = false;
+         state.message = data.message;
+         return {...state};
+      }
+      case 'HISTORY_DELETE_REJECTED': {
+         const {data} = action.payload.response;
+         state.isLoading = false;
+         state.isError = true;
+         state.errMessage = data.message;
+         return {...state};
+      }
       case 'HISTORY_SET_SUCCESS': {
          state.isSuccessPayment = true;
       }
