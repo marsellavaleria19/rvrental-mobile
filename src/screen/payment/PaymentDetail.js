@@ -23,6 +23,7 @@ import NBModalLoading from '../../components/NBModalLoading';
 import NBModalSuccess from '../../components/NBModalSuccess';
 import NBModalError from '../../components/NBModalError';
 import photoItem from '../../assets/images/image-item.png';
+import NumberFormat from 'react-number-format';
 
 const PaymentDetail = ({navigation}) => {
    const {payment, history, reservation, auth} = useSelector(state => state);
@@ -139,12 +140,18 @@ const PaymentDetail = ({navigation}) => {
                </View>
                <View style={addStyles.line} />
                <View style={addStyles.layoutPrice}>
-                  <Text style={addStyles.price}>
-                     Rp.{' '}
-                     {reservation.dataReservation.totalPayment.toLocaleString(
-                        'id-ID',
+                  <NumberFormat
+                     value={reservation.dataReservation.totalPayment}
+                     displayType={'text'}
+                     thousandSeparator={true}
+                     decimalSeparator="."
+                     prefix={'Rp.'}
+                     renderText={value => (
+                        <Text style={addStyles.price}>
+                           {value !== null ? value.replace(',', '.') : 0}
+                        </Text>
                      )}
-                  </Text>
+                  />
                   <IconInfo
                      name="information-circle-sharp"
                      style={addStyles.iconInfo}
@@ -211,7 +218,7 @@ const addStyles = StyleSheet.create({
    },
    iconInfo: {
       fontSize: 36,
-      color: stylePrimary.mainColor,
+      color: stylePrimary.secondaryColor,
    },
    layoutButton: {
       marginTop: 30,

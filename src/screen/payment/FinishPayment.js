@@ -15,6 +15,7 @@ import PushNotificationHandler from '../../helpers/PushNotificationHelper';
 import NBModalLoading from '../../components/NBModalLoading';
 import NBModalError from '../../components/NBModalError';
 import NBModalSuccess from '../../components/NBModalSuccess';
+import NumberFormat from 'react-number-format';
 
 const FinishPayment = ({route, navigation}) => {
    const {reservation, auth, history} = useSelector(state => state);
@@ -131,7 +132,7 @@ const FinishPayment = ({route, navigation}) => {
                         Bank account information :{' '}
                      </Text>
                      <Text style={addStyles.bankAccount}>0290-90203-345-2</Text>
-                     <Text style={addStyles.text}>Vespa Rental Jogja </Text>
+                     <Text style={addStyles.text}>PT RV Rental </Text>
                   </View>
                </View>
                <View style={addStyles.line} />
@@ -176,12 +177,24 @@ const FinishPayment = ({route, navigation}) => {
                </View>
                <View style={addStyles.line} />
                <View style={addStyles.layoutPrice}>
-                  <Text style={addStyles.price}>
+                  <NumberFormat
+                     value={reservation.dataReservation.totalPayment}
+                     displayType={'text'}
+                     thousandSeparator={true}
+                     decimalSeparator="."
+                     prefix={'Rp.'}
+                     renderText={value => (
+                        <Text style={addStyles.price}>
+                           {value.replace(',', '.')}
+                        </Text>
+                     )}
+                  />
+                  {/* <Text style={addStyles.price}>
                      Rp.{' '}
                      {reservation.dataReservation.totalPayment.toLocaleString(
                         'id-ID',
                      )}
-                  </Text>
+                  </Text> */}
                   <IconInfo
                      name="information-circle-sharp"
                      style={addStyles.iconInfo}
@@ -291,11 +304,12 @@ const addStyles = StyleSheet.create({
    },
    price: {
       fontSize: 30,
+      color: stylePrimary.mainColor,
       fontWeight: stylePrimary.bold,
    },
    iconInfo: {
       fontSize: 36,
-      color: '#DFDEDE',
+      color: stylePrimary.secondaryColor,
    },
    layoutButton: {
       marginTop: 30,

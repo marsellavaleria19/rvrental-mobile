@@ -11,6 +11,11 @@ import {useSelector, useDispatch} from 'react-redux';
 import moment from 'moment';
 import {useState} from 'react';
 import photoItem from '../../assets/images/image-item.png';
+import NumberFormat from 'react-number-format';
+import {
+   getListHistory,
+   getListHistoryByUserId,
+} from '../../redux/actions/history';
 
 const SuccessPayment = ({route, navigation}) => {
    const {history, auth} = useSelector(state => state);
@@ -26,10 +31,11 @@ const SuccessPayment = ({route, navigation}) => {
    // }, [history.listHistory]);
 
    const successPaymentHandle = () => {
-      dispatch({
-         type: 'HISTORY_SET_SUCCESS',
-      });
-      setControl(true);
+      if (auth.token !== 'admin') {
+         dispatch(getListHistoryByUserId(auth.token, auth.user.id));
+      } else {
+         dispatch(getListHistory(auth.token));
+      }
       navigation.navigate('HistoryNav');
    };
 
@@ -98,8 +104,20 @@ const SuccessPayment = ({route, navigation}) => {
                      <CButton
                         classButton={addStyles.buttonPayment}
                         textButton={addStyles.fontButtonPayment}>
-                        Total :{' '}
-                        {history.dataHistory.prepayment.toLocaleString('id-ID')}
+                        <NumberFormat
+                           value={history.dataHistory.prepayment}
+                           displayType={'text'}
+                           thousandSeparator={true}
+                           decimalSeparator="."
+                           prefix={'Rp.'}
+                           format="Total : Rp. ###.###"
+                           renderText={value => (
+                              <Text style={addStyles.fontButtonPayment}>
+                                 {value}
+                              </Text>
+                           )}
+                        />
+                        {/* {history.dataHistory.prepayment.toLocaleString('id-ID')} */}
                      </CButton>
                   </TouchableOpacity>
                </View>
