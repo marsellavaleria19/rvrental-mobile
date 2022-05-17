@@ -1,10 +1,7 @@
 import * as React from 'react';
-import {Text, View, StyleSheet, SafeAreaView} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 import {styles} from '../assets/styles/styles';
 import Container from '../components/Container';
-import IconChevron from 'react-native-vector-icons/FontAwesome';
-import stylePrimary from '../assets/styles/stylePrimary';
-import ListFavorite from '../components/ListHistoryFavorite';
 import image from '../assets/images/background-reservation.png';
 import {ScrollView} from 'native-base';
 import {useEffect} from 'react';

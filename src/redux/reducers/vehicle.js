@@ -18,7 +18,9 @@ const vehicle = (state = dataVehicle, action) => {
       case 'GET_VEHICLE_FULFILLED': {
          const {data} = action.payload;
          state.listVehicle = data.result;
-         state.listAllVehicle = [...state.listAllVehicle, ...data.result];
+         var listAllDataVehicle = [...state.listAllVehicle, ...data.result];
+         state.listAllVehicle = [...new Set(listAllDataVehicle)];
+         console.log(state.listAllVehicle);
          state.pageInfo = data.pageInfo;
          state.isLoading = false;
          return {...state};
@@ -91,18 +93,18 @@ const vehicle = (state = dataVehicle, action) => {
          state.errMessage = data.message;
          return {...state};
       }
-      case 'GET_VEHICLE_NEXT_PENDING': {
+      case 'VEHICLE_NEXT_PENDING': {
          state.isLoading = true;
          return {...state};
       }
-      case 'GET_VEHICLE_NEXT_FULFILLED': {
+      case 'VEHICLE_NEXT_FULFILLED': {
          const {data} = action.payload;
-         state.listVehicle = [...state.listVehicle, ...data.results];
+         state.listVehicle = [...state.listVehicle, ...data.result];
          state.pageInfo = data.pageInfo;
          state.isLoading = false;
          return {...state};
       }
-      case 'GET_VEHICLE_NEXT_REJECTED': {
+      case 'VEHICLE_NEXT_REJECTED': {
          state.isLoading = false;
          state.isError = true;
          return {...state};

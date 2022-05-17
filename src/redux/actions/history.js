@@ -73,7 +73,7 @@ export const getListFilterHistory = (token, search) => {
 
 export const deleteHistory = (token, id) => {
    return {
-      type: 'HISTORY',
+      type: 'HISTORY_DELETE',
       payload: AxiosCostum(token).delete(`/histories/${id}`),
    };
 };

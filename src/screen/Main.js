@@ -13,7 +13,7 @@ import {getListCategory} from '../redux/actions/category';
 import {getListVehicleByCategory} from '../redux/actions/vehicle';
 import {getListLocation} from '../redux/actions/location';
 import {getListPaymentType} from '../redux/actions/payment';
-import {LIMIT_CATEGORY} from '@env';
+
 import Payment from './payment/Payment';
 
 const Main = () => {
@@ -28,17 +28,6 @@ const Main = () => {
       dispatch(getListLocation());
       dispatch(getListPaymentType());
    }, []);
-
-   useEffect(() => {
-      dispatch({
-         type: 'CLEAR_VEHICLE',
-      });
-      category.listCategory.length > 0 &&
-         category.listCategory.forEach(itemCategory => {
-            dispatch(getListVehicleByCategory(itemCategory.id, LIMIT_CATEGORY));
-         });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [category.listCategory]);
 
    useEffect(() => {
       if (auth.token !== null) {

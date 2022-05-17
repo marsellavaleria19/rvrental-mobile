@@ -37,6 +37,7 @@ import {
 } from '../redux/actions/favorite';
 import {validation} from '../helpers/validation';
 import ErrorMessage from '../components/ErrorMessage';
+import NumberFormat from 'react-number-format';
 
 const Reservation = ({navigation}) => {
    const {vehicle, counter, auth, reservation, favorite} = useSelector(
@@ -203,11 +204,22 @@ const Reservation = ({navigation}) => {
                            {vehicle.dataVehicle !== null &&
                               vehicle.dataVehicle.name}
                         </Text>
-                        <Text style={addStyles.price}>
-                           {vehicle.dataVehicle !== null
-                              ? `Rp. ${vehicle.dataVehicle.price.toLocaleString()}/day`
-                              : 'Rp.0'}
-                        </Text>
+                        <NumberFormat
+                           value={
+                              vehicle?.dataVehicle.price !== null
+                                 ? vehicle.dataVehicle.price
+                                 : 0
+                           }
+                           displayType={'text'}
+                           thousandSeparator={true}
+                           decimalSeparator="."
+                           prefix={'Rp.'}
+                           renderText={value => (
+                              <Text style={addStyles.price}>
+                                 {value.replace(',', '.')}/day
+                              </Text>
+                           )}
+                        />
                      </View>
                      <View>
                         <View
