@@ -34,10 +34,10 @@ const styles = StyleSheet.create({
       width: 101,
       height: 88,
       borderRadius: 10,
-      margin: 10,
+      margin: 5,
    },
    layoutDetail: {
-      marginHorizontal: 24,
+      marginHorizontal: 5,
    },
    titleDetail: {
       fontSize: 14,
