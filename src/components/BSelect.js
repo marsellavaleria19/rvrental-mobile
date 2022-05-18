@@ -30,7 +30,6 @@ const BSelect = ({
                //    endIcon: <CheckIcon size="5" />,
                //    variant: {variantSelect},
                // }}
-               arro
                variant={variantSelect}
                bg="teal.600"
                onValueChange={change}
