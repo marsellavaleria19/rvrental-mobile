@@ -5,6 +5,7 @@ import {
    ImageBackground,
    Image,
    TouchableOpacity,
+   Text,
 } from 'react-native';
 import {styles} from '../assets/styles/styles';
 import Container from '../components/Container';
@@ -20,8 +21,12 @@ import {FlatList, Skeleton, VStack} from 'native-base';
 import filter from '../helpers/FilterSearch';
 import photoItem from '../assets/images/image-item.png';
 import NBModalLoading from '../components/NBModalLoading';
-import {getListVehicleByCategory} from '../redux/actions/vehicle';
+import {
+   getListVehicleByCategory,
+   saveDetailVehicle,
+} from '../redux/actions/vehicle';
 import {LIMIT_CATEGORY} from '@env';
+import NBModal from '../components/NBModal';
 // import {image} from '../assets/images/backgroud-image.png'
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
@@ -32,6 +37,9 @@ const Home = ({navigation}) => {
    const [listVehicle, setLisstVehicle] = useState([]);
    const [search, setSearch] = useState('');
    const [showModalLoading, setShowModalLoading] = useState(false);
+   const [show, setShow] = useState(false);
+   const handleShow = () => setShow(true);
+   const handleClose = () => setShow(false);
 
    useEffect(() => {
       dispatch({
@@ -85,9 +93,40 @@ const Home = ({navigation}) => {
       });
    };
 
+   const verifyHandle = () => {
+      navigation.navigate('VerifyUserEmail');
+   };
+
+   const detailVehicleHandle = item => {
+      dispatch(saveDetailVehicle(item));
+      if (auth.user !== null) {
+         if (auth.user.isVerified == true) {
+            if (auth.user.role == 'admin') {
+               navigation.navigate('EditItem');
+            } else {
+               navigation.navigate('Reservation');
+            }
+         } else {
+            handleShow();
+         }
+      }
+   };
+
    return (
       <View style={styles.background}>
          <NBModalLoading show={showModalLoading} />
+         <NBModal
+            title="Verifiy Email"
+            show={show}
+            functionClose={handleClose}
+            functionHandle={verifyHandle}
+            isButtonCancel={false}
+            button="Go to verifiy email">
+            <Text>
+               Sorry, your account is not verfied. Please verified your account
+               for enjoy our product..
+            </Text>
+         </NBModal>
          <FlatList
             ListHeaderComponent={
                <View>
@@ -131,17 +170,7 @@ const Home = ({navigation}) => {
                                  return (
                                     <TouchableOpacity
                                        onPress={() =>
-                                          navigation.navigate(
-                                             `${
-                                                auth.user !== null &&
-                                                auth.user.role == 'admin'
-                                                   ? 'EditItem'
-                                                   : 'Reservation'
-                                             }`,
-                                             {
-                                                vehicleId: item.id,
-                                             },
-                                          )
+                                          detailVehicleHandle(item)
                                        }>
                                        {item.photo !== null ? (
                                           <Image
