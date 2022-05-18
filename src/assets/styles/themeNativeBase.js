@@ -48,6 +48,7 @@ export const theme = extendTheme({
             },
             item: {
                backgroundColor: stylePrimary.background,
+               border: 'none',
                borderBottomWidth: 1,
                borderBottomColor: '#9F9F9F',
                color: stylePrimary.mainColor,
@@ -87,7 +88,7 @@ export const theme = extendTheme({
          },
          variants: {
             profile: {
-               px: 5,
+               px: 2,
             },
          },
       },
@@ -95,7 +96,7 @@ export const theme = extendTheme({
          variants: {
             profile: {
                backgroundColor: stylePrimary.background,
-               border: 'none',
+               borderWidth: 0,
                borderBottomWidth: 1,
                borderBottomColor: '#9F9F9F',
                _text: {
@@ -143,25 +144,35 @@ export const theme = extendTheme({
             },
             item: {
                backgroundColor: stylePrimary.background,
+               borderColor: stylePrimary.mainColor,
                borderWidth: 1,
-               borderColor: '#9F9F9F',
-               borderRadius: 8,
-               placeholderTextColor: stylePrimary.mainColor,
-               height: 51,
                _text: {
-                  color: stylePrimary.mainColor,
+                  color: stylePrimary.secondaryColor,
                },
+               placeholderTextColor: stylePrimary.secondaryColor,
+               // opacity: 0.1,
+               borderRadius: 10,
             },
             updateItem: {
                backgroundColor: stylePrimary.background,
+               borderColor: stylePrimary.mainColor,
                borderWidth: 0,
                fontSize: 16,
-               color: 'gray',
-               placeholderTextColor: stylePrimary.secondaryColor,
-               height: 51,
                _text: {
-                  color: stylePrimary.mainColor,
+                  color: stylePrimary.secondaryColor,
                },
+               placeholderTextColor: stylePrimary.secondaryColor,
+               // opacity: 0.1,
+               borderRadius: 10,
+               // backgroundColor: stylePrimary.background,
+               // borderWidth: 0,
+               // fontSize: 16,
+               // color: 'gray',
+               // placeholderTextColor: stylePrimary.secondaryColor,
+               // height: 51,
+               // _text: {
+               //    color: stylePrimary.mainColor,
+               // },
                customDropdownIconProps: {
                   display: 'none',
                },
