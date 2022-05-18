@@ -34,6 +34,10 @@ const History = ({navigation}) => {
    const [check, setCheck] = useState(false);
 
    useEffect(() => {
+      setDeleteListHistory([]);
+   }, []);
+
+   useEffect(() => {
       setShowModalLoading(history.isLoading);
       if (history.isLoading == false && control == true) {
          if (history.isError) {
@@ -41,6 +45,7 @@ const History = ({navigation}) => {
             setShowModalError(true);
          } else {
             setMessageSuccess(history.message);
+            setDeleteListHistory([]);
             setShowModalSuccess(true);
             if (auth.user.role !== 'admin') {
                dispatch(getListHistoryByUserId(auth.token, auth.user.id));
