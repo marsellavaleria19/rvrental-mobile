@@ -13,7 +13,7 @@ import {getListCategory} from '../redux/actions/category';
 import {getListVehicleByCategory} from '../redux/actions/vehicle';
 import {getListLocation} from '../redux/actions/location';
 import {getListPaymentType} from '../redux/actions/payment';
-
+import {getListHistory, getListHistoryByUserId} from '../redux/actions/history';
 import Payment from './payment/Payment';
 
 const Main = () => {
@@ -32,6 +32,11 @@ const Main = () => {
    useEffect(() => {
       if (auth.token !== null) {
          dispatch(getDataUser(auth.token));
+         if (auth.user.role !== 'admin') {
+            dispatch(getListHistoryByUserId(auth.token, auth.user.id));
+         } else {
+            dispatch(getListHistory(auth.token));
+         }
       }
    }, [auth.token]);
 

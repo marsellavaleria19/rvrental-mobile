@@ -10,6 +10,7 @@ import ProfileMenuList from '../screen/profile/ListMenuProfile';
 import stylePrimary from '../assets/styles/stylePrimary';
 import {StyleSheet} from 'react-native';
 import {Center, View} from 'native-base';
+import History from '../screen/HistoryCheckbox';
 
 const NavBottomTabStack = createBottomTabNavigator();
 
@@ -51,7 +52,7 @@ const BottomTabNav = () => {
             }}
             component={HomeNavigator}
          />
-         <NavBottomTabStack.Screen
+         {/* <NavBottomTabStack.Screen
             name="HistoryNav"
             options={{
                tabBarStyle: addStyles.layoutHeader,
@@ -67,7 +68,26 @@ const BottomTabNav = () => {
                },
             }}
             component={HistoryTabNav}
+         /> */}
+
+         <NavBottomTabStack.Screen
+            name="History"
+            options={{
+               tabBarStyle: addStyles.layoutHeader,
+               tabBarIcon: ({focused, color, size}) => {
+                  // You can return any component that you like here!
+                  return (
+                     <Icon
+                        iconType="IonIcon"
+                        name="md-document-text"
+                        active={focused}
+                     />
+                  );
+               },
+            }}
+            component={History}
          />
+
          <NavBottomTabStack.Screen
             name="Profile"
             options={{

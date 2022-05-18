@@ -21,7 +21,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import IconLeft from 'react-native-vector-icons/FontAwesome';
 import {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {getDetailVehicle} from '../../redux/actions/vehicle';
+import {getDetailVehicle, saveDetailVehicle} from '../../redux/actions/vehicle';
+import NumberFormat from 'react-number-format';
 // import {reservationProcess} from '../redux/actions/reservation';
 
 const EditItem = ({navigation}) => {
@@ -71,10 +72,10 @@ const EditItem = ({navigation}) => {
       }
    };
 
-   // const reservationHandle = () => {
-   //    dispatch(reservationProcess(vehicle.dataVehicle, qty, day, date));
-   //    setControl(true);
-   // };
+   const editItemHandle = () => {
+      dispatch(saveDetailVehicle(vehicle.dataVehicle));
+      navigation.navigate('UpdateItem');
+   };
 
    return (
       <View style={styles.background}>
@@ -106,17 +107,36 @@ const EditItem = ({navigation}) => {
                   <View style={addStyles.layoutDescriptionRate}>
                      <View>
                         <Text style={addStyles.title}>{name}</Text>
-                        <Text style={addStyles.price}>
+                        <NumberFormat
+                           value={price}
+                           displayType={'text'}
+                           thousandSeparator={true}
+                           decimalSeparator="."
+                           prefix={'Rp.'}
+                           renderText={value => (
+                              <Text style={addStyles.price}>
+                                 {value.replace(',', '.')}/day
+                              </Text>
+                           )}
+                        />
+                        {/* <Text style={addStyles.price}>
                            {price !== 0
                               ? `Rp. ${price.toLocaleString('id-ID')}/day`
                               : 'Rp.0'}
-                        </Text>
+                        </Text> */}
                      </View>
                   </View>
                   <View style={addStyles.layoutDescription}>
                      <Text style={addStyles.description}>Max for 2 person</Text>
                      <Text style={addStyles.description}>No prepayment</Text>
-                     <Text style={styles.statusAvailable}>Available</Text>
+                     <Text
+                        style={
+                           isAvailable == 1
+                              ? styles.statusAvailable
+                              : styles.statusNotAvailable
+                        }>
+                        {isAvailable == 1 ? 'Available ' : 'Full Booked'}
+                     </Text>
                      <View style={addStyles.layoutLocation}>
                         <LinearGradient
                            colors={[stylePrimary.secondaryColor, '#7796b6']}
@@ -164,8 +184,7 @@ const EditItem = ({navigation}) => {
                   </View>
                </View>
                <View style={addStyles.layoutButton}>
-                  <TouchableOpacity
-                     onPress={() => navigation.navigate('UpdateItem')}>
+                  <TouchableOpacity onPress={editItemHandle}>
                      <CButton
                         classButton={addStyles.buttonReservation}
                         textButton={addStyles.fontButtonReservation}>

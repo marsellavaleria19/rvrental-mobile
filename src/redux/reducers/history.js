@@ -19,7 +19,6 @@ const history = (state = dataHistory, action) => {
          state.listHistory = data.result;
          state.isLoading = false;
          state.isError = false;
-         state.message = data.message;
          return {...state};
       }
       case 'CLEAR_HISTORY': {
@@ -56,7 +55,8 @@ const history = (state = dataHistory, action) => {
          return {...state};
       }
       case 'HISTORY_DELETE_FULFILLED': {
-         const {data} = action.payload;
+         const {data} = action.payload[0];
+         // console.log(action.payload);
          state.isLoading = false;
          state.isError = false;
          state.message = data.message;

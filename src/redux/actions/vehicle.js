@@ -33,6 +33,12 @@ export const getDetailVehicle = id => {
    };
 };
 
+export const getDataVehicle = () => {
+   return {
+      type: 'GET_DATA_VEHICLE',
+   };
+};
+
 export const saveDetailVehicle = item => {
    return {
       type: 'SAVE_DETAIL_VEHICLE',

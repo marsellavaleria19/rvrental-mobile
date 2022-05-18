@@ -13,17 +13,19 @@ import CButton from '../../components/Button';
 import CInput from '../../components/Input';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import IconRun from 'react-native-vector-icons/FontAwesome5';
-import imageBackground from '../../assets/images/image-photo.png';
+import imageBackground from '../../assets/images/image-item.png';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons';
 import Rate from '../../components/Rate';
 import LinearGradient from 'react-native-linear-gradient';
 import IconLeft from 'react-native-vector-icons/FontAwesome';
 import {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import IconDelete from 'react-native-vector-icons/FontAwesome';
+import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
+import IconFeather from 'react-native-vector-icons/Feather';
 import {
    updateDataVehicle,
    deleteDataVehicle,
+   getDetailVehicle,
 } from '../../redux/actions/vehicle';
 import {Select, Box} from 'native-base';
 import BSelect from '../../components/BSelect';
@@ -38,6 +40,7 @@ import {getListLocation} from '../../redux/actions/location';
 import {getListVehicleByCategory} from '../../redux/actions/vehicle';
 import {LIMIT_VEHICLE} from '@env';
 import NBModalConfirmation from '../../components/NBModalConfirmation';
+import {addDataLocation} from '../../redux/actions/location';
 
 const UpdateItem = ({navigation}) => {
    const {vehicle, auth, location} = useSelector(state => state);
@@ -45,7 +48,7 @@ const UpdateItem = ({navigation}) => {
       name: '',
       price: '',
       location: '',
-      isAvailable: '',
+      'is available': '',
       qty: '0',
    });
    const dispatch = useDispatch();
@@ -74,19 +77,30 @@ const UpdateItem = ({navigation}) => {
    ] = useState(false);
    const handleCloseModalSuccessLocationCategory = () =>
       setShowModalSuccessLocationCategory(false);
+   const [typeImage, setTypeImage] = useState([
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+   ]);
 
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    useEffect(() => {
+      dispatch({
+         type: 'GET_DATA_VEHICLE',
+      });
       inputVehicle.name = vehicle.dataVehicle.name;
       inputVehicle.price = `${vehicle.dataVehicle.price}`;
       inputVehicle.location = vehicle.dataVehicle.location_id;
       inputVehicle.qty = `${vehicle.dataVehicle.qty}`;
       inputVehicle['is available'] = vehicle.dataVehicle.isAvailable;
       setInputVehicle(inputVehicle);
+      console.log(inputVehicle);
       setPicture(
          vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
             ? {uri: `${vehicle.dataVehicle.photo}`}
             : imageBackground,
       );
+
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
@@ -170,7 +184,6 @@ const UpdateItem = ({navigation}) => {
             qty: inputVehicle.qty.toString(),
             isAvailable: inputVehicle['is available'].toString(),
          };
-         console.log(data);
          if (Object.keys(image).length > 0) {
             dispatch(
                updateDataVehicle(
@@ -204,7 +217,6 @@ const UpdateItem = ({navigation}) => {
       });
       setImage(imagePicker);
    };
-
    const addLocationHandle = () => {
       const data = {
          'data location': dataLocation,
@@ -225,6 +237,18 @@ const UpdateItem = ({navigation}) => {
             };
          }
       }
+
+      if (Object.keys(validate).length == 0) {
+         dispatch(addDataLocation(auth.token, dataLocation));
+         setControl(true);
+         setInputVehicle({...inputVehicle, location: dataLocation.id});
+         // setCategoryId(dataCategory.id);
+         setShowModalLocation(false);
+         setDataLocation(null);
+         setErrorValidate({});
+      } else {
+         setErrorValidate(validate);
+      }
    };
 
    const goToDetailCategory = () => {
@@ -244,30 +268,46 @@ const UpdateItem = ({navigation}) => {
       <View style={styles.background}>
          <ScrollView>
             <View>
-               <TouchableOpacity onPress={browseImage}>
-                  <ImageBackground
-                     source={picture}
-                     resizeMode="cover"
-                     style={addStyles.imageBackground}>
-                     <Container>
-                        <View style={addStyles.layoutBar}>
-                           <TouchableOpacity
-                              onPress={() => navigation.goBack()}
-                              style={addStyles.layoutBack}>
-                              <IconLeft
-                                 name="chevron-left"
-                                 style={addStyles.iconBack}
-                              />
+               <ImageBackground
+                  source={picture}
+                  resizeMode="cover"
+                  style={addStyles.imageBackground}>
+                  <Container>
+                     <View style={addStyles.layoutBar}>
+                        <TouchableOpacity
+                           onPress={() => navigation.goBack()}
+                           style={addStyles.layoutBack}>
+                           <IconLeft
+                              name="chevron-left"
+                              style={addStyles.iconBack}
+                           />
+                        </TouchableOpacity>
+                        <View style={addStyles.layoutUploadRate}>
+                           <TouchableOpacity onPress={browseImage}>
+                              <View style={addStyles.buttonUpload}>
+                                 <IconFeather
+                                    name="upload"
+                                    style={addStyles.iconUpload}
+                                 />
+                              </View>
                            </TouchableOpacity>
                            <View style={addStyles.flexRow}>
                               <Rate rate={4.5} />
                            </View>
                         </View>
-                     </Container>
-                  </ImageBackground>
-               </TouchableOpacity>
+                     </View>
+                  </Container>
+               </ImageBackground>
             </View>
             <Container>
+               <Text style={addStyles.textErrorImage}>
+                  {Object.keys(image).length > 0 &&
+                     image.assets[0].fileSize > 2000000 &&
+                     'Photo max 2 MB'}
+                  {Object.keys(image).length > 0 &&
+                     !typeImage.includes(image.assets[0].type) &&
+                     'Image type must be .jpg/.png/.gif '}
+               </Text>
                <View style={addStyles.marginLayout}>
                   <NBModalLoading show={showModalLoading} />
                   {messageError !== '' && (
@@ -322,7 +362,7 @@ const UpdateItem = ({navigation}) => {
                      <View>
                         <TouchableOpacity onPress={handleShow}>
                            <View style={addStyles.layoutDelete}>
-                              <IconDelete
+                              <IconFontAwesome
                                  name="trash-o"
                                  style={addStyles.iconDelete}
                               />
@@ -346,11 +386,11 @@ const UpdateItem = ({navigation}) => {
                      <Text style={addStyles.description}>No prepayment</Text>
                      <Text
                         style={
-                           inputVehicle.isAvailable == 1
+                           inputVehicle['is available'] == 1
                               ? styles.statusAvailable
                               : styles.statusNotAvailable
                         }>
-                        {inputVehicle.isAvailable == 1
+                        {inputVehicle['is available'] == 1
                            ? 'Available '
                            : 'Full Booked'}
                      </Text>
@@ -379,6 +419,7 @@ const UpdateItem = ({navigation}) => {
                               Object.keys(errorValidate).length > 0 &&
                               errorValidate.location
                            }
+                           selected={inputVehicle.location}
                            value={inputVehicle.location}
                            change={itemValue =>
                               setInputVehicle({
@@ -390,6 +431,7 @@ const UpdateItem = ({navigation}) => {
                               location.listLocation.map(item => {
                                  return (
                                     <Select.Item
+                                       key={item.id}
                                        label={item.location}
                                        value={item.id}
                                        variant={'item'}
@@ -475,7 +517,7 @@ const UpdateItem = ({navigation}) => {
                               change={itemValue =>
                                  setInputVehicle({
                                     ...inputVehicle,
-                                    isAvailable: itemValue,
+                                    'is available': itemValue,
                                  })
                               }>
                               <Select.Item label="Available" value={1} />
@@ -509,6 +551,25 @@ const addStyles = StyleSheet.create({
       justifyContent: 'space-between',
       marginTop: 40,
    },
+   layoutUploadRate: {
+      flexDirection: 'row',
+   },
+   buttonUpload: {
+      fontWeight: '700',
+      fontSize: 30,
+      width: 35,
+      height: 35,
+      borderRadius: 20,
+      backgroundColor: stylePrimary.secondaryColor,
+      marginRight: 5,
+   },
+   iconUpload: {
+      fontWeight: '700',
+      fontSize: 20,
+      alignSelf: 'center',
+      color: stylePrimary.mainColor,
+      marginTop: 5,
+   },
    iconBack: {
       color: stylePrimary.mainColor,
       fontSize: 22,
@@ -527,7 +588,7 @@ const addStyles = StyleSheet.create({
    iconDelete: {
       fontWeight: '700',
       fontSize: 20,
-      marginTop: 10,
+      marginTop: 5,
       alignSelf: 'center',
       color: stylePrimary.mainColor,
    },
@@ -636,6 +697,11 @@ const addStyles = StyleSheet.create({
       fontSize: 24,
       color: stylePrimary.mainColor,
       fontWeight: '700',
+   },
+   textErrorImage: {
+      fontSize: 12,
+      color: 'red',
+      textAlign: 'center',
    },
 });
 
