@@ -38,16 +38,20 @@ const vehicle = (state = dataVehicle, action) => {
          const {data} = action.payload;
          // var dataJson = JSON.parse(data);
          state.dataVehicle = data.result;
-         state.message = dataJson.message;
          state.isLoading = false;
+         state.isError = false;
          return {...state};
       }
       case 'GET_DETAIL_VEHICLE_REJECTED': {
          state.isLoading = false;
-         const {data} = action.payload;
+         const {data} = action.payload.response;
          state.isError = true;
-         var dataJson = JSON.parse(data);
-         state.errMessage = dataJson.message;
+         state.errMessage = data.message;
+         return {...state};
+      }
+      case 'GET_DATA_VEHICLE': {
+         // var dataJson = JSON.parse(data);
+         state.dataVehicle;
          return {...state};
       }
       case 'SAVE_DETAIL_VEHICLE': {
