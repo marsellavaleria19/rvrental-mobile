@@ -28,13 +28,16 @@ import NBModalSuccess from '../../components/NBModalSuccess';
 import NBTextArea from '../../components/NBTextArea';
 import Input from '../../components/Input';
 import {getListLocation, addDataLocation} from '../../redux/actions/location';
+import {getListVehicleByCategory} from '../../redux/actions/vehicle';
+import ErrorMessage from '../../components/ErrorMessage';
+import {LIMIT_CATEGORY} from '@env';
 
 const AddItem = ({navigation}) => {
    const {auth, category, vehicle, location} = useSelector(state => state);
    var [inputItem, setInputItem] = useState({
       name: '',
       price: '',
-      qty: '0',
+      stock: '0',
       description: '',
       location: '',
       category: '',
@@ -65,13 +68,18 @@ const AddItem = ({navigation}) => {
    ] = useState(false);
    const handleCloseModalSuccessLocationCategory = () =>
       setShowModalSuccessLocationCategory(false);
+   const [typeImage, setTypeImage] = useState([
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+   ]);
 
    useEffect(() => {
       setErrValidation({});
       setInputItem({
          name: '',
          price: '',
-         qty: '0',
+         stock: '0',
          description: '',
          location: '',
          category: '',
@@ -100,6 +108,12 @@ const AddItem = ({navigation}) => {
          } else {
             setMessageSuccess(vehicle.message);
             setShowModalSuccess(true);
+            category.listCategory.length > 0 &&
+               category.listCategory.forEach(itemCategory => {
+                  dispatch(
+                     getListVehicleByCategory(itemCategory.id, LIMIT_CATEGORY),
+                  );
+               });
             setControl(false);
          }
       }
@@ -160,6 +174,20 @@ const AddItem = ({navigation}) => {
       setImage({...imagePicker});
    };
 
+   const validateImage = () => {
+      const typeImage = ['image/jpeg', 'image/png', 'image/gif'];
+      if (Object.keys(image).length > 0) {
+         console.log(image);
+         if (image.assets[0].fileSize > 2000000) {
+            setMessageError('Image size max 2MB');
+         }
+         if (!typeImage.includes(image.assets[0].type)) {
+            setMessageError('Image type must be .jpg/.png/.gif');
+         }
+         // setShowModalError(true);
+      }
+   };
+
    const addItemHandle = () => {
       var requirement = {
          name: 'required',
@@ -167,18 +195,28 @@ const AddItem = ({navigation}) => {
          location: 'choose',
          category: 'choose',
          description: 'required',
+         stock: 'grather0',
       };
       inputItem.location = inputItem.location.toString();
       inputItem.category = inputItem.category.toString();
       const validate = validation(inputItem, requirement);
-      console.log(image);
+      const typeImage = ['image/jpeg', 'image/png', 'image/gif'];
+      if (Object.keys(image).length > 0) {
+         if (image.assets[0].fileSize > 2000000) {
+            setMessageError('Image size max 2MB');
+         }
+         if (!typeImage.includes(image.assets[0].type)) {
+            setMessageError('Image type must be .jpg/.png/.gif');
+         }
+         setShowModalError(true);
+      }
       if (Object.keys(validate).length == 0) {
          var dataSend = {
             name: inputItem.name,
             category_id: inputItem.category,
             location_id: inputItem.location,
             price: inputItem.price,
-            qty: inputItem.qty,
+            qty: inputItem.stock,
             isAvailable: '1',
             description: inputItem.description,
          };
@@ -308,11 +346,14 @@ const AddItem = ({navigation}) => {
                   </TouchableOpacity>
                </View>
                <View style={addStyles.layoutForm}>
-                  {/* <Text style={addStyles.textErrorImage}>
+                  <Text style={addStyles.textErrorImage}>
                      {Object.keys(image).length > 0 &&
                         image.assets[0].fileSize > 2000000 &&
                         'Photo max 2 MB'}
-                  </Text> */}
+                     {Object.keys(image).length > 0 &&
+                        !typeImage.includes(image.assets[0].type) &&
+                        'Image type must be .jpg/.png/.gif '}
+                  </Text>
                   <View style={addStyles.layoutInput}>
                      <NBInput
                         placeholder={'Type product name min 30 Characters'}
@@ -394,6 +435,7 @@ const AddItem = ({navigation}) => {
                                  location.listLocation.map(item => {
                                     return (
                                        <Select.Item
+                                          key={item.id}
                                           label={item.location}
                                           value={item.id}
                                           variant={'item'}
@@ -504,9 +546,9 @@ const AddItem = ({navigation}) => {
                            </TouchableOpacity>
                            <Input
                               style={addStyles.inputQty}
-                              value={inputItem.qty}
+                              value={inputItem.stock}
                               change={newQty =>
-                                 setInputItem({...inputItem, qty: newQty})
+                                 setInputItem({...inputItem, stock: newQty})
                               }
                               keyboardType="numeric"
                            />
@@ -519,6 +561,10 @@ const AddItem = ({navigation}) => {
                            </TouchableOpacity>
                         </View>
                      </View>
+                     {Object.keys(errValidation).length > 0 &&
+                        errValidation.stock && (
+                           <ErrorMessage error={errValidation.stock} />
+                        )}
                   </View>
                   <View style={addStyles.layoutButton}>
                      <TouchableOpacity onPress={addItemHandle}>
