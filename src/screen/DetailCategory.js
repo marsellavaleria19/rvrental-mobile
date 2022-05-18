@@ -92,7 +92,7 @@ const DetailCategory = ({route, navigation}) => {
                               status={
                                  item.isAvailable == 1
                                     ? 'Available'
-                                    : 'Not Available'
+                                    : 'Full Booked'
                               }
                               price={item.price}
                               rate={item.rate}
