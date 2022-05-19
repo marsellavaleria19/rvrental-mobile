@@ -25,7 +25,6 @@ import {
    getListVehicleByCategory,
    saveDetailVehicle,
 } from '../redux/actions/vehicle';
-import {LIMIT_CATEGORY} from '@env';
 import NBModal from '../components/NBModal';
 // import {image} from '../assets/images/backgroud-image.png'
 
@@ -42,23 +41,6 @@ const Home = ({navigation}) => {
    const handleClose = () => setShow(false);
 
    useEffect(() => {
-      dispatch({
-         type: 'CLEAR_VEHICLE',
-      });
-      category.listCategory.length > 0 &&
-         category.listCategory.forEach(itemCategory => {
-            dispatch(
-               getListVehicleByCategory(
-                  itemCategory.id,
-                  LIMIT_CATEGORY,
-                  'home',
-               ),
-            );
-         });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [dispatch]);
-
-   useEffect(() => {
       setShowModalLoading(vehicle.isLoading);
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [vehicle.isLoading]);
@@ -69,12 +51,14 @@ const Home = ({navigation}) => {
    };
 
    const itemPerCategory = category => {
-      var listVehicle = vehicle.listAllVehicle.filter(
-         item => item.category_id === category.id,
-      );
-      if (listVehicle.length > 0) {
-         listVehicle = [...new Set(listVehicle)];
-      }
+      var listVehicle = vehicle.listAllVehicle
+         .filter(item => item.category_id === category.id)
+         .filter((value, index, self) => {
+            return index === self.findIndex(vehicle => vehicle.id === value.id);
+         });
+      // if (listVehicle.length > 0) {
+      //    listVehicle = [...new Set(listVehicle)];
+      // }
 
       return listVehicle;
    };
