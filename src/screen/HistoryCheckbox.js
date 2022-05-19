@@ -14,11 +14,15 @@ import NBModalLoading from '../components/NBModalLoading';
 import NBModalError from '../components/NBModalError';
 import NBModalSuccess from '../components/NBModalSuccess';
 import NBModalConfirmation from '../components/NBModalConfirmation';
-import {getListHistoryByUserId, getListHistory} from '../redux/actions/history';
+import {
+   getListHistoryByUserId,
+   getListHistory,
+   getNextListHistory,
+} from '../redux/actions/history';
 
 const History = ({navigation}) => {
    const {history, auth} = useSelector(state => state);
-   const [listDeleteHistory, setDeleteListHistory] = useState([]);
+   var [listDeleteHistory, setListDeleteHistory] = useState([]);
    const dispatch = useDispatch();
    const [control, setControl] = useState(false);
    const [showModalDelete, setShowModalDelete] = useState(false);
@@ -34,7 +38,7 @@ const History = ({navigation}) => {
    const [check, setCheck] = useState(false);
 
    useEffect(() => {
-      setDeleteListHistory([]);
+      setListDeleteHistory([]);
    }, []);
 
    useEffect(() => {
@@ -45,7 +49,7 @@ const History = ({navigation}) => {
             setShowModalError(true);
          } else {
             setMessageSuccess(history.message);
-            setDeleteListHistory([]);
+            setSelectDelete('Select');
             setShowModalSuccess(true);
             if (auth.user.role !== 'admin') {
                dispatch(getListHistoryByUserId(auth.token, auth.user.id));
@@ -63,6 +67,12 @@ const History = ({navigation}) => {
       setShowModalDelete(false);
    };
 
+   const nextPageHandle = page => {
+      if (page.next !== null) {
+         dispatch(getNextListHistory(auth.token, page.next));
+      }
+   };
+
    const handleCheck = (item, isChecked) => {
       let itemIndex = listDeleteHistory.findIndex(value => value.id == item.id);
       if (isChecked) {
@@ -72,7 +82,7 @@ const History = ({navigation}) => {
             listDeleteHistory.splice(itemIndex, 1);
          }
       }
-      setDeleteListHistory(listDeleteHistory);
+      setListDeleteHistory(listDeleteHistory);
       if (listDeleteHistory.length > 0) {
          setSelectDelete('Delete');
       } else {
@@ -92,6 +102,8 @@ const History = ({navigation}) => {
       // }
 
       dispatch(deleteListHistory(auth.token, listDeleteHistory));
+      listDeleteHistory.splice(0, listDeleteHistory.length);
+      setListDeleteHistory(listDeleteHistory);
       setControl(true);
       setShowModalDelete(false);
    };
@@ -126,31 +138,28 @@ const History = ({navigation}) => {
                }
             />
             <View style={addStyles.layoutHistory}>
+               <Text style={addStyles.title}>History Order</Text>
+               <View style={addStyles.layoutWeek}>
+                  <View style={addStyles.layoutTitleWeek}>
+                     <Text style={addStyles.textWeek}>A Week Ago</Text>
+                     {selectDelete == 'Delete' ? (
+                        <TouchableOpacity
+                           onPress={() => setShowModalDelete(true)}>
+                           <Text style={addStyles.textSelect}>
+                              {selectDelete}
+                           </Text>
+                        </TouchableOpacity>
+                     ) : (
+                        <Text style={addStyles.textSelect}>
+                           {' '}
+                           {selectDelete}
+                        </Text>
+                     )}
+                  </View>
+               </View>
                <FlatList
-                  ListHeaderComponent={
-                     <>
-                        <Text style={addStyles.title}>History Order</Text>
-                        <View style={addStyles.layoutWeek}>
-                           <View style={addStyles.layoutTitleWeek}>
-                              <Text style={addStyles.textWeek}>A Week Ago</Text>
-                              {selectDelete == 'Delete' ? (
-                                 <TouchableOpacity
-                                    onPress={() => setShowModalDelete(true)}>
-                                    <Text style={addStyles.textSelect}>
-                                       {selectDelete}
-                                    </Text>
-                                 </TouchableOpacity>
-                              ) : (
-                                 <Text style={addStyles.textSelect}>
-                                    {' '}
-                                    {selectDelete}
-                                 </Text>
-                              )}
-                           </View>
-                        </View>
-                     </>
-                  }
                   data={history.listHistory}
+                  h="75%"
                   renderItem={({item, index}) => {
                      return (
                         <View style={addStyles.layoutListHistory}>
@@ -181,6 +190,8 @@ const History = ({navigation}) => {
                         </View>
                      );
                   }}
+                  onEndReached={() => nextPageHandle(history.pageInfo)}
+                  onEndReachedThreshold={0.5}
                />
             </View>
 
