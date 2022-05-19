@@ -24,7 +24,7 @@ const DetailCategory = ({route, navigation}) => {
    const handleClose = () => setShow(false);
 
    useEffect(() => {
-      dispatch(getListVehicleByCategory(categoryId, LIMIT_VEHICLE));
+      dispatch(getListVehicleByCategory(categoryId, LIMIT_VEHICLE, 'category'));
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [categoryId]);
 
