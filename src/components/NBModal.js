@@ -77,7 +77,7 @@ const addStyles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       height: 40,
-      width: '100%',
+      width: 100,
       borderRadius: 10,
       paddingHorizontal: 10,
    },
