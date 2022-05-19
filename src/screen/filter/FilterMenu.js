@@ -31,7 +31,6 @@ const FilterMenu = ({navigation}) => {
       category_id: '',
       status_id: '',
       isAvailable: '',
-      date: '',
    });
    const [listSort, setListSort] = useState([
       {
@@ -52,7 +51,7 @@ const FilterMenu = ({navigation}) => {
    // const [categoryId, setCategoryId] = useState('');
    const [noPrepayment, setNoPrepayment] = useState('');
    const [isAvailable, setIsAvailable] = useState('');
-   // const [date, setDate] = useState(new Date());
+   const [dateFilter, setDateFilter] = useState(new Date());
    const [isDateChange, setIsDateChange] = useState(false);
    const [availableChange, setAvaliableChange] = useState(false);
    const [prepaymentChange, setPrepaymentChange] = useState(false);
@@ -66,7 +65,6 @@ const FilterMenu = ({navigation}) => {
          price_end: '',
          rate_start: '',
          rate_end: '',
-         date: new Date(),
          category_id: '',
          status_id: '',
          isAvailable: '',
@@ -77,12 +75,12 @@ const FilterMenu = ({navigation}) => {
 
    const onChange = (event, selectedDate) => {
       setIsDateChange(true);
-      setInputFilter({...inputFilter, date: selectedDate});
+      setDateFilter(selectedDate);
    };
 
    const showDatePicker = () => {
       DateTimePickerAndroid.open({
-         value: inputFilter.date,
+         value: dateFilter,
          onChange,
          mode: 'date',
          is24Hour: true,
@@ -90,12 +88,39 @@ const FilterMenu = ({navigation}) => {
    };
 
    const filterHandle = () => {
+      filter.location = '';
+      filter.price_start = '';
+      filter.price_end = '';
+      filter.rate_start = '';
+      filter.rate_end = '';
+      filter.date = '';
+      filter.category = '';
+      filter.status = '';
+      filter.isAvailable = '';
+      filter.sort = '';
+      filter.order = '';
+      const dataFilter = {
+         name: filter.name,
+         location_id: '',
+         price_start: '',
+         price_end: '',
+         rate_start: '',
+         rate_end: '',
+         date: '',
+         category_id: '',
+         status_id: '',
+         isAvailable: '',
+         sort: '',
+         order: '',
+      };
+
       if (isDateChange == true) {
-         filter.date = moment(inputFilter.date.toLocaleString()).format(
+         dataFilter.date = moment(dateFilter.toISOString()).format(
             'YYYY-MM-DD',
          );
+         filter.date = dataFilter.date;
       } else {
-         filter.date = '';
+         dataFilter.date = '';
       }
 
       const data = {
@@ -115,7 +140,7 @@ const FilterMenu = ({navigation}) => {
       const validate = validation(data, requirement);
 
       if (Object.keys(validate).length == 0) {
-         Object.keys(filter).forEach(item => {
+         Object.keys(dataFilter).forEach(item => {
             if (
                item !== 'date' &&
                item !== 'status_id' &&
@@ -123,28 +148,44 @@ const FilterMenu = ({navigation}) => {
                item !== 'sort' &&
                item !== 'order'
             ) {
-               filter[item] = inputFilter[item];
+               dataFilter[item] = inputFilter[item];
+               if (inputFilter.location_id !== '') {
+                  if (item == 'location_id') {
+                     filter.location = location.listLocation.filter(
+                        value => value.id == inputFilter.location_id,
+                     )[0].location;
+                  }
+               }
+               if (inputFilter.category_id !== '') {
+                  if (item == 'category_id') {
+                     filter.category = category.listCategory.filter(
+                        value => value.id == inputFilter.category_id,
+                     )[0].name;
+                  }
+               }
             }
          });
 
          if (prepaymentChange == true) {
             if (noPrepayment == true) {
-               filter.status_id = '6';
+               dataFilter.status_id = '6';
+               filter.status = 'No Prepayment';
             } else {
-               filter.status_id = '';
+               dataFilter.status_id = '';
             }
          } else {
-            filter.status_id = '';
+            dataFilter.status_id = '';
          }
 
          if (availableChange == true) {
             if (isAvailable == true) {
-               filter.isAvailable = '1';
+               dataFilter.isAvailable = '1';
+               filter.isAvailable = 'Available';
             } else {
-               filter.isAvailable = '0';
+               dataFilter.isAvailable = '0';
             }
          } else {
-            filter.isAvailable = '';
+            dataFilter.isAvailable = '';
          }
 
          if (sortOrder !== null) {
@@ -152,11 +193,13 @@ const FilterMenu = ({navigation}) => {
             const resultSortOrder = listSort.filter(
                item => item.id == sortOrder,
             )[0];
-            console.log(resultSortOrder);
+            dataFilter.sort = resultSortOrder.sort;
             filter.sort = resultSortOrder.sort;
+            dataFilter.order = resultSortOrder.order;
             filter.order = resultSortOrder.order;
          }
-         dispatch(getListSearchFilter(filter));
+         console.log(dataFilter);
+         dispatch(getListSearchFilter(dataFilter));
          navigation.navigate('Filter');
          setPrepaymentChange(false);
          setAvaliableChange(false);
@@ -286,7 +329,7 @@ const FilterMenu = ({navigation}) => {
                   <BSelect
                      width="100%"
                      placeholder="Sort"
-                     color="dark.50"
+                     color={stylePrimary.mainColor}
                      variantSelect="filter"
                      value={sortOrder}
                      change={setSortOrder}>
@@ -302,12 +345,9 @@ const FilterMenu = ({navigation}) => {
                      <Input
                         classInput={addStyles.inputDate}
                         placeholder="Date"
-                        value={
-                           inputFilter.date !== null &&
-                           moment(inputFilter.date.toLocaleString()).format(
-                              'YYYY-MM-DD',
-                           )
-                        }
+                        value={moment(dateFilter.toISOString()).format(
+                           'YYYY-MM-DD',
+                        )}
                      />
                      <TouchableOpacity onPress={showDatePicker}>
                         <IconDate name="date" style={addStyles.iconDate} />
@@ -318,7 +358,7 @@ const FilterMenu = ({navigation}) => {
                   <BSelect
                      width="100%"
                      placeholder="Type"
-                     color="dark.50"
+                     color={stylePrimary.mainColor}
                      variantSelect="filter"
                      value={inputFilter.category_id}
                      change={newCategory =>
@@ -396,15 +436,16 @@ const addStyles = StyleSheet.create({
       fontWeight: '700',
    },
    inputDate: {
-      backgroundColor: stylePrimary.backgrorund,
+      backgroundColor: stylePrimary.background,
       // opacity: 0.1,
       borderWidth: 0,
       minWidth: '100%',
       height: 50,
-      paddingLeft: 20,
+      paddingLeft: 5,
       marginRight: 10,
       fontSize: 18,
       fontWeight: '600',
+      color: stylePrimary.mainColor,
    },
    iconDate: {
       color: stylePrimary.mainColor,
