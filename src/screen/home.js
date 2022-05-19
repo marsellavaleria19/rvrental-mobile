@@ -47,10 +47,17 @@ const Home = ({navigation}) => {
       });
       category.listCategory.length > 0 &&
          category.listCategory.forEach(itemCategory => {
-            dispatch(getListVehicleByCategory(itemCategory.id, LIMIT_CATEGORY));
+            dispatch(
+               getListVehicleByCategory(
+                  itemCategory.id,
+                  LIMIT_CATEGORY,
+                  'home',
+               ),
+            );
          });
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
+   }, [dispatch]);
+
    useEffect(() => {
       setShowModalLoading(vehicle.isLoading);
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -85,9 +92,6 @@ const Home = ({navigation}) => {
    };
 
    const navigateToDetailCategory = item => {
-      dispatch({
-         type: 'CLEAR_VEHICLE',
-      });
       navigation.navigate('DetailCategory', {
          categoryId: item.id,
       });
