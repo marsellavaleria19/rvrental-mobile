@@ -5,7 +5,7 @@ import qs from 'qs';
 export const getListLocation = () => {
    return {
       type: 'GET_LOCATION',
-      payload: AxiosCostum().get('/locations'),
+      payload: AxiosCostum().get('/locations?limit=10'),
    };
 };
 
