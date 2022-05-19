@@ -23,6 +23,7 @@ const search = (state = dataSearch, action) => {
          const {data} = action.payload.response;
          state.isLoading = false;
          state.isError = true;
+         state.listSearch = [];
          state.errMessage = data.message;
          return {...state};
       }
@@ -32,7 +33,8 @@ const search = (state = dataSearch, action) => {
       }
       case 'SEARCH_FILTER_NEXT_FULFILLED': {
          const {data} = action.payload;
-         state.listSearch = [...state.listSearch, ...data.result];
+         var listSearch = [...state.listSearch, ...data.result];
+         state.listSearch = [...new Set(listSearch)];
          state.pageInfo = data.pageInfo;
          state.isLoading = false;
          return {...state};
