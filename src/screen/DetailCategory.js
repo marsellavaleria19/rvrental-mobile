@@ -77,11 +77,13 @@ const DetailCategory = ({route, navigation}) => {
                      renderItem={({item}) => {
                         return (
                            <ListDetail
-                              path={{
-                                 uri: `${
-                                    item.photo !== null ? item.photo : image
-                                 }`,
-                              }}
+                              path={
+                                 item.photo !== null
+                                    ? {
+                                         uri: `${item.photo}`,
+                                      }
+                                    : image
+                              }
                               title={item.name}
                               description={
                                  item.description !== null
