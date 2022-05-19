@@ -27,17 +27,19 @@ import NBModalLoading from '../../components/NBModalLoading';
 import NBModalError from '../../components/NBModalError';
 import {FormControl, WarningOutlineIcon} from 'native-base';
 import NBTextArea from '../../components/NBTextArea';
+import {input} from '../../assets/styles/styleComponent';
 
 const UpdateProfile = ({navigation}) => {
+   var [inputProfile, setInputProfile] = useState({
+      name: '',
+      gender: '',
+      email: '',
+      'mobile number': '',
+      address: '',
+   });
    const {auth} = useSelector(state => state);
-   const [name, setName] = useState('');
-   const [gender, setGender] = useState('');
-   const [email, setEmail] = useState('');
-   const [mobileNumber, setMobileNumber] = useState('');
    const [birthDate, setBirthDate] = useState(new Date());
-   const [address, setAddress] = useState('');
    const [picture, setPicture] = useState(imageProfile);
-   const [upload, setUpload] = useState(false);
    const dispatch = useDispatch();
    const [control, setControl] = useState(false);
    const [image, setImage] = useState({});
@@ -51,22 +53,45 @@ const UpdateProfile = ({navigation}) => {
    var [messageSuccess, setMessageSuccess] = useState('');
 
    useEffect(() => {
-      setName(auth.user?.fullName);
-      setEmail(auth.user?.email);
-      setMobileNumber(auth.user?.mobileNumber);
-      setAddress(auth.user?.address);
-      setGender(auth.user.gender);
-      setPicture(
-         auth.user?.photo !== null
-            ? {uri: `${auth.user?.photo}`}
-            : imageProfile,
-      );
-      setUpload(false);
-      setBirthDate(
-         auth.user?.birthDate !== null
-            ? new Date(auth.user?.birthDate)
-            : new Date(),
-      );
+      Object.keys(auth.user).map(item => {
+         if (auth.user !== null) {
+            if (auth.user[item] !== null) {
+               if (
+                  item !== 'mobileNumber' &&
+                  item !== 'fullName' &&
+                  item !== 'birtDate'
+               ) {
+                  inputProfile[item] = auth.user[item];
+               }
+
+               if (item == 'mobileNumber') {
+                  inputProfile['mobile number'] = auth.user[item];
+               }
+
+               if (item == 'fullName') {
+                  inputProfile.name = auth.user[item];
+               }
+            }
+            setInputProfile(inputProfile);
+         }
+      });
+      // setName(auth.user?.fullName);
+      // setEmail(auth.user?.email);
+      // setMobileNumber(auth.user?.mobileNumber);
+      // setAddress(auth.user?.address);
+      // setGender(auth.user.gender);
+
+      if (auth.user.photo !== null) {
+         setPicture({uri: `${auth.user.photo}`});
+      } else {
+         setPicture(imageProfile);
+      }
+
+      if (auth.user.birthDate !== null) {
+         setBirthDate(new Date(auth.user.birthDate));
+      } else {
+         setBirthDate(new Date());
+      }
       setErrValidation({});
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
@@ -114,13 +139,17 @@ const UpdateProfile = ({navigation}) => {
    };
 
    const updateProfileHandle = () => {
-      var data = {
-         name: name,
-         gender: gender,
-         'mobile number': mobileNumber,
-         address: address,
-         'birth date': moment(birthDate.toLocaleString()).format('YYYY-MM-DD'),
-      };
+      // var data = {
+      //    name: name,
+      //    gender: gender,
+      //    'mobile number': mobileNumber,
+      //    address: address,
+      //    'birth date': moment(birthDate.toISOString()).format('YYYY-MM-DD'),
+      // };
+
+      inputProfile['birth date'] = moment(birthDate.toString()).format(
+         'YYYY-MM-DD',
+      );
       let requirement = {
          name: 'required',
          gender: 'required',
@@ -129,14 +158,14 @@ const UpdateProfile = ({navigation}) => {
          'birth date': 'required|date',
       };
 
-      var validate = validation(data, requirement);
+      var validate = validation(inputProfile, requirement);
       if (Object.keys(validate).length == 0) {
          const dataSend = {
-            fullName: data.name,
-            gender,
-            mobileNumber: data['mobile number'],
-            address,
-            birthDate: data['birth date'],
+            fullName: inputProfile.name,
+            gender: inputProfile.gender,
+            mobileNumber: inputProfile['mobile number'],
+            address: inputProfile.address,
+            birthDate: inputProfile['birth date'],
          };
          if (Object.keys(image).length > 0) {
             dispatch(
@@ -210,8 +239,10 @@ const UpdateProfile = ({navigation}) => {
                         placeholder={'Name'}
                         classVariant="profile"
                         label="Name"
-                        value={name}
-                        change={setName}
+                        value={inputProfile.name}
+                        change={newName =>
+                           setInputProfile({...inputProfile, name: newName})
+                        }
                         isValidate={
                            Object.keys(errValidation).length > 0 && true
                         }
@@ -230,9 +261,12 @@ const UpdateProfile = ({navigation}) => {
                         <Radio.Group
                            name="myRadioGroup"
                            accessibilityLabel="favorite number"
-                           value={gender}
-                           onChange={nextValue => {
-                              setGender(nextValue);
+                           value={inputProfile.gender}
+                           onChange={newGender => {
+                              setInputProfile({
+                                 ...inputProfile,
+                                 gender: newGender,
+                              });
                            }}>
                            <Stack
                               direction={{
@@ -272,8 +306,10 @@ const UpdateProfile = ({navigation}) => {
                         placeholder={'Email Address'}
                         classVariant="profile"
                         label="Email Address"
-                        value={email}
-                        change={setEmail}
+                        value={inputProfile.email}
+                        change={newEmail =>
+                           setInputProfile({...inputProfile, email: newEmail})
+                        }
                         disabled={true}
                      />
                   </View>
@@ -282,8 +318,13 @@ const UpdateProfile = ({navigation}) => {
                         placeholder={'Phone Number'}
                         classVariant="profile"
                         label="Phone Number"
-                        value={mobileNumber}
-                        change={setMobileNumber}
+                        value={inputProfile['mobile number']}
+                        change={newMobileNumber =>
+                           setInputProfile({
+                              ...inputProfile,
+                              'mobile number': newMobileNumber,
+                           })
+                        }
                         isValidate={
                            Object.keys(errValidation).length > 0 && true
                         }
@@ -299,7 +340,7 @@ const UpdateProfile = ({navigation}) => {
                         placeholder="Birthdate"
                         classVariant="profile"
                         label="Birth date"
-                        value={moment(birthDate.toLocaleString()).format(
+                        value={moment(birthDate.toString()).format(
                            'YYYY-MM-DD',
                         )}
                         change={setBirthDate}
@@ -318,15 +359,19 @@ const UpdateProfile = ({navigation}) => {
                   <View style={addStyles.layoutInput}>
                      <NBTextArea
                         label={'Delivery Address'}
-                        value={address}
-                        isInvalid={
-                           Object.keys(errValidation).length > 0 && true
-                        }
+                        value={inputProfile.address}
+                        variant="profile"
+                        valid={Object.keys(errValidation).length > 0 && true}
                         message={
                            Object.keys(errValidation).length > 0 &&
                            errValidation.address
                         }
-                        change={setAddress}
+                        change={newAddress =>
+                           setInputProfile({
+                              ...inputProfile,
+                              address: newAddress,
+                           })
+                        }
                      />
                   </View>
                   <View style={addStyles.layoutButton}>
