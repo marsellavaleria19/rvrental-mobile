@@ -36,7 +36,7 @@ const SuccessPayment = ({route, navigation}) => {
       } else {
          dispatch(getListHistory(auth.token));
       }
-      navigation.navigate('HistoryNav');
+      navigation.navigate('History');
    };
 
    return (
@@ -110,10 +110,9 @@ const SuccessPayment = ({route, navigation}) => {
                            thousandSeparator={true}
                            decimalSeparator="."
                            prefix={'Rp.'}
-                           format="Total : Rp. ###.###"
                            renderText={value => (
                               <Text style={addStyles.fontButtonPayment}>
-                                 {value}
+                                 {value !== null ? value.replace(',', '.') : 0}
                               </Text>
                            )}
                         />

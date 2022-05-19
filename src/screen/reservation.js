@@ -44,7 +44,6 @@ const Reservation = ({navigation}) => {
       state => state,
    );
    const [inputReservation, setInputReservation] = useState({
-      date: new Date(),
       qty: '0',
       day: '',
    });
@@ -53,8 +52,14 @@ const Reservation = ({navigation}) => {
    const [picture, setPicture] = useState();
    const [isAddFavorite, setAddFavorite] = useState(false);
    const [errorValidation, setErrorValidation] = useState({});
+   const [dateReservetion, setDateReservation] = useState(new Date());
 
    useEffect(() => {
+      setInputReservation({
+         qty: '0',
+         day: '',
+      });
+      console.log(inputReservation.date);
       setPicture(
          vehicle.dataVehicle !== null && vehicle.dataVehicle.photo !== null
             ? {uri: `${vehicle.dataVehicle.photo}`}
@@ -100,12 +105,12 @@ const Reservation = ({navigation}) => {
    };
 
    const onChange = (event, selectedDate) => {
-      setInputReservation({...inputReservation, date: selectedDate});
+      setDateReservation(selectedDate);
    };
 
    const showDatePicker = () => {
       DateTimePickerAndroid.open({
-         value: inputReservation.date,
+         value: dateReservetion,
          onChange,
          mode: 'date',
          is24Hour: true,
@@ -113,6 +118,7 @@ const Reservation = ({navigation}) => {
    };
 
    const reservationHandle = () => {
+      inputReservation.date = dateReservetion;
       const requirement = {
          date: 'required',
          day: 'required',
@@ -305,9 +311,12 @@ const Reservation = ({navigation}) => {
                         <CInput
                            classInput={addStyles.inputDate}
                            placeholder="Date"
-                           value={moment(
-                              inputReservation.date.toLocaleString(),
-                           ).format('YYYY-MM-DD')}
+                           value={moment(dateReservetion.toDateString()).format(
+                              'YYYY-MM-DD',
+                           )}
+                           // value={moment(
+                           //    inputReservation.date.toLocaleString(),
+                           // ).format('YYYY-MM-DD')}
                            error={errorValidation.date && errorValidation.date}
                         />
                         <TouchableOpacity onPress={showDatePicker}>

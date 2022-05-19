@@ -77,3 +77,22 @@ export const deleteHistory = (token, id) => {
       payload: AxiosCostum(token).delete(`/histories/${id}`),
    };
 };
+
+export const deleteListHistory = (token, listHistory) => {
+   return {
+      type: 'HISTORY_DELETE',
+      payload: Promise.all(
+         listHistory.map(item => {
+            const result = AxiosCostum(token).delete(`/histories/${item.id}`);
+            return result;
+         }),
+      ),
+   };
+};
+
+export const getNextListHistory = (token, url) => {
+   return {
+      type: 'HISTORY_NEXT',
+      payload: AxiosCostum(token).get(url),
+   };
+};
