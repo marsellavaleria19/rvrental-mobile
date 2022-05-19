@@ -20,6 +20,7 @@ import {FlatList} from 'native-base';
 import {getNextListSearchFilter} from '../../redux/actions/search';
 import {styles} from '../../assets/styles/styles';
 import stylePrimary from '../../assets/styles/stylePrimary';
+import NotFound from '../../components/NotFound';
 
 const Filter = ({navigation}) => {
    const {search} = useSelector(state => state);
@@ -39,24 +40,24 @@ const Filter = ({navigation}) => {
       }
    };
 
-   // const filterSearchHandle = () => {
-   //    let result = '';
-   //    Object.keys(filter).forEach(key => {
-   //       if (key !== 'name' && filter[key] !== '') {
-   //          if (result == '') {
-   //             result += filter[key];
-   //          } else {
-   //             result += filter[key] + ',';
-   //          }
-   //       }
-   //    });
-   //    return result;
-   // };
+   const FilterSearchHandle = () => {
+      let result = filter.name;
+      Object.keys(filter).forEach(key => {
+         if (key !== 'name' && filter[key] !== '') {
+            if (result == '') {
+               result += filter[key];
+            } else {
+               result += '-' + filter[key];
+            }
+         }
+      });
+      return <Text style={addStyles.textFilterName}>{result}</Text>;
+   };
 
    return (
       <View style={styles.background}>
          <View style={addStyles.layoutFilterName}>
-            <Text style={addStyles.textFilterName}>{filter.name}</Text>
+            <FilterSearchHandle />
          </View>
          <Container>
             <View>
@@ -71,7 +72,7 @@ const Filter = ({navigation}) => {
                {search.listSearch.length > 0 ? (
                   <FlatList
                      data={search.listSearch}
-                     h={'90%'}
+                     h={'80%'}
                      renderItem={({item}) => {
                         return (
                            <ListFilter
@@ -99,7 +100,7 @@ const Filter = ({navigation}) => {
                      onEndReachedThreshold={0.5}
                   />
                ) : (
-                  <Text>Data not found</Text>
+                  <NotFound />
                )}
             </View>
 
@@ -150,7 +151,7 @@ const addStyles = StyleSheet.create({
    textFilterName: {
       marginTop: 15,
       marginLeft: 30,
-      color: stylePrimary.backgrorund,
+      color: stylePrimary.background,
       fontSize: 16,
    },
    layoutFilter: {
