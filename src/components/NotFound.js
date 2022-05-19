@@ -24,10 +24,11 @@ const addStyles = StyleSheet.create({
    layout: {
       justifyContent: 'center',
       alignItems: 'center',
-      height: '100%',
+      height: '80%',
    },
    layoutImage: {
       width: '100%',
+      marginTop: 50,
    },
    imageStyle: {
       width: '100%',

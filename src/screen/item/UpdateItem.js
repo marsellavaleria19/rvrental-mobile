@@ -257,6 +257,7 @@ const UpdateItem = ({navigation}) => {
          getListVehicleByCategory(
             vehicle.dataVehicle.category_id,
             LIMIT_VEHICLE,
+            'category',
          ),
       );
       navigation.navigate('DetailCategory', {

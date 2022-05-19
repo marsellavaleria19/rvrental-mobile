@@ -196,7 +196,8 @@ const addStyles = StyleSheet.create({
       marginBottom: 10,
    },
    layoutButton: {
-      marginTop: 34,
+      marginTop: 20,
+      marginBottom: 10,
    },
    buttonVerify: {
       backgroundColor: stylePrimary.secondaryColor,

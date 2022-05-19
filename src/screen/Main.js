@@ -15,6 +15,7 @@ import {getListLocation} from '../redux/actions/location';
 import {getListPaymentType} from '../redux/actions/payment';
 import {getListHistory, getListHistoryByUserId} from '../redux/actions/history';
 import Payment from './payment/Payment';
+import {LIMIT_CATEGORY} from '@env';
 
 const Main = () => {
    const {auth, category, vehicle, payment} = useSelector(state => state);
@@ -28,6 +29,23 @@ const Main = () => {
       dispatch(getListLocation());
       dispatch(getListPaymentType());
    }, []);
+
+   useEffect(() => {
+      dispatch({
+         type: 'CLEAR_VEHICLE',
+      });
+      if (category.listCategory.length > 0) {
+         category.listCategory.forEach(itemCategory => {
+            dispatch(
+               getListVehicleByCategory(
+                  itemCategory.id,
+                  LIMIT_CATEGORY,
+                  'home',
+               ),
+            );
+         });
+      }
+   }, [category.listCategory]);
 
    useEffect(() => {
       if (auth.token !== null) {

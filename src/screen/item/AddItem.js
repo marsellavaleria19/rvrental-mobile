@@ -108,12 +108,6 @@ const AddItem = ({navigation}) => {
          } else {
             setMessageSuccess(vehicle.message);
             setShowModalSuccess(true);
-            category.listCategory.length > 0 &&
-               category.listCategory.forEach(itemCategory => {
-                  dispatch(
-                     getListVehicleByCategory(itemCategory.id, LIMIT_CATEGORY),
-                  );
-               });
             setControl(false);
          }
       }
@@ -155,14 +149,14 @@ const AddItem = ({navigation}) => {
    }, [location.isLoading]);
 
    const countIncrement = () => {
-      inputItem.qty = (parseInt(inputItem.qty) + 1).toString();
-      setInputItem({...inputItem, qty: inputItem.qty});
+      inputItem.stock = (parseInt(inputItem.stock) + 1).toString();
+      setInputItem({...inputItem, stock: inputItem.stock});
    };
 
    const countDecrement = () => {
-      if (parseInt(inputItem.qty) > 0) {
-         inputItem.qty = (parseInt(inputItem.qty) - 1).toString();
-         setInputItem({...inputItem, qty: inputItem.qty});
+      if (parseInt(inputItem.stock) > 0) {
+         inputItem.stock = (parseInt(inputItem.stock) - 1).toString();
+         setInputItem({...inputItem, stock: inputItem.stock});
          // setQty((parseInt(qty) - 1).toString());
       }
    };
@@ -219,6 +213,7 @@ const AddItem = ({navigation}) => {
             qty: inputItem.stock,
             isAvailable: '1',
             description: inputItem.description,
+            rate: '0',
          };
          if (Object.keys(image).length > 0) {
             dispatch(addDataVehicle(auth.token, dataSend, image.assets[0]));
@@ -301,6 +296,20 @@ const AddItem = ({navigation}) => {
       }
    };
 
+   const homeHandle = () => {
+      category.listCategory.length > 0 &&
+         category.listCategory.forEach(itemCategory => {
+            dispatch(
+               getListVehicleByCategory(
+                  itemCategory.id,
+                  LIMIT_CATEGORY,
+                  'home',
+               ),
+            );
+         });
+      navigation.navigate('Home');
+   };
+
    return (
       <View style={styles.background}>
          <Container>
@@ -319,7 +328,7 @@ const AddItem = ({navigation}) => {
                      message={messageSuccess}
                      close={handleCloseModalSuccess}
                      button={'Go to home'}
-                     functionHandle={() => navigation.navigate('Home')}
+                     functionHandle={homeHandle}
                   />
                )}
                {messageSuccessLocationCategory !== '' && (
@@ -418,7 +427,9 @@ const AddItem = ({navigation}) => {
                               placeholder="Location"
                               variantSelect="item"
                               isInvalid={
-                                 Object.keys(errValidation).length > 0 && true
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation.location &&
+                                 true
                               }
                               errMessage={
                                  Object.keys(errValidation).length > 0 &&
@@ -481,7 +492,9 @@ const AddItem = ({navigation}) => {
                               variantSelect="item"
                               select={inputItem.category}
                               isInvalid={
-                                 Object.keys(errValidation).length > 0 && true
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation.category &&
+                                 true
                               }
                               errMessage={
                                  Object.keys(errValidation).length > 0 &&

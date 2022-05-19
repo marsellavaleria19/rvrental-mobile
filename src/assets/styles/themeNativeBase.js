@@ -132,8 +132,12 @@ export const theme = extendTheme({
                fontSize: 18,
                fontWeight: '600',
                placeholderTextColor: stylePrimary.mainColor,
-               customDropdownIconProps: {color: 'dark.50', mr: '3'},
+               customDropdownIconProps: {
+                  color: stylePrimary.mainColor,
+                  mr: '3',
+               },
                padding: 0,
+               color: stylePrimary.mainColor,
             },
             reservation: {
                backgroundColor: stylePrimary.background,

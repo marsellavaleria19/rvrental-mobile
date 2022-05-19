@@ -5,7 +5,7 @@ import qs from 'qs';
 export const getListCategory = () => {
    return {
       type: 'GET_CATEGORY',
-      payload: AxiosCostum().get('/categories'),
+      payload: AxiosCostum().get('/categories?limit=10'),
    };
 };
 

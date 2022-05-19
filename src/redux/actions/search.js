@@ -12,6 +12,7 @@ export const getListSearchFilter = dataParams => {
       'rate_start',
       'rate_end',
       'status_id',
+      'location_id',
    ];
    const url = dataParams => {
       var result = '';
