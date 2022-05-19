@@ -10,13 +10,22 @@ export const getListVehicle = () => {
    };
 };
 
-export const getListVehicleByCategory = (idCategory, limit) => {
-   return {
-      type: 'GET_VEHICLE',
-      payload: AxiosCustom().get(
-         `/vehicles/category/${idCategory}?limit=${limit}`,
-      ),
-   };
+export const getListVehicleByCategory = (idCategory, limit, type) => {
+   if (type == 'home') {
+      return {
+         type: 'GET_ALL_VEHICLE',
+         payload: AxiosCustom().get(
+            `/vehicles/category/${idCategory}?limit=${limit}`,
+         ),
+      };
+   } else {
+      return {
+         type: 'GET_VEHICLE',
+         payload: AxiosCustom().get(
+            `/vehicles/category/${idCategory}?limit=${limit}`,
+         ),
+      };
+   }
 };
 
 export const getListVehicleByUrl = url => {

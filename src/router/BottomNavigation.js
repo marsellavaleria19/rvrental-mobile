@@ -89,6 +89,23 @@ const BottomTabNav = () => {
          />
 
          <NavBottomTabStack.Screen
+            name="Chat"
+            options={{
+               tabBarStyle: addStyles.layoutHeader,
+               tabBarIcon: ({focused, color, size}) => {
+                  // You can return any component that you like here!
+                  return (
+                     <Icon
+                        iconType="IonIcon"
+                        name="chatbubble-sharp"
+                        active={focused}
+                     />
+                  );
+               },
+            }}
+            component={History}
+         />
+         <NavBottomTabStack.Screen
             name="Profile"
             options={{
                tabBarStyle: addStyles.layoutHeader,

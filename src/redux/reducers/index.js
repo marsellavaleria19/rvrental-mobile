@@ -34,9 +34,8 @@ const persistForHistory = {
 
 const rootReducers = combineReducers({
    auth: persistReducer(persistForAuth, auth),
-   vehicle,
    category: persistReducer(persistForCategory, category),
-   // vehicle: persistReducer(persistForVehicle, vehicle),
+   vehicle: persistReducer(persistForVehicle, vehicle),
    reservation,
    payment,
    history: persistReducer(persistForHistory, history),
