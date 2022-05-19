@@ -56,7 +56,7 @@ const PaymentDetail = ({navigation}) => {
             setMessageError(history.errMessage);
             setShowModalError(true);
          } else {
-            setMessageSuccess(history.message);
+            setMessageSuccess('Transaction created successfully.');
             setShowModalSuccess(true);
             setControl(false);
          }

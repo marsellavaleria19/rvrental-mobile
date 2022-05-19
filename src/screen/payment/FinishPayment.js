@@ -58,7 +58,7 @@ const FinishPayment = ({route, navigation}) => {
             setMessageError(history.errMessage);
             setShowModalError(true);
          } else {
-            setMessageSuccess(history.message);
+            setMessageSuccess('Payment has successfully.');
             setShowModalSuccess(true);
             setControl(false);
          }
@@ -185,7 +185,7 @@ const FinishPayment = ({route, navigation}) => {
                      prefix={'Rp.'}
                      renderText={value => (
                         <Text style={addStyles.price}>
-                           {value.replace(',', '.')}
+                           {value !== null ? value.replace(',', '.') : 0}
                         </Text>
                      )}
                   />
