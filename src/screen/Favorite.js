@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getListFavorite} from '../redux/actions/favorite';
 import {FlatList} from 'native-base';
 import ListDetail from '../components/ListDetail';
+import NotFound from '../components/NotFound';
 
 const Favorite = ({navigation}) => {
    const {favorite, auth} = useSelector(state => state);
@@ -62,7 +63,7 @@ const Favorite = ({navigation}) => {
                         }}
                      />
                   ) : (
-                     <Text>Data not found</Text>
+                     <NotFound />
                   )}
                </View>
             </ScrollView>
