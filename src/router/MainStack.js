@@ -18,6 +18,7 @@ import VerifyUserEmail from '../screen/auth/VerifyUserEmail';
 import VerifyUser from '../screen/auth/VerifyUser';
 import stylePrimary from '../assets/styles/stylePrimary';
 import ChangePassowrd from '../screen/profile/ChangePassword';
+import ChatRoom from '../screen/ChatRoom';
 
 const NavMainStack = createNativeStackNavigator();
 
@@ -164,6 +165,13 @@ const MainStackNav = () => {
                title: 'Verify User',
             }}
             component={VerifyUser}
+         />
+         <NavMainStack.Screen
+            name="ChatRoom"
+            options={{
+               headerShown: false,
+            }}
+            component={ChatRoom}
          />
          {/* <NavMainStack.Screen name="Reservation" component={Reservation} />
          <NavMainStack.Screen name="PaymentDetail" component={PaymentDetail} />
