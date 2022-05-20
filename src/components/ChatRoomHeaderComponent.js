@@ -1,0 +1,78 @@
+import * as React from 'react';
+import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {styles} from '../assets/styles/styles';
+import IconStar from 'react-native-vector-icons/FontAwesome';
+import LinearGradient from 'react-native-linear-gradient';
+import stylePrimary from '../assets/styles/stylePrimary';
+import NumberFormat from 'react-number-format';
+// import { FontAwesome } from '@expo/vector-icons';
+// import {image} from '../assets/images/backgroud-image.png'
+
+const ChatRoomHeaderComponent = ({
+   title,
+   path,
+   detail,
+   status,
+   price,
+   rate,
+   description,
+   navigate,
+   children,
+}) => {
+   return (
+      <View>
+         <TouchableOpacity>
+            <View style={addStyles.layoutList}>
+               <View style={styles.layoutImageRating}>
+                  <Image source={path} style={styles.imageCategory} />
+               </View>
+               <View style={styles.layoutDetail}>
+                  <Text style={styles.titleDetail}>{title}</Text>
+                  {status == 'Available' ? (
+                     <Text style={styles.statusAvailable}>{status}</Text>
+                  ) : (
+                     <Text style={styles.statusNotAvailable}>{status}</Text>
+                  )}
+                  <NumberFormat
+                     value={price}
+                     displayType={'text'}
+                     thousandSeparator={true}
+                     decimalSeparator="."
+                     prefix={'Rp.'}
+                     renderText={value => (
+                        <Text style={stylePrimary.priceDatail}>
+                           {value.replace(',', '.')}
+                        </Text>
+                     )}
+                  />
+                  <View style={addStyles.layoutRate}>
+                     <LinearGradient
+                        colors={[stylePrimary.secondaryColor, '#7796b6']}
+                        style={styles.rateLayout}>
+                        <Text style={styles.rateText}>{rate}</Text>
+                        <IconStar name="star" style={styles.rateIcon} />
+                     </LinearGradient>
+                  </View>
+
+                  {/* <Text style={styles.priceDetail}>{price}</Text> */}
+               </View>
+            </View>
+         </TouchableOpacity>
+      </View>
+   );
+};
+const addStyles = StyleSheet.create({
+   layoutRate: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+   },
+   layoutList: {
+      flexDirection: 'row',
+      marginTop: 10,
+      alignItems: 'center',
+      elevation: 8,
+      backgroundColor: stylePrimary.background,
+   },
+});
+export {addStyles};
+export default ChatRoomHeaderComponent;

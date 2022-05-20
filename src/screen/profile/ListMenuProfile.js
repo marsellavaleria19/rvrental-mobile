@@ -23,33 +23,35 @@ const ProfileMenuList = ({navigation}) => {
    const dispatch = useDispatch();
 
    useEffect(() => {
-      if (auth.user !== null) {
-         const dataVerifyUser = listMenu.filter(
-            item => item.title == 'Verify Email',
-         );
-         console.log(auth.user.isVerified);
-         if (auth.user.isVerified == 0) {
-            const verifyUserMenu = {
-               title: 'Verify Email',
-               navigate: 'VerifyUserEmail',
-            };
+      if (auth.token !== null) {
+         if (auth.user !== null) {
+            const dataVerifyUser = listMenu.filter(
+               item => item.title == 'Verify Email',
+            );
+            console.log(auth.user.isVerified);
+            if (auth.user.isVerified == 0) {
+               const verifyUserMenu = {
+                  title: 'Verify Email',
+                  navigate: 'VerifyUserEmail',
+               };
 
-            if (dataVerifyUser.length == 0) {
-               listMenu.push(verifyUserMenu);
-            }
-            setListMenu(listMenu);
-         } else {
-            if (dataVerifyUser.length > 0) {
-               const profileMenu = listMenu.filter(
-                  item => item.title !== 'Verify Email',
-               );
-               setListMenu(profileMenu);
+               if (dataVerifyUser.length == 0) {
+                  listMenu.push(verifyUserMenu);
+               }
+               setListMenu(listMenu);
+            } else {
+               if (dataVerifyUser.length > 0) {
+                  const profileMenu = listMenu.filter(
+                     item => item.title !== 'Verify Email',
+                  );
+                  setListMenu(profileMenu);
+               }
             }
          }
       }
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
+   }, [auth.token]);
 
    const logoutHandle = () => {
       dispatch({
@@ -96,21 +98,7 @@ const ProfileMenuList = ({navigation}) => {
                      </Container>
                   );
                }}
-               ListFooterComponent={
-                  <View style={addStyles.layoutButton}>
-                     <Container>
-                        <TouchableOpacity onPress={logoutHandle}>
-                           <CButton
-                              classButton={addStyles.buttonProfile}
-                              textButton={addStyles.fontButtonProfile}>
-                              Logout
-                           </CButton>
-                        </TouchableOpacity>
-                     </Container>
-                  </View>
-               }
             />
-
             {/* <View style={addStyles.layoutProfile}>
                <Image
                   size={60}
@@ -165,6 +153,17 @@ const ProfileMenuList = ({navigation}) => {
                </Container>
             </ScrollView> */}
          </View>
+         <View style={addStyles.layoutButton}>
+            <Container>
+               <TouchableOpacity onPress={logoutHandle}>
+                  <CButton
+                     classButton={addStyles.buttonProfile}
+                     textButton={addStyles.fontButtonProfile}>
+                     Logout
+                  </CButton>
+               </TouchableOpacity>
+            </Container>
+         </View>
       </View>
    );
 };
@@ -172,6 +171,7 @@ const ProfileMenuList = ({navigation}) => {
 const addStyles = StyleSheet.create({
    layoutProfileMenu: {
       marginTop: 0,
+      flex: 1,
    },
    layoutProfile: {
       flexDirection: 'row',
@@ -194,7 +194,7 @@ const addStyles = StyleSheet.create({
       flexDirection: 'row',
    },
    layoutButton: {
-      bottom: 0,
+      margin: 20,
    },
    buttonProfile: {
       backgroundColor: stylePrimary.secondaryColor,
