@@ -11,6 +11,7 @@ import stylePrimary from '../assets/styles/stylePrimary';
 import {StyleSheet} from 'react-native';
 import {Center, View} from 'native-base';
 import History from '../screen/HistoryCheckbox';
+import ChatNavigator from './ChatNav';
 
 const NavBottomTabStack = createBottomTabNavigator();
 
@@ -89,8 +90,13 @@ const BottomTabNav = () => {
          />
 
          <NavBottomTabStack.Screen
-            name="Chat"
+            name="ChatNav"
             options={{
+               headerStyle: addStyles.layoutHeader,
+               headerTitleStyle: addStyles.textHeader,
+               headerTintColor: stylePrimary.secondaryColor,
+               title: 'Detail Category',
+               headerBackTitleStyle: addStyles.headerBack,
                tabBarStyle: addStyles.layoutHeader,
                tabBarIcon: ({focused, color, size}) => {
                   // You can return any component that you like here!
@@ -103,7 +109,7 @@ const BottomTabNav = () => {
                   );
                },
             }}
-            component={History}
+            component={ChatNavigator}
          />
          <NavBottomTabStack.Screen
             name="Profile"
