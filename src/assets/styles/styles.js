@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       marginTop: 10,
       alignItems: 'center',
+      width: '100%',
    },
    imageCategory: {
       width: 101,
@@ -37,7 +38,8 @@ const styles = StyleSheet.create({
       margin: 5,
    },
    layoutDetail: {
-      marginHorizontal: 5,
+      marginHorizontal: 3,
+      width: '50%',
    },
    titleDetail: {
       fontSize: 14,
