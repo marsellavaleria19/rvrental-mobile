@@ -358,7 +358,7 @@ const AddItem = ({navigation}) => {
                   </Text>
                   <View style={addStyles.layoutInput}>
                      <NBInput
-                        placeholder={'Type product name min 30 Characters'}
+                        placeholder={'Type product name'}
                         classVariant="item"
                         value={inputItem.name}
                         change={newName =>
@@ -388,15 +388,14 @@ const AddItem = ({navigation}) => {
                            Object.keys(errValidation).length > 0 &&
                            errValidation.price
                         }
+                        keyboardType="numeric"
                      />
                   </View>
                   <View style={addStyles.layoutFormDescription}>
                      <View style={addStyles.layoutInput}>
                         <Text style={addStyles.label}>Description</Text>
                         <NBTextArea
-                           placeholder={
-                              'Describe your product min. 150 character'
-                           }
+                           placeholder={'Describe your product'}
                            variant="item"
                            value={inputItem.description}
                            change={newDescription =>
