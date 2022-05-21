@@ -19,6 +19,11 @@ import {useState, useEffect} from 'react';
 import {confirmForgotPasswordProcess} from '../../redux/actions/auth';
 import {NBAlert} from '../../components/NBAlert';
 import {ScrollView} from 'native-base';
+import NBModalLoading from '../../components/NBModalLoading';
+import NBModalError from '../../components/NBModalError';
+import NBModalSuccess from '../../components/NBModalSuccess';
+import NBInput from '../../components/NBInput';
+import {validation} from '../../helpers/validation';
 
 const ChangePassowrd = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -27,92 +32,188 @@ const ChangePassowrd = ({navigation}) => {
    const [confirmPassword, setConfirmPassword] = useState('');
    const [code, setCode] = useState('');
    const dispatch = useDispatch();
-   const [success, setSuccess] = useState(false);
+   const [showModalSuccess, setShowModalSuccess] = useState(false);
+   const handleCloseModalSuccess = () => setShowModalSuccess(false);
+   const [showModalError, setShowModalError] = useState(false);
+   const handleCloseModalError = () => setShowModalError(false);
+   const [showModalLoading, setShowModalLoading] = useState(false);
+   const [messageError, setMessageError] = useState('');
+   const [messageSuccess, setMessageSuccess] = useState('');
+   const [control, setControl] = useState(false);
+   const [errValidation, setErrValidation] = useState({});
 
    useEffect(() => {
-      if (auth.message !== null && success) {
-         navigation.navigate('Login');
+      setShowModalLoading(auth.isLoading);
+      if (auth.isLoading == false && control == true) {
+         if (auth.isError) {
+            setMessageError(auth.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(auth.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [auth.message]);
+   }, [auth.isLoading]);
 
    const changePasswordHandle = () => {
-      dispatch(
-         confirmForgotPasswordProcess(email, code, password, confirmPassword),
-      );
-      setSuccess(true);
+      const data = {
+         email: email,
+         code: code,
+         password: password,
+         'confirm password': confirmPassword,
+      };
+
+      const requirement = {
+         email: 'required|email',
+         code: 'required|number',
+         password: 'required',
+         'confirm password': 'required',
+      };
+
+      const validate = validation(data, requirement);
+      if (Object.keys(validate).length == 0) {
+         if (password == confirmPassword) {
+            dispatch(
+               confirmForgotPasswordProcess(
+                  email,
+                  code,
+                  password,
+                  confirmPassword,
+               ),
+            );
+            setControl(true);
+         } else {
+            setMessageError('Password and Confirm Password not match');
+            setShowModalError(true);
+         }
+      } else {
+         setErrValidation(validate);
+      }
    };
 
    return (
       <View style={styles.background}>
-         <ScrollView>
-            <ImageBackground
-               source={image}
-               resizeMode="cover"
-               style={styles.image}>
+         <ImageBackground
+            source={image}
+            resizeMode="cover"
+            style={styles.image}>
+            <View style={styles.containerScreenForgotPassword}>
                <Container>
-                  <TouchableOpacity
-                     onPress={() => navigation.navigate('Login')}
-                     style={addStyles.layoutBack}>
-                     <Icon name="chevron-left" style={addStyles.iconBack} />
-                     <Text style={addStyles.textBack}>Back</Text>
-                  </TouchableOpacity>
-                  <Text style={addStyles.textTitle}>
-                     THAT’S OKAY, WE GOT YOUR BACK
-                  </Text>
-                  <View>
-                     {auth.isError && (
-                        <NBAlert status="error" message={auth.errMessage} />
-                     )}
-                     {auth.isSubmitEmail && (
-                        <NBAlert status="success" message={auth.message} />
-                     )}
-                     <View style={addStyles.layoutInput}>
-                        <Input
-                           classInput={addStyles.input}
-                           value={email}
-                           change={setEmail}
-                           placeholder="Email"
-                        />
-                     </View>
-                     <View style={addStyles.layoutInput}>
-                        <Input
-                           classInput={addStyles.input}
-                           value={code}
-                           change={setCode}
-                           placeholder="Code"
-                        />
-                     </View>
-                     <View style={addStyles.layoutInput}>
-                        <Input
-                           classInput={addStyles.input}
-                           value={password}
-                           change={setPassword}
-                           secure={true}
-                           placeholder="Password"
-                        />
-                     </View>
-                     <View style={addStyles.layoutInput}>
-                        <Input
-                           classInput={addStyles.input}
-                           value={confirmPassword}
-                           change={setConfirmPassword}
-                           secure={true}
-                           placeholder="Confirm Password"
-                        />
-                     </View>
-
-                     <TouchableOpacity onPress={changePasswordHandle}>
-                        <CButton
-                           classButton={addStyles.buttonForgotPassword}
-                           textButton={addStyles.textForgotPassword}>
-                           Change Passowrd
-                        </CButton>
+                  <ScrollView>
+                     <TouchableOpacity
+                        onPress={() => navigation.navigate('Login')}
+                        style={addStyles.layoutBack}>
+                        <Icon name="chevron-left" style={addStyles.iconBack} />
+                        <Text style={addStyles.textBack}>Back</Text>
                      </TouchableOpacity>
-                  </View>
+                     <Text style={addStyles.textTitle}>
+                        THAT’S OKAY, WE GOT YOUR BACK
+                     </Text>
+                     <View>
+                        <NBModalLoading show={showModalLoading} />
+                        {messageError !== '' && (
+                           <NBModalError
+                              show={showModalError}
+                              message={messageError}
+                              close={handleCloseModalError}
+                           />
+                        )}
+                        {messageSuccess !== '' && (
+                           <NBModalSuccess
+                              show={showModalSuccess}
+                              message={messageSuccess}
+                              close={handleCloseModalSuccess}
+                              button={'Go to login'}
+                              functionHandle={() =>
+                                 navigation.navigate('Login')
+                              }
+                           />
+                        )}
+                        <View style={addStyles.layoutInput}>
+                           <NBInput
+                              classVariant="loginSignup"
+                              placeholder="email"
+                              value={email}
+                              change={setEmail}
+                              isValidate={
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation.email &&
+                                 true
+                              }
+                              errorMessage={
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation.email
+                              }
+                           />
+                        </View>
+                        <View style={addStyles.layoutInput}>
+                           <NBInput
+                              classVariant="loginSignup"
+                              placeholder="Code"
+                              value={code}
+                              change={setCode}
+                              isValidate={
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation.code &&
+                                 true
+                              }
+                              errorMessage={
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation.code
+                              }
+                           />
+                        </View>
+                        <View style={addStyles.layoutInput}>
+                           <NBInput
+                              classVariant="loginSignup"
+                              secure={true}
+                              placeholder="Password"
+                              value={password}
+                              change={setPassword}
+                              isValidate={
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation.password &&
+                                 true
+                              }
+                              errorMessage={
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation.password
+                              }
+                           />
+                        </View>
+                        <View style={addStyles.layoutInput}>
+                           <NBInput
+                              classVariant="loginSignup"
+                              placeholder="Confirm Password"
+                              value={confirmPassword}
+                              secure={true}
+                              change={setConfirmPassword}
+                              isValidate={
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation['confirm password'] &&
+                                 true
+                              }
+                              errorMessage={
+                                 Object.keys(errValidation).length > 0 &&
+                                 errValidation['confirm password']
+                              }
+                           />
+                        </View>
+
+                        <TouchableOpacity onPress={changePasswordHandle}>
+                           <CButton
+                              classButton={addStyles.buttonForgotPassword}
+                              textButton={addStyles.textForgotPassword}>
+                              Change Passowrd
+                           </CButton>
+                        </TouchableOpacity>
+                     </View>
+                  </ScrollView>
                </Container>
-            </ImageBackground>
-         </ScrollView>
+            </View>
+         </ImageBackground>
       </View>
    );
 };
@@ -160,6 +261,7 @@ const addStyles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: 31,
+      marginBottom: 20,
       ...button,
    },
    textForgotPassword: {

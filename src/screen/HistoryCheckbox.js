@@ -133,9 +133,7 @@ const History = ({navigation}) => {
                button={'Delete'}
                isButtonCancel={true}
                functionHandle={deleteItemHandle}
-               message={
-                  'Do you really want to delete this data? This data cannot restore.'
-               }
+               message={'Are you sure to delete the selected history?'}
             />
             <View style={addStyles.layoutHistory}>
                <Text style={addStyles.title}>History Order</Text>
@@ -159,7 +157,6 @@ const History = ({navigation}) => {
                </View>
                <FlatList
                   data={history.listHistory}
-                  h="75%"
                   renderItem={({item, index}) => {
                      return (
                         <View style={addStyles.layoutListHistory}>

@@ -72,7 +72,6 @@ const Filter = ({navigation}) => {
                {search.listSearch.length > 0 ? (
                   <FlatList
                      data={search.listSearch}
-                     h={'80%'}
                      renderItem={({item}) => {
                         return (
                            <ListFilter

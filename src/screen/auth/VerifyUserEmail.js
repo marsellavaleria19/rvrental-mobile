@@ -94,6 +94,7 @@ const VerifyUserEmail = ({navigation}) => {
                         label="Email"
                         value={email}
                         change={setEmail}
+                        disabled={true}
                         isValidate={
                            Object.keys(errValidation).length > 0 && true
                         }

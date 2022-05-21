@@ -11,6 +11,7 @@ import history from './history';
 import search from './search';
 import favorite from './favorite';
 import location from './location';
+import menu from './menu';
 
 const persistForAuth = {
    key: 'auth',
@@ -42,6 +43,7 @@ const rootReducers = combineReducers({
    search,
    favorite,
    location,
+   menu,
 });
 
 export default rootReducers;

@@ -84,13 +84,13 @@ const Login = ({navigation}) => {
 
    return (
       <View style={styles.background}>
-         <ScrollView>
-            <ImageBackground
-               source={image}
-               resizeMode="cover"
-               style={styles.image}>
-               <View style={styles.containerScreen}>
-                  <Container>
+         <ImageBackground
+            source={image}
+            resizeMode="cover"
+            style={styles.image}>
+            <View style={styles.containerScreen}>
+               <Container>
+                  <ScrollView>
                      <Text style={addStyles.textTitle}>
                         LET’S EXPLORE THE WORLD
                      </Text>
@@ -164,10 +164,10 @@ const Login = ({navigation}) => {
                            </TouchableOpacity>
                         </View>
                      </View>
-                  </Container>
-               </View>
-            </ImageBackground>
-         </ScrollView>
+                  </ScrollView>
+               </Container>
+            </View>
+         </ImageBackground>
       </View>
    );
 };

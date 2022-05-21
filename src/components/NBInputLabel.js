@@ -30,8 +30,10 @@ const NBInputLabel = ({
                placeholder={placeholder}
                variant={classVariant}
                value={value}
+               isDisabled={disabled}
                onChangeText={change}
                secureTextEntry={secure}
+               di
             />
             {isValidate && (
                <FormControl.ErrorMessage

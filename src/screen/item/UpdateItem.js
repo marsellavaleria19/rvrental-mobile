@@ -38,12 +38,12 @@ import {validation} from '../../helpers/validation';
 import NBInput from '../../components/NBInput';
 import {getListLocation} from '../../redux/actions/location';
 import {getListVehicleByCategory} from '../../redux/actions/vehicle';
-import {LIMIT_VEHICLE} from '@env';
+import {LIMIT_VEHICLE, LIMIT_CATEGORY} from '@env';
 import NBModalConfirmation from '../../components/NBModalConfirmation';
 import {addDataLocation} from '../../redux/actions/location';
 
 const UpdateItem = ({navigation}) => {
-   const {vehicle, auth, location} = useSelector(state => state);
+   const {vehicle, auth, location, category} = useSelector(state => state);
    const [inputVehicle, setInputVehicle] = useState({
       name: '',
       price: '',
@@ -204,6 +204,20 @@ const UpdateItem = ({navigation}) => {
       }
    };
 
+   const getAllDataCategory = () => {
+      if (category.listCategory.length > 0) {
+         category.listCategory.forEach(itemCategory => {
+            dispatch(
+               getListVehicleByCategory(
+                  itemCategory.id,
+                  LIMIT_CATEGORY,
+                  'home',
+               ),
+            );
+         });
+      }
+   };
+
    const deleteItemHandle = () => {
       dispatch(deleteDataVehicle(auth.token, vehicle.dataVehicle.id));
       setControl(true);
@@ -260,6 +274,16 @@ const UpdateItem = ({navigation}) => {
             'category',
          ),
       );
+      category.listCategory.length > 0 &&
+         category.listCategory.forEach(itemCategory => {
+            dispatch(
+               getListVehicleByCategory(
+                  itemCategory.id,
+                  LIMIT_CATEGORY,
+                  'home',
+               ),
+            );
+         });
       navigation.navigate('DetailCategory', {
          categoryId: vehicle.dataVehicle.category_id,
       });

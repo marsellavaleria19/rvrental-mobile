@@ -26,6 +26,7 @@ import {
    saveDetailVehicle,
 } from '../redux/actions/vehicle';
 import NBModal from '../components/NBModal';
+import NBInput from '../components/NBInput';
 // import {image} from '../assets/images/backgroud-image.png'
 
 const image = {uri: 'https://reactjs.org/logo-og.png'};
@@ -34,7 +35,7 @@ const Home = ({navigation}) => {
    const {category, vehicle, auth} = useSelector(state => state);
    const dispatch = useDispatch();
    const [listVehicle, setLisstVehicle] = useState([]);
-   const [search, setSearch] = useState('');
+   const [inputSearch, setInputSearch] = useState('');
    const [showModalLoading, setShowModalLoading] = useState(false);
    const [show, setShow] = useState(false);
    const handleShow = () => setShow(true);
@@ -46,7 +47,7 @@ const Home = ({navigation}) => {
    }, [vehicle.isLoading]);
 
    const searchHandle = () => {
-      filter.name = search;
+      filter.name = inputSearch;
       navigation.navigate('Filter');
    };
 
@@ -124,13 +125,19 @@ const Home = ({navigation}) => {
                      style={addStyles.imageBackgroundSearch}>
                      <Container>
                         <View style={addStyles.layoutSearch}>
-                           <Input
+                           <NBInput
+                              classVariant={'search'}
+                              placeholder="Search Vehicle"
+                              value={inputSearch}
+                              change={setInputSearch}
+                           />
+                           {/* <Input
                               classInput={addStyles.input}
                               placeholder="Search vehicle"
                               value={search}
                               placeholderTextColor="white"
                               change={setSearch}
-                           />
+                           /> */}
                            <TouchableOpacity onPress={searchHandle}>
                               <IconSearch
                                  name="search"

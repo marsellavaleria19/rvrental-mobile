@@ -214,6 +214,12 @@ android {
         }
     }
     signingConfigs {
+         release {
+            storeFile file('rvrental.keystore')
+            storePassword '123456'
+            keyAlias 'rvrental'
+            keyPassword '123456'
+         }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -231,6 +237,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
 
