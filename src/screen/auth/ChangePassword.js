@@ -95,13 +95,13 @@ const ChangePassowrd = ({navigation}) => {
 
    return (
       <View style={styles.background}>
-         <ScrollView>
-            <ImageBackground
-               source={image}
-               resizeMode="cover"
-               style={styles.image}>
-               <View style={styles.containerScreenForgotPassword}>
-                  <Container>
+         <ImageBackground
+            source={image}
+            resizeMode="cover"
+            style={styles.image}>
+            <View style={styles.containerScreenForgotPassword}>
+               <Container>
+                  <ScrollView>
                      <TouchableOpacity
                         onPress={() => navigation.navigate('Login')}
                         style={addStyles.layoutBack}>
@@ -210,10 +210,10 @@ const ChangePassowrd = ({navigation}) => {
                            </CButton>
                         </TouchableOpacity>
                      </View>
-                  </Container>
-               </View>
-            </ImageBackground>
-         </ScrollView>
+                  </ScrollView>
+               </Container>
+            </View>
+         </ImageBackground>
       </View>
    );
 };
@@ -261,7 +261,7 @@ const addStyles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: 31,
-      marginBottom : 20,
+      marginBottom: 20,
       ...button,
    },
    textForgotPassword: {
