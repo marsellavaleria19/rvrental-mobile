@@ -114,7 +114,7 @@ const PaymentDetail = ({navigation}) => {
                      style={addStyles.imageBackground}
                   />
                   <View style={addStyles.rateLayout}>
-                     <Rate rate={3.5} />
+                     <Rate rate={reservation.dataReservation.rate} />
                   </View>
                </View>
                <View style={addStyles.layoutDescription}>
@@ -148,7 +148,7 @@ const PaymentDetail = ({navigation}) => {
                      prefix={'Rp.'}
                      renderText={value => (
                         <Text style={addStyles.price}>
-                           {value !== null ? value.replace(',', '.') : 0}
+                           {value !== null ? value.split(',').join('.') : 0}
                         </Text>
                      )}
                   />
