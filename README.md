@@ -85,6 +85,7 @@ npm install
 
 - [Axios](https://www.npmjs.com/package/axios)
 - [native-base](https://nativebase.io)
+- [react-navigation](https://reactnavigation.org)
 - [react-native-firebase](https://www.npmjs.com/package/@react-native-firebase/app)
 - [react-vector-icons](https://oblador.github.io/react-native-vector-icons/)
 - [react-redux](https://www.npmjs.com/package/react-redux)
