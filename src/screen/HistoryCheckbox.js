@@ -19,6 +19,7 @@ import {
    getListHistory,
    getNextListHistory,
 } from '../redux/actions/history';
+import NumberFormat from 'react-number-format';
 
 const History = ({navigation}) => {
    const {history, auth} = useSelector(state => state);
@@ -181,7 +182,27 @@ const History = ({navigation}) => {
                               ).format('MMM DD')} to ${moment(
                                  item.rentEndDate,
                               ).format('MMM DD YYYY')}`}
-                              payment={item.prepayment}
+                              payment={
+                                 <NumberFormat
+                                    value={
+                                       item.prepayment !== null
+                                          ? item.prepayment
+                                          : 0
+                                    }
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                    decimalSeparator="."
+                                    prefix={'Rp.'}
+                                    renderText={value => (
+                                       <Text style={addStyles.price}>
+                                          {value
+                                             .toString()
+                                             .split(',')
+                                             .join('.')}
+                                       </Text>
+                                    )}
+                                 />
+                              }
                               status={item.status}
                               isHistory={true}
                            />
