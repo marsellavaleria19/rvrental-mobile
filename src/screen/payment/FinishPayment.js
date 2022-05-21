@@ -185,7 +185,7 @@ const FinishPayment = ({route, navigation}) => {
                      prefix={'Rp.'}
                      renderText={value => (
                         <Text style={addStyles.price}>
-                           {value !== null ? value.replace(',', '.') : 0}
+                           {value !== null ? value.split(',').join('.') : 0}
                         </Text>
                      )}
                   />
