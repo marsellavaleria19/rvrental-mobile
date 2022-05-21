@@ -22,7 +22,7 @@ const vehicle = (state = dataVehicle, action) => {
          state.isLoading = false;
          return {...state};
       }
-      case 'GETL_VEHICLE_REJECTED': {
+      case 'GET_VEHICLE_REJECTED': {
          state.isLoading = false;
          state.isError = true;
          state.listVehicle = [];
@@ -43,7 +43,6 @@ const vehicle = (state = dataVehicle, action) => {
       case 'GET_ALL_VEHICLE_REJECTED': {
          state.isLoading = false;
          state.isError = true;
-         state.listAllVehicle = [];
          return {...state};
       }
       case 'GET_DETAIL_VEHICLE_PENDING': {
