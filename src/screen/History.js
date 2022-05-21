@@ -40,14 +40,14 @@ const History = ({navigation}) => {
    const [idHistoryChosen, setIdHistoryChosen] = useState(null);
    const [marginLeftCustom, setMarginLeftCustom] = useState(0);
 
-   // useEffect(() => {
-   //    if (auth.token !== 'admin') {
-   //       dispatch(getListHistoryByUserId(auth.token, auth.user.id));
-   //    } else {
-   //       dispatch(getListHistory(auth.token));
-   //    }
-   //    // eslint-disable-next-line react-hooks/exhaustive-deps
-   // }, []);
+   useEffect(() => {
+      if (auth.user.role !== 'admin') {
+         dispatch(getListHistoryByUserId(auth.token, auth.user.id));
+      } else {
+         dispatch(getListHistory(auth.token));
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
 
    useEffect(() => {
       setShowModalLoading(history.isLoading);
