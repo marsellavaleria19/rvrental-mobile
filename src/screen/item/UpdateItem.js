@@ -284,9 +284,14 @@ const UpdateItem = ({navigation}) => {
                ),
             );
          });
-      navigation.navigate('DetailCategory', {
-         categoryId: vehicle.dataVehicle.category_id,
-      });
+
+      if (vehicle.listVehicle.length > 0) {
+         navigation.navigate('DetailCategory', {
+            categoryId: vehicle.dataVehicle.category_id,
+         });
+      } else {
+         navigation.navigate('Home');
+      }
    };
 
    return (
