@@ -87,6 +87,9 @@ const history = (state = dataHistory, action) => {
          state.errMessage = data.message;
          return {...state};
       }
+      case 'CLEAR_HISTORY': {
+         return dataHistory;
+      }
       case 'HISTORY_SET_SUCCESS': {
          state.isSuccessPayment = true;
       }
