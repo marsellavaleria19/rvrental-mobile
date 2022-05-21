@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
+import React, {useState} from 'react';
 import {NativeBaseProvider, extendTheme} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from '../router/AuthNavigator';
@@ -15,10 +15,18 @@ import {getListLocation} from '../redux/actions/location';
 import {getListPaymentType} from '../redux/actions/payment';
 import {getListHistory, getListHistoryByUserId} from '../redux/actions/history';
 import Payment from './payment/Payment';
+import {getListMenu} from '../redux/actions/menu';
 import {LIMIT_CATEGORY} from '@env';
 
 const Main = () => {
-   const {auth, category, vehicle, payment} = useSelector(state => state);
+   const {auth, category, vehicle, payment, menu} = useSelector(state => state);
+   const [listMenu, setListMenu] = useState([
+      {id: 1, title: 'Your Favorite', navigate: 'Favorite'},
+      {id: 2, title: 'FAQ', navigate: ''},
+      {id: 3, title: 'Help', navigate: ''},
+      {id: 4, title: 'Update Profile', navigate: 'UpdateProfile'},
+      {id: 5, title: 'Change Password', navigate: 'ChangePassword'},
+   ]);
    const dispatch = useDispatch();
 
    useEffect(() => {
@@ -34,6 +42,7 @@ const Main = () => {
       dispatch({
          type: 'CLEAR_VEHICLE',
       });
+      dispatch(getListMenu(auth.user.isVerified, listMenu));
       if (category.listCategory.length > 0) {
          category.listCategory.forEach(itemCategory => {
             dispatch(

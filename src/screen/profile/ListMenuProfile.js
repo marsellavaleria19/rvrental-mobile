@@ -8,50 +8,25 @@ import {useDispatch, useSelector} from 'react-redux';
 import imageProfile from '../../assets/images/profile.png';
 import {FlatList, Image} from 'native-base';
 import {styles} from '../../assets/styles/styles';
+import {getListMenu} from '../../redux/actions/menu';
 import {ScrollView} from 'native-base';
 import PushNotificationHandler from '../../helpers/PushNotificationHelper';
 
 const ProfileMenuList = ({navigation}) => {
-   const {auth} = useSelector(state => state);
-   var [listMenu, setListMenu] = useState([
-      {title: 'Your Favorite', navigate: 'Favorite'},
-      {title: 'FAQ', navigate: ''},
-      {title: 'Help', navigate: ''},
-      {title: 'Update Profile', navigate: 'UpdateProfile'},
-      {title: 'Change Password', navigate: 'ChangePassword'},
+   const {auth, menu} = useSelector(state => state);
+   const [listMenu, setListMenu] = useState([
+      {id: 1, title: 'Your Favorite', navigate: 'Favorite'},
+      {id: 2, title: 'FAQ', navigate: ''},
+      {id: 3, title: 'Help', navigate: ''},
+      {id: 4, title: 'Update Profile', navigate: 'UpdateProfile'},
+      {id: 5, title: 'Change Password', navigate: 'ChangePassword'},
    ]);
    const dispatch = useDispatch();
 
    useEffect(() => {
-      if (auth.token !== null) {
-         if (auth.user !== null) {
-            const dataVerifyUser = listMenu.filter(
-               item => item.title == 'Verify Email',
-            );
-            console.log(auth.user.isVerified);
-            if (auth.user.isVerified == 0) {
-               const verifyUserMenu = {
-                  title: 'Verify Email',
-                  navigate: 'VerifyUserEmail',
-               };
-
-               if (dataVerifyUser.length == 0) {
-                  listMenu.push(verifyUserMenu);
-               }
-               setListMenu(listMenu);
-            } else {
-               if (dataVerifyUser.length > 0) {
-                  const profileMenu = listMenu.filter(
-                     item => item.title !== 'Verify Email',
-                  );
-                  setListMenu(profileMenu);
-               }
-            }
-         }
-      }
-
+      dispatch(getListMenu(auth.user.isVerified, listMenu));
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [auth.token]);
+   }, [dispatch]);
 
    const logoutHandle = () => {
       dispatch({
@@ -87,7 +62,7 @@ const ProfileMenuList = ({navigation}) => {
                      </Text>
                   </View>
                }
-               data={listMenu}
+               data={menu.listMenu}
                renderItem={({item}) => {
                   return (
                      <Container key={item.title}>

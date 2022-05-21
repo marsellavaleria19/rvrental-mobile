@@ -20,23 +20,55 @@ import {forgotPasswordProcess} from '../../redux/actions/auth';
 import {NBAlert} from '../../components/NBAlert';
 import {ScrollView} from 'native-base';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import NBModalError from '../../components/NBModalError';
+import NBModalLoading from '../../components/NBModalLoading';
+import NBModalSuccess from '../../components/NBModalSuccess';
+import NBInput from '../../components/NBInput';
+import {validation} from '../../helpers/validation';
 
 const ForgotPassowrd = ({navigation}) => {
    const {auth} = useSelector(state => state);
    const [email, setEmail] = useState('');
    const dispatch = useDispatch();
-   const [success, setSuccess] = useState(false);
+   const [errValidation, setErrValidation] = useState({});
+   const [showModalSuccess, setShowModalSuccess] = useState(false);
+   const handleCloseModalSuccess = () => setShowModalSuccess(false);
+   const [showModalError, setShowModalError] = useState(false);
+   const handleCloseModalError = () => setShowModalError(false);
+   const [showModalLoading, setShowModalLoading] = useState(false);
+   const [messageError, setMessageError] = useState('');
+   const [messageSuccess, setMessageSuccess] = useState('');
+   const [control, setControl] = useState(false);
 
    useEffect(() => {
-      if (auth.message !== '' && auth.isSubmitEmail == true && success) {
-         navigation.navigate('ChangePassword');
+      setShowModalLoading(auth.isLoading);
+      if (auth.isLoading == false && control == true) {
+         if (auth.isError) {
+            setMessageError(auth.errMessage);
+            setShowModalError(true);
+         } else {
+            setMessageSuccess(auth.message);
+            setShowModalSuccess(true);
+            setControl(false);
+         }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [auth.message]);
+   }, [auth.isLoading]);
 
    const forgotPasswordHandle = () => {
-      dispatch(forgotPasswordProcess(email));
-      setSuccess(true);
+      const data = {
+         email: email,
+      };
+      const requirement = {
+         email: 'required|email',
+      };
+      const validate = validation(data, requirement);
+      if (Object.keys(validate).length == 0) {
+         dispatch(forgotPasswordProcess(email));
+         setControl(true);
+      } else {
+         setErrValidation(validate);
+      }
    };
 
    return (
@@ -46,47 +78,72 @@ const ForgotPassowrd = ({navigation}) => {
                source={image}
                resizeMode="cover"
                style={styles.image}>
-               <Container>
-                  <TouchableOpacity
-                     onPress={() => navigation.navigate('Login')}
-                     style={addStyles.layoutBack}>
-                     <Icon name="chevron-left" style={addStyles.iconBack} />
-                     <Text style={addStyles.textBack}>Back</Text>
-                  </TouchableOpacity>
-                  <Text style={addStyles.textTitle}>
-                     THAT’S OKAY, WE GOT YOUR BACK
-                  </Text>
-                  <View style={addStyles.layoutLinkForgotPassword}>
-                     <Text style={addStyles.text}>
-                        Enter your email to get reset password code.
+               <View style={styles.containerScreenForgotPassword}>
+                  <Container>
+                     <TouchableOpacity
+                        onPress={() => navigation.navigate('Login')}
+                        style={addStyles.layoutBack}>
+                        <Icon name="chevron-left" style={addStyles.iconBack} />
+                        <Text style={addStyles.textBack}>Back</Text>
+                     </TouchableOpacity>
+                     <Text style={addStyles.textTitle}>
+                        THAT’S OKAY, WE GOT YOUR BACK
                      </Text>
-                  </View>
-                  <View>
-                     {auth.isError && (
-                        <NBAlert status="error" message={auth.errMessage} />
-                     )}
-                     <Input
-                        classInput={addStyles.input}
-                        placeholder="Enter your email address"
-                        value={email}
-                        change={setEmail}
-                     />
-                     <TouchableOpacity onPress={forgotPasswordHandle}>
-                        <CButton
-                           classButton={addStyles.buttonForgotPassword}
-                           textButton={addStyles.textForgotPassword}>
-                           Send Code
-                        </CButton>
-                     </TouchableOpacity>
-                     <TouchableOpacity onPress={forgotPasswordHandle}>
-                        <CButton
-                           classButton={addStyles.buttonResendCode}
-                           textButton={addStyles.textResendCode}>
-                           Resend Code
-                        </CButton>
-                     </TouchableOpacity>
-                  </View>
-               </Container>
+                     <View style={addStyles.layoutLinkForgotPassword}>
+                        <Text style={addStyles.text}>
+                           Enter your email to get reset password code.
+                        </Text>
+                     </View>
+                     <View>
+                        <NBModalLoading show={showModalLoading} />
+                        {messageError !== '' && (
+                           <NBModalError
+                              show={showModalError}
+                              message={messageError}
+                              close={handleCloseModalError}
+                           />
+                        )}
+                        {messageSuccess !== '' && (
+                           <NBModalSuccess
+                              show={showModalSuccess}
+                              message={messageSuccess}
+                              close={handleCloseModalSuccess}
+                              button={'Go to change password'}
+                              functionHandle={() =>
+                                 navigation.navigate('ChangePassword')
+                              }
+                           />
+                        )}
+                        <NBInput
+                           classVariant="loginSignup"
+                           placeholder="email"
+                           value={email}
+                           change={setEmail}
+                           isValidate={
+                              Object.keys(errValidation).length > 0 && true
+                           }
+                           errorMessage={
+                              Object.keys(errValidation).length > 0 &&
+                              errValidation.email
+                           }
+                        />
+                        <TouchableOpacity onPress={forgotPasswordHandle}>
+                           <CButton
+                              classButton={addStyles.buttonForgotPassword}
+                              textButton={addStyles.textForgotPassword}>
+                              Send Code
+                           </CButton>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={forgotPasswordHandle}>
+                           <CButton
+                              classButton={addStyles.buttonResendCode}
+                              textButton={addStyles.textResendCode}>
+                              Resend Code
+                           </CButton>
+                        </TouchableOpacity>
+                     </View>
+                  </Container>
+               </View>
             </ImageBackground>
          </ScrollView>
       </SafeAreaView>

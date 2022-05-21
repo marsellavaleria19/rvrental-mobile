@@ -14,6 +14,8 @@ import {ScrollView} from 'native-base';
 import NBModalLoading from '../../components/NBModalLoading';
 import NBModalSuccess from '../../components/NBModalSuccess';
 import NBModalError from '../../components/NBModalError';
+import {getListMenu} from '../../redux/actions/menu';
+import ListMenu from '../../components/ListMenu';
 
 const VerifyUser = ({navigation}) => {
    const {auth} = useSelector(state => state);
@@ -31,6 +33,13 @@ const VerifyUser = ({navigation}) => {
    const [showModalLoading, setShowModalLoading] = useState(false);
    const [messageError, setMessageError] = useState('');
    const [messageSuccess, setMessageSuccess] = useState('');
+   const [listMenu, setListMenu] = useState([
+      {id: 1, title: 'Your Favorite', navigate: 'Favorite'},
+      {id: 2, title: 'FAQ', navigate: ''},
+      {id: 3, title: 'Help', navigate: ''},
+      {id: 4, title: 'Update Profile', navigate: 'UpdateProfile'},
+      {id: 5, title: 'Change Password', navigate: 'ChangePassword'},
+   ]);
 
    useEffect(() => {
       setEmail(auth?.user.email);
@@ -78,6 +87,12 @@ const VerifyUser = ({navigation}) => {
          setErrValidation(validate);
       }
    };
+
+   const goToProfile = () => {
+      dispatch(getListMenu(auth.user.isVerified, listMenu));
+      navigation.navigate('Profile');
+   };
+
    return (
       <View style={styles.background}>
          <Container>
@@ -96,7 +111,7 @@ const VerifyUser = ({navigation}) => {
                      message={messageSuccess}
                      close={handleCloseModalSuccess}
                      button={'Go to profile'}
-                     functionHandle={() => navigation.navigate('Profile')}
+                     functionHandle={goToProfile}
                   />
                )}
                <NBInputLabel
@@ -105,6 +120,7 @@ const VerifyUser = ({navigation}) => {
                   label="Email"
                   value={email}
                   change={setEmail}
+                  disabled={true}
                   isValidate={Object.keys(errValidation).length > 0 && true}
                   errorMessage={
                      Object.keys(errValidation).length > 0 &&
