@@ -11,7 +11,7 @@ RVRental is a rental mobile application for various types of vehicles. Here, use
 
 ## 📍 About
 
-Repository Frontend - RVRental
+Repository Mobile Application - RVRental
 
 <br>
 
