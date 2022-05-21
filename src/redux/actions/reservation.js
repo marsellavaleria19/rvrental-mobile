@@ -24,6 +24,7 @@ export const reservationProcess = (vehicle, dataReservation) => {
       rentEndDate,
       day: dataReservation.day,
       totalPayment: total,
+      rate: vehicle.rate,
    };
    console.log(data);
    return {

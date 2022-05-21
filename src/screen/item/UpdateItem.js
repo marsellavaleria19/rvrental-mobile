@@ -322,7 +322,7 @@ const UpdateItem = ({navigation}) => {
                               </View>
                            </TouchableOpacity>
                            <View style={addStyles.flexRow}>
-                              <Rate rate={4.5} />
+                              <Rate rate={vehicle.dataVehicle.rate} />
                            </View>
                         </View>
                      </View>
