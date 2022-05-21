@@ -21,11 +21,16 @@ import {getNextListSearchFilter} from '../../redux/actions/search';
 import {styles} from '../../assets/styles/styles';
 import stylePrimary from '../../assets/styles/stylePrimary';
 import NotFound from '../../components/NotFound';
+import {saveDetailVehicle} from '../../redux/actions/vehicle';
+import NBModal from '../../components/NBModal';
 
 const Filter = ({navigation}) => {
-   const {search} = useSelector(state => state);
+   const {search, auth} = useSelector(state => state);
    const dispatch = useDispatch();
    const [page, setPage] = useState({});
+   const [show, setShow] = useState(false);
+   const handleShow = () => setShow(true);
+   const handleClose = () => setShow(false);
 
    useEffect(() => {
       console.log(filter);
@@ -38,6 +43,25 @@ const Filter = ({navigation}) => {
       if (page.next !== null) {
          dispatch(getNextListSearchFilter(page.next));
       }
+   };
+
+   const detailVehicleHandle = item => {
+      dispatch(saveDetailVehicle(item));
+      if (auth.user !== null) {
+         if (auth.user.isVerified == true) {
+            if (auth.user.role == 'admin') {
+               navigation.navigate('EditItem');
+            } else {
+               navigation.navigate('Reservation');
+            }
+         } else {
+            handleShow();
+         }
+      }
+   };
+
+   const verifyHandle = () => {
+      navigation.navigate('VerifyUserEmail');
    };
 
    const FilterSearchHandle = () => {
@@ -68,12 +92,14 @@ const Filter = ({navigation}) => {
                   <Text>Filter Search</Text>
                </TouchableOpacity>
             </View>
-            <View>
-               {search.listSearch.length > 0 ? (
-                  <FlatList
-                     data={search.listSearch}
-                     renderItem={({item}) => {
-                        return (
+         </Container>
+         <View>
+            {search.listSearch.length > 0 ? (
+               <FlatList
+                  data={search.listSearch}
+                  renderItem={({item}) => {
+                     return (
+                        <Container>
                            <ListFilter
                               path={
                                  item.photo !== null
@@ -92,18 +118,32 @@ const Filter = ({navigation}) => {
                                  item.price,
                               ).toLocaleString('id-ID')}`}
                               rate={item.rate}
+                              navigate={() => detailVehicleHandle(item)}
                            />
-                        );
-                     }}
-                     onEndReached={() => nextPageHandle(search.pageInfo)}
-                     onEndReachedThreshold={0.5}
-                  />
-               ) : (
-                  <NotFound />
-               )}
-            </View>
+                        </Container>
+                     );
+                  }}
+                  onEndReached={() => nextPageHandle(search.pageInfo)}
+                  onEndReachedThreshold={0.5}
+               />
+            ) : (
+               <NotFound />
+            )}
+            <NBModal
+               title="Verifiy Email"
+               show={show}
+               functionClose={handleClose}
+               functionHandle={verifyHandle}
+               isButtonCancel={true}
+               button="Go to verifiy email">
+               <Text>
+                  Sorry, your account is not verfied. Please verified your
+                  account for enjoy our product..
+               </Text>
+            </NBModal>
+         </View>
 
-            {/* <ListFilter
+         {/* <ListFilter
                path={require('../assets/images/list-car1.png')}
                title="Vespa Matic"
                description="Max for 2 person"
@@ -121,7 +161,6 @@ const Filter = ({navigation}) => {
                price="Rp. 140.000"
                rate="4.5"
             /> */}
-         </Container>
       </View>
    );
 };

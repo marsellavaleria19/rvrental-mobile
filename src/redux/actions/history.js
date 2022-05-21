@@ -30,7 +30,7 @@ export const historyInput = (reservation, idUser, dataPayment, token) => {
 export const getListHistory = token => {
    return {
       type: 'HISTORY',
-      payload: AxiosCostum(token).get('/histories'),
+      payload: AxiosCostum(token).get('/histories?limit=10'),
    };
 };
 

@@ -116,7 +116,7 @@ const DetailCategory = ({route, navigation}) => {
                show={show}
                functionClose={handleClose}
                functionHandle={verifyHandle}
-               isButtonCancel={false}
+               isButtonCancel={true}
                button="Go to verifiy email">
                <Text>
                   Sorry, your account is not verfied. Please verified your

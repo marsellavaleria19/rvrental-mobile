@@ -49,7 +49,7 @@ const ListDetail = ({
                      prefix={'Rp.'}
                      renderText={value => (
                         <Text style={stylePrimary.priceDatail}>
-                           {value.replace(',', '.')}
+                           {value.split(',').join('.')}
                         </Text>
                      )}
                   />

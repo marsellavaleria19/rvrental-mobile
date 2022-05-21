@@ -222,7 +222,7 @@ const Reservation = ({navigation}) => {
                            prefix={'Rp.'}
                            renderText={value => (
                               <Text style={addStyles.price}>
-                                 {value.replace(',', '.')}/day
+                                 {value.toString().split(',').join('.')}/day
                               </Text>
                            )}
                         />

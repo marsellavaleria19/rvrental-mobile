@@ -54,7 +54,7 @@ const SuccessPayment = ({route, navigation}) => {
                      style={addStyles.imageBackground}
                   />
                   <View style={addStyles.rateLayout}>
-                     <Rate rate={4.5} />
+                     <Rate rate={history.dataHistory.rate} />
                   </View>
                </View>
                <View style={addStyles.layoutDescription}>
@@ -112,7 +112,9 @@ const SuccessPayment = ({route, navigation}) => {
                            prefix={'Rp.'}
                            renderText={value => (
                               <Text style={addStyles.fontButtonPayment}>
-                                 {value !== null ? value.replace(',', '.') : 0}
+                                 {value !== null
+                                    ? value.split(',').join('.')
+                                    : 0}
                               </Text>
                            )}
                         />

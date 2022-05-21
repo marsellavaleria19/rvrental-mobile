@@ -52,11 +52,6 @@ const Main = () => {
    useEffect(() => {
       if (auth.token !== null) {
          dispatch(getDataUser(auth.token));
-         if (auth.user.role !== 'admin') {
-            dispatch(getListHistoryByUserId(auth.token, auth.user.id));
-         } else {
-            dispatch(getListHistory(auth.token));
-         }
       }
    }, [auth.token]);
 

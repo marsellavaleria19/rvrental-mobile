@@ -19,6 +19,7 @@ import {
    getListHistory,
    getNextListHistory,
 } from '../redux/actions/history';
+import NumberFormat from 'react-number-format';
 
 const History = ({navigation}) => {
    const {history, auth} = useSelector(state => state);
@@ -119,55 +120,59 @@ const History = ({navigation}) => {
 
    return (
       <View style={styles.background}>
-         <Container>
-            <NBModalLoading show={showModalLoading} />
-            {messageError !== '' && (
-               <NBModalError
-                  show={showModalError}
-                  message={messageError}
-                  close={handleCloseModalError}
-               />
-            )}
-            {messageSuccess !== '' && (
-               <NBModalSuccess
-                  show={showModalSuccess}
-                  message={messageSuccess}
-                  close={handleCloseModalSuccess}
-               />
-            )}
-            <NBModalConfirmation
-               show={showModalDelete}
-               functionClose={handleCloseModalDelete}
-               close={handleCloseModalDelete}
-               button={'Delete'}
-               isButtonCancel={true}
-               functionHandle={deleteItemHandle}
-               message={'Are you sure to delete the selected history?'}
+         <NBModalLoading show={showModalLoading} />
+         {messageError !== '' && (
+            <NBModalError
+               show={showModalError}
+               message={messageError}
+               close={handleCloseModalError}
             />
-            <View style={addStyles.layoutHistory}>
-               <Text style={addStyles.title}>History Order</Text>
-               <View style={addStyles.layoutWeek}>
-                  <View style={addStyles.layoutTitleWeek}>
-                     <Text style={addStyles.textWeek}>A Week Ago</Text>
-                     {selectDelete == 'Delete' ? (
-                        <TouchableOpacity
-                           onPress={() => setShowModalDelete(true)}>
+         )}
+         {messageSuccess !== '' && (
+            <NBModalSuccess
+               show={showModalSuccess}
+               message={messageSuccess}
+               close={handleCloseModalSuccess}
+            />
+         )}
+         <NBModalConfirmation
+            show={showModalDelete}
+            functionClose={handleCloseModalDelete}
+            close={handleCloseModalDelete}
+            button={'Delete'}
+            isButtonCancel={true}
+            functionHandle={deleteItemHandle}
+            message={'Are you sure to delete the selected history?'}
+         />
+         <View style={{flex: 1}}>
+            <Container>
+               <View style={addStyles.layoutHistory}>
+                  <Text style={addStyles.title}>History Order</Text>
+                  <View style={addStyles.layoutWeek}>
+                     <View style={addStyles.layoutTitleWeek}>
+                        <Text style={addStyles.textWeek}>A Week Ago</Text>
+                        {selectDelete == 'Delete' ? (
+                           <TouchableOpacity
+                              onPress={() => setShowModalDelete(true)}>
+                              <Text style={addStyles.textSelect}>
+                                 {selectDelete}
+                              </Text>
+                           </TouchableOpacity>
+                        ) : (
                            <Text style={addStyles.textSelect}>
+                              {' '}
                               {selectDelete}
                            </Text>
-                        </TouchableOpacity>
-                     ) : (
-                        <Text style={addStyles.textSelect}>
-                           {' '}
-                           {selectDelete}
-                        </Text>
-                     )}
+                        )}
+                     </View>
                   </View>
                </View>
-               <FlatList
-                  data={history.listHistory}
-                  renderItem={({item, index}) => {
-                     return (
+            </Container>
+            <FlatList
+               data={history.listHistory}
+               renderItem={({item, index}) => {
+                  return (
+                     <Container>
                         <View style={addStyles.layoutListHistory}>
                            <ListHistory
                               path={
@@ -181,7 +186,27 @@ const History = ({navigation}) => {
                               ).format('MMM DD')} to ${moment(
                                  item.rentEndDate,
                               ).format('MMM DD YYYY')}`}
-                              payment={item.prepayment}
+                              payment={
+                                 <NumberFormat
+                                    value={
+                                       item.prepayment !== null
+                                          ? item.prepayment
+                                          : 0
+                                    }
+                                    displayType={'text'}
+                                    thousandSeparator={true}
+                                    decimalSeparator="."
+                                    prefix={'Rp.'}
+                                    renderText={value => (
+                                       <Text style={addStyles.price}>
+                                          {value
+                                             .toString()
+                                             .split(',')
+                                             .join('.')}
+                                       </Text>
+                                    )}
+                                 />
+                              }
                               status={item.status}
                               isHistory={true}
                            />
@@ -194,14 +219,14 @@ const History = ({navigation}) => {
                               />
                            </View>
                         </View>
-                     );
-                  }}
-                  onEndReached={() => nextPageHandle(history.pageInfo)}
-                  onEndReachedThreshold={0.5}
-               />
-            </View>
-
-            {/* <ScrollView>
+                     </Container>
+                  );
+               }}
+               onEndReached={() => nextPageHandle(history.pageInfo)}
+               onEndReachedThreshold={0.5}
+            />
+         </View>
+         {/* <ScrollView>
                <NBModalConfirmation
                   show={showModalDelete}
                   functionClose={handleCloseModalDelete}
@@ -270,7 +295,6 @@ const History = ({navigation}) => {
                   }}
                />
             </ScrollView> */}
-         </Container>
       </View>
    );
 };
