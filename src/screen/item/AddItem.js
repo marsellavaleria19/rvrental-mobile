@@ -89,17 +89,6 @@ const AddItem = ({navigation}) => {
    }, []);
 
    useEffect(() => {
-      if (category.dataCategory !== null && control == true) {
-         dispatch(getListCategory());
-         inputItem.category = category.dataCategory.id;
-         setInputItem(inputItem);
-         // setCategoryId(category.dataCategory.id);
-         setControl(false);
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [category.dataCategory]);
-
-   useEffect(() => {
       setShowModalLoading(vehicle.isLoading);
       if (vehicle.isLoading == false && control == true) {
          if (vehicle.isError) {
@@ -124,6 +113,10 @@ const AddItem = ({navigation}) => {
          } else {
             setMessageSuccessLocationCategory(category.message);
             setShowModalSuccessLocationCategory(true);
+            dispatch(getListCategory());
+            inputItem.category = category.dataCategory.id;
+            setInputItem(inputItem);
+            // setCategoryId(category.dataCategory.id);
             setControl(false);
          }
       }
