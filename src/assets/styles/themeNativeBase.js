@@ -32,6 +32,16 @@ export const theme = extendTheme({
                   color: stylePrimary.mainColor,
                },
             },
+            search: {
+               marginTop: 18,
+               backgroundColor: 'rgba(60,60,60, 0.5)',
+               fontSize: stylePrimary.baseFontSize,
+               placeholderTextColor: 'white',
+               fontWeight: stylePrimary.bold,
+               minWidth: '100%',
+               height: 51,
+               color: 'white',
+            },
             loginSignup: {
                marginTop: 18,
                backgroundColor: 'rgba(180, 180, 180, 0.5)',
