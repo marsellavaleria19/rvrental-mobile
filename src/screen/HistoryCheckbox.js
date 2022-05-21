@@ -39,6 +39,15 @@ const History = ({navigation}) => {
 
    useEffect(() => {
       setListDeleteHistory([]);
+      dispatch({
+         type: 'CLEAR_HISTORY',
+      });
+      if (auth.user.role !== 'admin') {
+         dispatch(getListHistoryByUserId(auth.token, auth.user.id));
+      } else {
+         dispatch(getListHistory(auth.token));
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    useEffect(() => {
