@@ -73,13 +73,13 @@ const ForgotPassowrd = ({navigation}) => {
 
    return (
       <SafeAreaView style={styles.background}>
-         <ScrollView>
-            <ImageBackground
-               source={image}
-               resizeMode="cover"
-               style={styles.image}>
-               <View style={styles.containerScreenForgotPassword}>
-                  <Container>
+         <ImageBackground
+            source={image}
+            resizeMode="cover"
+            style={styles.image}>
+            <View style={styles.containerScreenForgotPassword}>
+               <Container>
+                  <ScrollView>
                      <TouchableOpacity
                         onPress={() => navigation.navigate('Login')}
                         style={addStyles.layoutBack}>
@@ -142,10 +142,10 @@ const ForgotPassowrd = ({navigation}) => {
                            </CButton>
                         </TouchableOpacity>
                      </View>
-                  </Container>
-               </View>
-            </ImageBackground>
-         </ScrollView>
+                  </ScrollView>
+               </Container>
+            </View>
+         </ImageBackground>
       </SafeAreaView>
    );
 };
