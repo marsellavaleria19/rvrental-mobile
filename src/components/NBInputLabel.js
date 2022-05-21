@@ -18,6 +18,7 @@ const NBInputLabel = ({
    disabled,
    errorMessage,
    secure,
+   keyboardType,
    children,
 }) => {
    return (
@@ -33,7 +34,7 @@ const NBInputLabel = ({
                isDisabled={disabled}
                onChangeText={change}
                secureTextEntry={secure}
-               di
+               keyboardType={keyboardType}
             />
             {isValidate && (
                <FormControl.ErrorMessage

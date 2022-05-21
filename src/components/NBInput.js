@@ -18,6 +18,7 @@ const NBInput = ({
    isValidate,
    children,
    size,
+   keyboardType,
 }) => {
    return (
       <Box>
@@ -29,6 +30,7 @@ const NBInput = ({
                onChangeText={change}
                secureTextEntry={secure}
                size={size}
+               keyboardType={keyboardType}
             />
             {isValidate && (
                <FormControl.ErrorMessage
