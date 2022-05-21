@@ -25,6 +25,7 @@ const vehicle = (state = dataVehicle, action) => {
       case 'GETL_VEHICLE_REJECTED': {
          state.isLoading = false;
          state.isError = true;
+         state.listVehicle = [];
          return {...state};
       }
       case 'GET_ALL_VEHICLE_PENDING': {
@@ -42,6 +43,7 @@ const vehicle = (state = dataVehicle, action) => {
       case 'GET_ALL_VEHICLE_REJECTED': {
          state.isLoading = false;
          state.isError = true;
+         state.listAllVehicle = [];
          return {...state};
       }
       case 'GET_DETAIL_VEHICLE_PENDING': {
@@ -79,6 +81,7 @@ const vehicle = (state = dataVehicle, action) => {
       }
       case 'GET_RESULT_VEHICLE_FULFILLED': {
          const {data} = action.payload;
+         state.listAllVehicle = [];
          state.dataVehicle = data.result;
          state.message = data.message;
          state.isLoading = false;
@@ -99,6 +102,7 @@ const vehicle = (state = dataVehicle, action) => {
       }
       case 'DELETE_VEHICLE_FULFILLED': {
          const {data} = action.payload;
+         state.listAllVehicle = [];
          state.message = data.message;
          state.isLoading = false;
          state.isError = false;
