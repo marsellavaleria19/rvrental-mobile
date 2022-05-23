@@ -59,7 +59,7 @@ npm install
    </tr>
   </table>
   
-- Type ``` npm run start ``` To Start The Project
+- Type ``` yarn android ``` To Start The Project
 
 <br>
 
